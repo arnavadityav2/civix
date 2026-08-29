@@ -1,0 +1,1509 @@
+{
+  "timestamp": "2026-08-29T05:00:05.607590Z",
+  "profile": "Profile C",
+  "directory": "D:\\civix_data\\synthetic\\profile_c",
+  "tables": {
+    "accounts": {
+      "row_count": 225000,
+      "schema": {
+        "account_id": "VARCHAR",
+        "account_index": "BIGINT",
+        "bank": "VARCHAR",
+        "account_type": "VARCHAR",
+        "masked_number": "VARCHAR",
+        "primary_holder_id": "VARCHAR",
+        "joint_holder_id": "VARCHAR",
+        "sc_class_holder": "VARCHAR"
+      },
+      "null_rates": {
+        "account_id": 0.0,
+        "account_index": 0.0,
+        "bank": 0.0,
+        "account_type": 0.0,
+        "masked_number": 0.0
+      }
+    },
+    "case_entity_roles": {
+      "row_count": 112855,
+      "schema": {
+        "cer_id": "VARCHAR",
+        "case_id": "VARCHAR",
+        "person_id": "VARCHAR",
+        "role": "VARCHAR"
+      },
+      "null_rates": {
+        "cer_id": 0.0,
+        "case_id": 0.0,
+        "person_id": 0.0,
+        "role": 0.0
+      }
+    },
+    "cases": {
+      "row_count": 25000,
+      "schema": {
+        "case_id": "VARCHAR",
+        "case_index": "BIGINT",
+        "case_type": "VARCHAR",
+        "status": "VARCHAR",
+        "priority": "VARCHAR",
+        "opened_at": "VARCHAR",
+        "n_involved": "BIGINT",
+        "involved": "VARCHAR"
+      },
+      "null_rates": {
+        "case_id": 0.0,
+        "case_index": 0.0,
+        "case_type": 0.0,
+        "status": 0.0,
+        "priority": 0.0
+      }
+    },
+    "cell_sectors": {
+      "row_count": 8000,
+      "schema": {
+        "cell_id": "VARCHAR",
+        "location_type": "VARCHAR",
+        "centroid_latitude": "DOUBLE",
+        "centroid_longitude": "DOUBLE",
+        "azimuth_degrees": "BIGINT",
+        "beamwidth_degrees": "BIGINT",
+        "uncertainty_radius_meters": "BIGINT",
+        "region": "VARCHAR",
+        "description": "VARCHAR"
+      },
+      "null_rates": {
+        "cell_id": 0.0,
+        "location_type": 0.0,
+        "centroid_latitude": 0.0,
+        "centroid_longitude": 0.0,
+        "azimuth_degrees": 0.0
+      }
+    },
+    "devices": {
+      "row_count": 375000,
+      "schema": {
+        "device_id": "VARCHAR",
+        "device_index": "BIGINT",
+        "imei": "VARCHAR",
+        "brand": "VARCHAR",
+        "device_type": "VARCHAR"
+      },
+      "null_rates": {
+        "device_id": 0.0,
+        "device_index": 0.0,
+        "imei": 0.0,
+        "brand": 0.0,
+        "device_type": 0.0
+      }
+    },
+    "ground_truth/person_labels": {
+      "row_count": 250000,
+      "schema": {
+        "entity_id": "VARCHAR",
+        "entity_type": "VARCHAR",
+        "person_index": "BIGINT",
+        "scenario_class": "VARCHAR",
+        "scenario_family": "VARCHAR",
+        "scenario_id_str": "VARCHAR",
+        "scenario_category": "VARCHAR",
+        "difficulty": "VARCHAR",
+        "is_positive_label": "BOOLEAN",
+        "is_false_positive": "BOOLEAN",
+        "risk_score_gt": "DOUBLE",
+        "ground_truth_note": "VARCHAR"
+      },
+      "null_rates": {
+        "entity_id": 0.0,
+        "entity_type": 0.0,
+        "person_index": 0.0,
+        "scenario_class": 0.0,
+        "scenario_family": 0.0
+      }
+    },
+    "ground_truth/train_val_test_split": {
+      "row_count": 250000,
+      "schema": {
+        "entity_id": "VARCHAR",
+        "person_index": "BIGINT",
+        "split": "VARCHAR",
+        "active_start_day": "BIGINT"
+      },
+      "null_rates": {
+        "entity_id": 0.0,
+        "person_index": 0.0,
+        "split": 0.0,
+        "active_start_day": 0.0
+      }
+    },
+    "locations": {
+      "row_count": 15000,
+      "schema": {
+        "location_id": "VARCHAR",
+        "location_type": "VARCHAR",
+        "latitude": "DOUBLE",
+        "longitude": "DOUBLE",
+        "uncertainty_radius_meters": "BIGINT",
+        "region": "VARCHAR",
+        "description": "VARCHAR"
+      },
+      "null_rates": {
+        "location_id": 0.0,
+        "location_type": 0.0,
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "uncertainty_radius_meters": 0.0
+      }
+    },
+    "ml_features": {
+      "row_count": 500000,
+      "schema": {
+        "person_id": "VARCHAR",
+        "total_calls": "BIGINT",
+        "avg_call_duration_sec": "DOUBLE",
+        "std_call_duration_sec": "DOUBLE",
+        "unique_callees": "BIGINT",
+        "unique_cell_sectors": "BIGINT",
+        "active_months": "BIGINT",
+        "voice_calls": "DOUBLE",
+        "sms_count": "DOUBLE",
+        "data_sessions": "DOUBLE",
+        "first_call_ts": "VARCHAR",
+        "last_call_ts": "VARCHAR",
+        "total_transactions": "BIGINT",
+        "total_sent_amount": "DOUBLE",
+        "avg_txn_amount": "DOUBLE",
+        "max_txn_amount": "DOUBLE",
+        "std_txn_amount": "DOUBLE",
+        "unique_receivers": "BIGINT",
+        "txn_type_diversity": "BIGINT",
+        "first_txn_ts": "VARCHAR",
+        "last_txn_ts": "VARCHAR"
+      },
+      "null_rates": {
+        "person_id": 0.0,
+        "total_calls": 0.5,
+        "avg_call_duration_sec": 0.5,
+        "std_call_duration_sec": 0.5,
+        "unique_callees": 0.5
+      }
+    },
+    "organisations": {
+      "row_count": 10000,
+      "schema": {
+        "org_id": "VARCHAR",
+        "org_index": "BIGINT",
+        "name": "VARCHAR",
+        "org_type": "VARCHAR"
+      },
+      "null_rates": {
+        "org_id": 0.0,
+        "org_index": 0.0,
+        "name": 0.0,
+        "org_type": 0.0
+      }
+    },
+    "persons": {
+      "row_count": 250000,
+      "schema": {
+        "person_id": "VARCHAR",
+        "person_index": "BIGINT",
+        "full_name": "VARCHAR",
+        "gender": "VARCHAR",
+        "date_of_birth": "VARCHAR",
+        "occupation": "VARCHAR",
+        "home_region": "BIGINT",
+        "scenario_class": "VARCHAR",
+        "risk_score": "DOUBLE",
+        "active_start_day": "BIGINT",
+        "active_end_day": "BIGINT"
+      },
+      "null_rates": {
+        "person_id": 0.0,
+        "person_index": 0.0,
+        "full_name": 0.0,
+        "gender": 0.0,
+        "date_of_birth": 0.0
+      }
+    },
+    "phones": {
+      "row_count": 450000,
+      "schema": {
+        "phone_id": "VARCHAR",
+        "phone_index": "BIGINT",
+        "number": "VARCHAR",
+        "operator": "VARCHAR",
+        "is_recycled": "BOOLEAN"
+      },
+      "null_rates": {
+        "phone_id": 0.0,
+        "phone_index": 0.0,
+        "number": 0.0,
+        "operator": 0.0,
+        "is_recycled": 0.0
+      }
+    },
+    "sims": {
+      "row_count": 450000,
+      "schema": {
+        "sim_id": "VARCHAR",
+        "sim_index": "BIGINT",
+        "iccid": "VARCHAR",
+        "is_burner": "BOOLEAN"
+      },
+      "null_rates": {
+        "sim_id": 0.0,
+        "sim_index": 0.0,
+        "iccid": 0.0,
+        "is_burner": 0.0
+      }
+    }
+  },
+  "manifest": {
+    "dataset_version": "profile_training_v1",
+    "generator_version": "2.0.0",
+    "schema_version": "civix-2.1",
+    "scenario_catalog_version": "1.0",
+    "profile": "training",
+    "seed": 20260829,
+    "configuration_hash": "37279c22a17019adce78c9423e646352fd924ad566f127f7e5f04029df1e6f0c",
+    "generation_timestamp": "2026-08-29T04:04:32Z",
+    "generation_duration_seconds": 1724,
+    "row_counts": {
+      "locations": 15000,
+      "cell_sectors": 8000,
+      "persons": 250000,
+      "organisations": 10000,
+      "phones": 450000,
+      "sims": 450000,
+      "devices": 375000,
+      "cdrs": 75000000,
+      "accounts": 225000,
+      "transactions": 18385110,
+      "cases": 25000,
+      "case_entity_roles": 112855,
+      "person_labels": 250000,
+      "train_val_test_split": 250000
+    },
+    "total_rows": 95805965,
+    "files": [
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\locations\\part-00000.parquet",
+        "rows": 15000,
+        "bytes": 967060,
+        "sha256": "8d0d7a0c2f17c19ddf500ca33ed00d8f5f0518afc6c436da268ce1a294b9e2cf",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cell_sectors\\part-00000.parquet",
+        "rows": 8000,
+        "bytes": 514028,
+        "sha256": "16491391942c810b80042e1b7e480bb2659a1ddd67098b232f2e31b53b472dd5",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\persons\\part-00000.parquet",
+        "rows": 250000,
+        "bytes": 12717011,
+        "sha256": "c66595c1478b6bdf1bb25e37255a2269b0ddc28e647f9600681d49c081264914",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\organisations\\part-00000.parquet",
+        "rows": 10000,
+        "bytes": 457047,
+        "sha256": "7e42298017f21c6d69e23a728c091599966e475057f120254bf3cbfcf9e3f047",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\phones\\part-00000.parquet",
+        "rows": 450000,
+        "bytes": 22905660,
+        "sha256": "e39bcb8bd464f1ae80fb09819158028be65a4894afb29a0b4d00f1e77d058cff",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\sims\\part-00000.parquet",
+        "rows": 450000,
+        "bytes": 24646224,
+        "sha256": "3542739d51562c886c8648fca227ba13277d34bd0699f5ccc5010f865cbabf90",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\devices\\part-00000.parquet",
+        "rows": 375000,
+        "bytes": 20783711,
+        "sha256": "528866e201c39750cdacf88b055a1b7c6b5d038ada45c1ed73124ddbae2febc9",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00000.parquet",
+        "rows": 1000000,
+        "bytes": 20301967,
+        "sha256": "329cfc6742dae2b1478d27860afcc0f277b2a615ffb1ac582da156094ed80cf0",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00001.parquet",
+        "rows": 1000000,
+        "bytes": 20277911,
+        "sha256": "a0d8f3b71bdf225ea27f19cb0720ecafe0db1a7da3a0deb3f48770e780d335cc",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 1
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00002.parquet",
+        "rows": 1000000,
+        "bytes": 20255489,
+        "sha256": "a811d1c032caf5afc663eac58ed357622d5e74db1621601d95edb50238e4cbf0",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 2
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00003.parquet",
+        "rows": 1000000,
+        "bytes": 20211628,
+        "sha256": "ce861e19a63971faaa020f5beaac54b19e1941d51c35ec89d54668f1b86e2762",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 3
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=2\\part-00004.parquet",
+        "rows": 1000000,
+        "bytes": 20270022,
+        "sha256": "7e85a5b2b5a9db4163af16194b70d86e87e10abd4ebbcfbbb58b5d799f1be06b",
+        "partition": {
+          "year": 2022,
+          "month": 2
+        },
+        "shard_index": 4
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00005.parquet",
+        "rows": 1000000,
+        "bytes": 20265309,
+        "sha256": "212cb5b82add74dc607a81f944b638198ff6be01b453687cd2e2718338cc6b79",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 5
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00006.parquet",
+        "rows": 1000000,
+        "bytes": 20268972,
+        "sha256": "d1c4cad08649ab62feb02e30adc9522111f048414f94b1a199ebfdba2a45f962",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 6
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00007.parquet",
+        "rows": 1000000,
+        "bytes": 20291933,
+        "sha256": "af86f359ca0ff52cb4f977ad7d8258e83b7100802abffa43225ceee9e946b282",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 7
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00008.parquet",
+        "rows": 1000000,
+        "bytes": 20248368,
+        "sha256": "91c179ec73ec0360b77726c0c805578b1b1b23b1c37368479c9bf316e6f6a8fe",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 8
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00009.parquet",
+        "rows": 1000000,
+        "bytes": 20255925,
+        "sha256": "72ed1b07ae80f78cadbce8eede795aa67df5f89c486ecd959f7f6d016561f05c",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 9
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00010.parquet",
+        "rows": 1000000,
+        "bytes": 20268631,
+        "sha256": "f09a06b632b243bcd99f3c901467b3fd8547bcdd1028431f0839bf061c133591",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 10
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00011.parquet",
+        "rows": 1000000,
+        "bytes": 20279858,
+        "sha256": "e7550cff693adc897afc38f8442fb318ca4434284ea3db0ff0fb994398ac0706",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 11
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00012.parquet",
+        "rows": 1000000,
+        "bytes": 20299453,
+        "sha256": "22b9a8512f476bfe0a56e468f5e0783e4220ec19bfb3aee0522abedbc4fe71ae",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 12
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00013.parquet",
+        "rows": 1000000,
+        "bytes": 20235502,
+        "sha256": "0c2aa87a80956065c40a61b3638d17a9ea49429ba49aa0be5312178118385bb3",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 13
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=11\\part-00014.parquet",
+        "rows": 1000000,
+        "bytes": 20271055,
+        "sha256": "ef03934731e2b69a451be8538632e94c6444a8bbf85a1d1bb28a09b0709c77eb",
+        "partition": {
+          "year": 2024,
+          "month": 11
+        },
+        "shard_index": 14
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00015.parquet",
+        "rows": 1000000,
+        "bytes": 20305043,
+        "sha256": "4b8287c1b5c60fea137b5694c149a7ba542022bb56dc406d6af1bd3fa0a9d705",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 15
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00016.parquet",
+        "rows": 1000000,
+        "bytes": 20315835,
+        "sha256": "cb9367fb3fa6c3d206919b696bbf06adc3355a5147c3fa22a6d92bbc5edf9d9d",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 16
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00017.parquet",
+        "rows": 1000000,
+        "bytes": 20296360,
+        "sha256": "25b31a5ff9d7ff9f5c26f6950e26c73f30f86a072f0846961bb36e6118ea720b",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 17
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=6\\part-00018.parquet",
+        "rows": 1000000,
+        "bytes": 20232747,
+        "sha256": "dc9bd8dce16027a1ad25bdcda6d0280eb9dac52433d15faa55443138f5c3ffb5",
+        "partition": {
+          "year": 2024,
+          "month": 6
+        },
+        "shard_index": 18
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00019.parquet",
+        "rows": 1000000,
+        "bytes": 20319542,
+        "sha256": "a2c2d78b5de3b29101314e4665433610080917e008bce3200ec49a4a0948e83f",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 19
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00020.parquet",
+        "rows": 1000000,
+        "bytes": 20256471,
+        "sha256": "d36fcd90ef20e258b02a00e276379dceda10ede78345d9935af2d99e16fec974",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 20
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00021.parquet",
+        "rows": 1000000,
+        "bytes": 20290870,
+        "sha256": "57357dbf17cbda8912dcf34269b74be94c2b20899f0eb12875d9b36fb9d10394",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 21
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00022.parquet",
+        "rows": 1000000,
+        "bytes": 20296491,
+        "sha256": "e7da556916a96cec5f0ae7ff92a675b4d77013cce67727ecaff1f6ddfb43d8cf",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 22
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00023.parquet",
+        "rows": 1000000,
+        "bytes": 20254682,
+        "sha256": "783c53556fc1715949a17f36dad4f09d1fa76eb19e86144e4f5bf934a76eba41",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 23
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=11\\part-00024.parquet",
+        "rows": 1000000,
+        "bytes": 20291891,
+        "sha256": "2104ad8fb0242426182ed5e469bf2b9ce52084db03866a13a52ca1d09d085b47",
+        "partition": {
+          "year": 2024,
+          "month": 11
+        },
+        "shard_index": 24
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=10\\part-00025.parquet",
+        "rows": 1000000,
+        "bytes": 20287623,
+        "sha256": "23edd66e5bcab0ddc3c8c2b240a0f8c0392522757acd246cc41ad6e2f65dfc01",
+        "partition": {
+          "year": 2024,
+          "month": 10
+        },
+        "shard_index": 25
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00026.parquet",
+        "rows": 1000000,
+        "bytes": 20289623,
+        "sha256": "7890bcc5197481b56ff2d1ef74f135632c7a58a9234b201f09f005209d868974",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 26
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00027.parquet",
+        "rows": 1000000,
+        "bytes": 20264263,
+        "sha256": "836946e085bddff8f4e723851e4e1e9aaefb4735406b647618030136011172ae",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 27
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00028.parquet",
+        "rows": 1000000,
+        "bytes": 20277453,
+        "sha256": "f02570de3b2b265a2d8f628873361d08ab573acb5c2838df60f7351673565464",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 28
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00029.parquet",
+        "rows": 1000000,
+        "bytes": 20258561,
+        "sha256": "5ab9870420e9d5a4b73ab2635c3899309005dfd9911b4eec46ad6b9cdfc8328b",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 29
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00030.parquet",
+        "rows": 1000000,
+        "bytes": 20307783,
+        "sha256": "66e3903b3044005f190f27ad70aa706c346e563e4e9cd847c6a135252ca94490",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 30
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00031.parquet",
+        "rows": 1000000,
+        "bytes": 20267847,
+        "sha256": "57d8a1253a06fc8d7009266a47703d4fb6657a17ce0a1cf56635c1e0879d95fd",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 31
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00032.parquet",
+        "rows": 1000000,
+        "bytes": 20288266,
+        "sha256": "20490f79a5fa1250145774a943e6cb58add09e7bd3f7a3bd126340aa87282c16",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 32
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00033.parquet",
+        "rows": 1000000,
+        "bytes": 20329796,
+        "sha256": "d038390880d4c98b03676558b507a3122981d7c5e0985c778d8211a8662bbab9",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 33
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00034.parquet",
+        "rows": 1000000,
+        "bytes": 20291503,
+        "sha256": "3fb255356fc94434a4d68d4cb3d5c5eba63cb66fcd4a523275ab3120d35aa782",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 34
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00035.parquet",
+        "rows": 1000000,
+        "bytes": 20292116,
+        "sha256": "68c8ad4dc56e87b7b2cb2820509b4365223aae093e47a4f186d751b14549a6b5",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 35
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=11\\part-00036.parquet",
+        "rows": 1000000,
+        "bytes": 20320669,
+        "sha256": "ba3181e2c463f6cb06ff8572cb06a544e509ad08faeb4f8470567bd591e47443",
+        "partition": {
+          "year": 2024,
+          "month": 11
+        },
+        "shard_index": 36
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00037.parquet",
+        "rows": 1000000,
+        "bytes": 20277663,
+        "sha256": "2e0f9b4ad990f23a9d6a2fc4717c29a0582fcbfa03755acf4212a7542f03b184",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 37
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=11\\part-00038.parquet",
+        "rows": 1000000,
+        "bytes": 20275208,
+        "sha256": "c29db28793a9f1a57720eb24b07c5a50ad8829da2a5657aa692050f4d9b6973c",
+        "partition": {
+          "year": 2024,
+          "month": 11
+        },
+        "shard_index": 38
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=7\\part-00039.parquet",
+        "rows": 1000000,
+        "bytes": 20262631,
+        "sha256": "a139f6994cb0bf715169c6cea710344fc1ff326e110936884fb9a2869cb9bfc5",
+        "partition": {
+          "year": 2024,
+          "month": 7
+        },
+        "shard_index": 39
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00040.parquet",
+        "rows": 1000000,
+        "bytes": 20279037,
+        "sha256": "f05051b11b8d9c4d5bc8ce03c2fd18bac157075f48be3bb3f24448e16ccbb4df",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 40
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=2\\part-00041.parquet",
+        "rows": 1000000,
+        "bytes": 20342624,
+        "sha256": "6f8186dd22ce91612ca8be03835b4e618cd0de8f9e18d4f541399c00d0f63cd1",
+        "partition": {
+          "year": 2022,
+          "month": 2
+        },
+        "shard_index": 41
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00042.parquet",
+        "rows": 1000000,
+        "bytes": 20283004,
+        "sha256": "5d6ab1d7f8ae91274c92b323bcc106f79f508250cc31e8ddf34459aefb1050a7",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 42
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00043.parquet",
+        "rows": 1000000,
+        "bytes": 20248008,
+        "sha256": "8839e9da9a82e5bcd31d5ce5a86182b83c0c35bb548455e1554a0a547f6db453",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 43
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00044.parquet",
+        "rows": 1000000,
+        "bytes": 20310923,
+        "sha256": "77592a03680e66964bbf80ffd6adf0da85f74232c7c2f96017f0f0f11fb2d03e",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 44
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00045.parquet",
+        "rows": 1000000,
+        "bytes": 20276622,
+        "sha256": "0ed98397d6d79a1ffb8d91c879ac489edceba124d3b9ebcac3c5353c6d18fd2e",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 45
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00046.parquet",
+        "rows": 1000000,
+        "bytes": 20324161,
+        "sha256": "7fc998cfab033f88a26c061d9c9933500293d5a47aa12aa60ff8f25b8a115732",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 46
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00047.parquet",
+        "rows": 1000000,
+        "bytes": 20273580,
+        "sha256": "02ea35747a8dc1f8a7928a37f8414af21419ee10b9b1f772ab7d63812287e744",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 47
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00048.parquet",
+        "rows": 1000000,
+        "bytes": 20279478,
+        "sha256": "0d43027b20b41bc769caf592423625e2e5cd1d05511fbacd586e4a6a99c3f9f2",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 48
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00049.parquet",
+        "rows": 1000000,
+        "bytes": 20289358,
+        "sha256": "cf71dd503895fc5a02541d09bff3151d267dacab0dec761cb9805dc4221e2de7",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 49
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00050.parquet",
+        "rows": 1000000,
+        "bytes": 20317704,
+        "sha256": "982648caf76138f1facb2b958a912463eb90c4cd3fb8a4c87d7adf6390a19787",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 50
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=11\\part-00051.parquet",
+        "rows": 1000000,
+        "bytes": 20293141,
+        "sha256": "d1e9f2e29f61ad7117b281193f3d97e21b6c7b263b650d241c2a75cecf17af6d",
+        "partition": {
+          "year": 2024,
+          "month": 11
+        },
+        "shard_index": 51
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00052.parquet",
+        "rows": 1000000,
+        "bytes": 20302810,
+        "sha256": "f4419b1f93e8ed931c0315dbd2831135687598decc1e5042a7081886982e12aa",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 52
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00053.parquet",
+        "rows": 1000000,
+        "bytes": 20310863,
+        "sha256": "397f579ff7183cb67c4ada5ec0a8bec1c02c54bc8e97c3df8fb45fb28749dc4d",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 53
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00054.parquet",
+        "rows": 1000000,
+        "bytes": 20288633,
+        "sha256": "4c7545283203ff6e11047fd96db8dba804aa25240771bbc4e42ab2528c22a183",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 54
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00055.parquet",
+        "rows": 1000000,
+        "bytes": 20318971,
+        "sha256": "d884cdc0db236e9fd5480aa0ba719cd677eb8ef8ab2b475f5fde1368a7e207c1",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 55
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00056.parquet",
+        "rows": 1000000,
+        "bytes": 20308699,
+        "sha256": "55fe65345eb4d4df13c5fdf4ecb9488aaf9580df771381aa3742372fd8d8e646",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 56
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00057.parquet",
+        "rows": 1000000,
+        "bytes": 20324080,
+        "sha256": "a1a43afcbbc25e658fef7282c3fe2437bb73b40b869ec6c9b388c410e07447fa",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 57
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00058.parquet",
+        "rows": 1000000,
+        "bytes": 20290616,
+        "sha256": "deeab6ec55611032dc3dae298eb9246f13bd5f6a03958f90a9944df1aa79db26",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 58
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00059.parquet",
+        "rows": 1000000,
+        "bytes": 20268428,
+        "sha256": "d459e1ac356b95550859e7280269e0204d2c0c7e732a36dd68738be2c1aabe9b",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 59
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=11\\part-00060.parquet",
+        "rows": 1000000,
+        "bytes": 20308764,
+        "sha256": "504f7cb99940d2b621eb00a18a2daefbb98dff66f14eda38a8f96a5d9029cd39",
+        "partition": {
+          "year": 2024,
+          "month": 11
+        },
+        "shard_index": 60
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00061.parquet",
+        "rows": 1000000,
+        "bytes": 20312375,
+        "sha256": "4c5efdab58816343972a910cb82615b1409e57fae301730ae7db5cbfeaada40a",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 61
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00062.parquet",
+        "rows": 1000000,
+        "bytes": 20318065,
+        "sha256": "796f218a6c2df3bfff7204a704a488e6d20a1f34bc68aa8dfac8b3fbb22c0e36",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 62
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00063.parquet",
+        "rows": 1000000,
+        "bytes": 20266244,
+        "sha256": "2da5cc72459fbe0708966fd00c241bc2c43eef41fc8218e78b20ef006006a105",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 63
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=10\\part-00064.parquet",
+        "rows": 1000000,
+        "bytes": 20276315,
+        "sha256": "eef13fff6fb89e245c0f6df037100996d882a2f2e4e8ca9bd70b0b8384ba048b",
+        "partition": {
+          "year": 2024,
+          "month": 10
+        },
+        "shard_index": 64
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00065.parquet",
+        "rows": 1000000,
+        "bytes": 20266006,
+        "sha256": "9a1b08fb47117c6a750f993fb21721113d2a5d2911aac78d6235f0a0f623cf47",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 65
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00066.parquet",
+        "rows": 1000000,
+        "bytes": 20297307,
+        "sha256": "dd589b959d3cd3f5dc8a0e1a8549e3f882d06a35d696554c572e0ad5ab295c50",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 66
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00067.parquet",
+        "rows": 1000000,
+        "bytes": 20282466,
+        "sha256": "075410d3eefe5551725f63f249fefbe5e8c3c23cfa61ba101a6f65dfb181de51",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 67
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00068.parquet",
+        "rows": 1000000,
+        "bytes": 20301241,
+        "sha256": "e8597368b9304e965a12462995b2dd78d93b2069d0ba934af06ec2de5128d19d",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 68
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00069.parquet",
+        "rows": 1000000,
+        "bytes": 20330212,
+        "sha256": "80007fbe35c1f531a490f021ead66c9942f7ff3d45c210b74849b86fcbeec6fa",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 69
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00070.parquet",
+        "rows": 1000000,
+        "bytes": 20273733,
+        "sha256": "2fe35f0de09b3aa520d95dd4d196fa68f96796955b549dca3e18c8383d28c0be",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 70
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00071.parquet",
+        "rows": 1000000,
+        "bytes": 20283419,
+        "sha256": "63f4590aa793de80da594cadf065fd41b5dc2c34e44460a51704f0869f3e8f29",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 71
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00072.parquet",
+        "rows": 1000000,
+        "bytes": 20304522,
+        "sha256": "d8a6f6fd6be7f75e2c1ab37befd72280ac0fedd4f2d7545f4a3bf284a351a2f1",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 72
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2022\\month=1\\part-00073.parquet",
+        "rows": 1000000,
+        "bytes": 20324811,
+        "sha256": "182faef805e576ec5fed31e6415347175c5ecb25426e4ca6187f9db3f099e5ee",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 73
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cdrs\\year=2024\\month=12\\part-00074.parquet",
+        "rows": 1000000,
+        "bytes": 20310030,
+        "sha256": "31cede646adf5a8bb09b1ea88a3907b2af4dfe9bd8c8b8d5d2c429251a89e707",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 74
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\accounts\\part-00000.parquet",
+        "rows": 225000,
+        "bytes": 19938426,
+        "sha256": "68233449779032287ad5abf9a0af3a9f8285b086d7ef302fe212493ca0239db4",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00000.parquet",
+        "rows": 1000000,
+        "bytes": 54950659,
+        "sha256": "a64a27b83e2529d7417138b090d816c431df652662a13d275494dcc00fb561e3",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00001.parquet",
+        "rows": 1000000,
+        "bytes": 54939733,
+        "sha256": "fcc467ffe82ec35b6cf84692ce1a618ca590244262ee28aa4e1a7a834063188b",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 1
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00002.parquet",
+        "rows": 1000000,
+        "bytes": 54923796,
+        "sha256": "89d8436023d5fd59e5fd35337c9456514441b9956ba00c330f9435eb1c83de78",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 2
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2024\\month=12\\part-00003.parquet",
+        "rows": 1000000,
+        "bytes": 54951610,
+        "sha256": "cd59db54abafe98a443f978195cf902942d2b7ccc9f9544bccb4834353ec2886",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 3
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00004.parquet",
+        "rows": 1000000,
+        "bytes": 54901090,
+        "sha256": "3b1d97df47e749e150a3fe1613d33d6f7f528022fbbaf8118c99b59c297d50e8",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 4
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00005.parquet",
+        "rows": 1000000,
+        "bytes": 55012220,
+        "sha256": "cd282c884a035d421a72834191376ea8505553a44deeddf6bd2e1747a624a62a",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 5
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2024\\month=12\\part-00006.parquet",
+        "rows": 1000000,
+        "bytes": 54907225,
+        "sha256": "b28ff2b722c1b6cf69ef60af80c1bb5e3afcea6633c93ad8fa4ded2a1576b278",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 6
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00007.parquet",
+        "rows": 1000000,
+        "bytes": 54865765,
+        "sha256": "2b7780f4b5c89f6524ffd3d82e492a995c04e8efda621c9b1ec2d86ef0b55c26",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 7
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00008.parquet",
+        "rows": 1000000,
+        "bytes": 55082398,
+        "sha256": "06f9953c363b78be80bacb26098b7ecad73ae7d1d0a3b1b3e41b74019b3c519c",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 8
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2024\\month=12\\part-00009.parquet",
+        "rows": 1000000,
+        "bytes": 54896344,
+        "sha256": "f2f0cfa476aad1c7f2bef23cf97e6e4d996b412162d48b8dff92ef541e4ea265",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 9
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2024\\month=12\\part-00010.parquet",
+        "rows": 1000000,
+        "bytes": 55016428,
+        "sha256": "e6ea730ccacf7278446fc9e98ca5f0951c4809551152ebe998c904ba62f83c66",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 10
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00011.parquet",
+        "rows": 1000000,
+        "bytes": 54880403,
+        "sha256": "dac4999766d4cbd24e5162e2b630ee130aec4d76420d6a51cd3eaa05c5c852d6",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 11
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2024\\month=12\\part-00012.parquet",
+        "rows": 1000000,
+        "bytes": 54973958,
+        "sha256": "55495e1021876590621cf1967e83c32cb18c84534332a442d49a6ec9bfb1cf3a",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 12
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00013.parquet",
+        "rows": 1000000,
+        "bytes": 54942490,
+        "sha256": "9fdfbbac088f547b814347163536ede49c4882b94d1a42854e38a459306384fb",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 13
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00014.parquet",
+        "rows": 1000000,
+        "bytes": 54923627,
+        "sha256": "777f65a3e66f2cd855f4de44cdeb23e1f4b63d5fef2d3b24c182436897a0d263",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 14
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2022\\month=1\\part-00015.parquet",
+        "rows": 1000000,
+        "bytes": 54965282,
+        "sha256": "9274221d09fea9b86e2d6bcd774d398a51870e0bdc83ede3ea6abead5d6295ae",
+        "partition": {
+          "year": 2022,
+          "month": 1
+        },
+        "shard_index": 15
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2024\\month=10\\part-00016.parquet",
+        "rows": 1000000,
+        "bytes": 54961453,
+        "sha256": "a586a03a3f234cf6489fd4dd45c385dc713ba2379d4736a9eaa8ca3c4f6b85f4",
+        "partition": {
+          "year": 2024,
+          "month": 10
+        },
+        "shard_index": 16
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2024\\month=12\\part-00017.parquet",
+        "rows": 1000000,
+        "bytes": 54947375,
+        "sha256": "7ea4a9290a2b8602cf6c1d8cf7340c0b358351af268294ea74e011190d8b13c3",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 17
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\transactions\\year=2024\\month=12\\part-00018.parquet",
+        "rows": 385110,
+        "bytes": 21228404,
+        "sha256": "7db90cf2f1afa543d05f1b4fd4e141998c45765201ea1d3b5377f68e1cbb3b18",
+        "partition": {
+          "year": 2024,
+          "month": 12
+        },
+        "shard_index": 18
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\cases\\part-00000.parquet",
+        "rows": 25000,
+        "bytes": 5764953,
+        "sha256": "2b1b872a6d1ca02e200fc39f667d2d3ecec8adde24f0799d4d07a24de3817601",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\case_entity_roles\\part-00000.parquet",
+        "rows": 112855,
+        "bytes": 9308430,
+        "sha256": "d1bbc996161d0d76664894d5450e5e8809655aed44d57663a9d01656025f8fba",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\ground_truth\\person_labels\\part-00000.parquet",
+        "rows": 250000,
+        "bytes": 11607270,
+        "sha256": "f634631875392b96dec370fe13710a28d4f1a9ece677aeb2d5228fe3d5e76a5a",
+        "partition": {},
+        "shard_index": 0
+      },
+      {
+        "path": "D:\\civix_data\\synthetic\\profile_c\\ground_truth\\train_val_test_split\\part-00000.parquet",
+        "rows": 250000,
+        "bytes": 10634388,
+        "sha256": "8079d4dec216dbe92066be26a7087ec839defbeeab24126a8b0789e746a85e4a",
+        "partition": {},
+        "shard_index": 0
+      }
+    ],
+    "total_files": 106,
+    "total_bytes": 2672053678
+  },
+  "ground_truth_isolation": {
+    "ml_features_leaks": [],
+    "passed": true
+  },
+  "splits": {
+    "VALIDATION": 37500,
+    "TEST": 37500,
+    "TRAIN": 175000
+  },
+  "label_distributions": {
+    "normal": 174865,
+    "suspicious": 37433,
+    "false_positive": 12653,
+    "confirmed_pattern": 25049
+  },
+  "family_distributions": {
+    "organized_crime": 960,
+    "coordinated_comm": 873,
+    "identity_fraud": 897,
+    "geo_txn_anomaly": 1874,
+    "rapid_fund_movement": 1894,
+    "identity_collision_adv": 1016,
+    "identity_collision": 1858,
+    "coordinated_finance_innocent": 1065,
+    "suspicious_transfer": 1905,
+    "cyber_fraud": 875,
+    "extortion": 935,
+    "deceased_reuse": 950,
+    "salary_pattern": 17430,
+    "multi_case_property": 1882,
+    "missing_person": 1868,
+    "inconsistent_registry": 1897,
+    "cross_region_travel": 17261,
+    "theft": 949,
+    "sim_reassignment": 1830,
+    "organized_financial": 935,
+    "high_freq_innocent": 1050,
+    "multi_hop_hidden": 968,
+    "shared_device_family": 1011,
+    "proxy_transaction": 1868,
+    "repeat_offender": 840,
+    "benami_property": 954,
+    "spelling_variation": 17649,
+    "adjacent_mutation": 941,
+    "sim_reassignment_adv": 1037,
+    "robbery": 979,
+    "normal_transfer": 17598,
+    "normal_caller": 17573,
+    "silent_then_burst": 1918,
+    "authorized_signatory": 17305,
+    "mule_account": 943,
+    "proxy_ownership": 1838,
+    "duplicate_identity": 909,
+    "device_reassignment": 17492,
+    "corruption_cycle": 923,
+    "trafficking": 917,
+    "burner_sim": 1894,
+    "rapid_resale": 1829,
+    "fraud": 941,
+    "kidnapping": 937,
+    "genuine_identity": 17407,
+    "repeated_ownership": 1856,
+    "tower_hopping": 1857,
+    "high_value_legit": 1086,
+    "geo_anomaly_innocent": 1076,
+    "geo_anomaly": 1953,
+    "suspicious_death": 1863,
+    "gang_activity": 918,
+    "transaction_burst": 1837,
+    "shared_sim_criminal": 1818,
+    "joint_account_legit": 17454,
+    "recurring_bills": 17696,
+    "burglary": 895,
+    "illegal_property": 930,
+    "vehicle_crime": 942,
+    "decoy_suspect": 1048,
+    "false_positive_network": 1070,
+    "innocent_high_freq": 1045,
+    "circular_transactions": 972,
+    "dormant_reactivation": 1894,
+    "alias_criminal": 877,
+    "alias_innocent": 1066,
+    "structuring": 946,
+    "shared_indicators": 1083,
+    "assault": 943
+  }
+}

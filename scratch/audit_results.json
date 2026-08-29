@@ -1,0 +1,52 @@
+{
+  "large_files": [
+    {
+      "path": "models\\phase3_backup\\graph_random_forest_20260829T143351\\model.pkl",
+      "size_mb": 13.333931922912598
+    }
+  ],
+  "secrets": [],
+  "ml_models": [
+    "models\\experiments\\behavioral_logistic_20260829T201950.json",
+    "models\\experiments\\behavioral_random_forest_20260829T202001.json",
+    "models\\experiments\\behavioral_xgboost_20260829T202007.json",
+    "models\\experiments\\combined_logistic_20260829T202033.json",
+    "models\\experiments\\combined_random_forest_20260829T202046.json",
+    "models\\experiments\\combined_xgboost_20260829T202051.json",
+    "models\\experiments\\graph_isolation_forest_20260829T201945.json",
+    "models\\experiments\\graph_isolation_forest_20260829T202027.json",
+    "models\\experiments\\graph_logistic_20260829T201929.json",
+    "models\\experiments\\graph_logistic_20260829T202014.json",
+    "models\\experiments\\graph_random_forest_20260829T201939.json",
+    "models\\experiments\\graph_random_forest_20260829T202022.json",
+    "models\\experiments\\graph_xgboost_20260829T202024.json",
+    "models\\registry\\graphsage_20260829T211318\\graphsage_config.json",
+    "models\\registry\\gnn_experiment_2\\full\\graphsage_config.json",
+    "models\\registry\\gnn_experiment_2\\sanity\\graphsage_config.json",
+    "models\\predictions\\v2b_predictions.parquet",
+    "models\\predictions\\v2c_predictions.parquet"
+  ],
+  "deps": [
+    "setup.py"
+  ],
+  "reports": [
+    "GNN_EXPERIMENT_2_REPORT.md",
+    "GNN_EXP3_CONFIGURATION.md",
+    "GNN_EXP3_DEGREE_AUDIT.md",
+    "GNN_EXP3_MEMORY_SMOKE_TEST.md",
+    "GNN_EXP3_FINAL_ANALYSIS.md",
+    "CHUNK3_FEATURE_RECONSTRUCTION_REPORT.md",
+    "CHUNK3_DISTRIBUTION_SHIFT_REPORT.md",
+    "CHUNK3_GENERALIZATION_REPORT.md",
+    "CHUNK3_HARD_NEGATIVE_REPORT.md",
+    "CHUNK3_CROSS_UNIVERSE_REPORT.md",
+    "CHUNK3_POST_EVALUATION_AUDIT.md",
+    "PHASE5_FINAL_CLOSURE.md",
+    "CHUNK3_HARD_NEGATIVE_RECONCILIATION.md"
+  ],
+  "datasets": [
+    "profile_v2_v2a",
+    "profile_v2_v2b",
+    "profile_v2_v2c"
+  ]
+}

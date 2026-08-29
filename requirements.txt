@@ -1,0 +1,19 @@
+# CIVIX 2.0 Production ML Dependencies
+duckdb==1.1.2
+xgboost==2.1.2
+pandas==2.2.3
+numpy==2.1.2
+scikit-learn==1.5.2
+pyarrow==18.0.0
+
+# ---------------------------------------------------------
+# FROZEN RESEARCH DEPENDENCIES (Graph Neural Networks)
+# ---------------------------------------------------------
+# The following dependencies were used during the Phase 5 GNN
+# research branch (GraphSAGE / PyTorch Geometric).
+# Note: The GNN branch is currently FROZEN. The complete neighborhood
+# sampling stack (pyg-lib, torch-sparse) was UNAVAILABLE in this 
+# Windows CPU environment, preventing full-scale execution.
+#
+# torch==2.11.0+cu128
+# torch_geometric==2.8.0.post1

@@ -1,0 +1,32 @@
+{
+  "config": {
+    "hidden_channels": 64,
+    "num_layers": 2,
+    "dropout": 0.3,
+    "lr": 0.0005,
+    "epochs": 2,
+    "batch_size": 250000,
+    "fanout": [
+      15,
+      10
+    ],
+    "device": "cpu",
+    "seed": 42,
+    "patience": 10,
+    "num_workers": 0
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.7489346861839294,
+      "val_loss": 0.7162717580795288,
+      "val_pos_preds": 10636
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.7407272458076477,
+      "val_loss": 0.7107547521591187,
+      "val_pos_preds": 12581
+    }
+  ]
+}

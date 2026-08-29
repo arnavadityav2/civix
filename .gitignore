@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+output/
+output_run1/
+.env
+.pytest_cache/
+.vscode/
+.idea/
+
+# Ignore massive datasets if accidentally copied into the workspace
+civix_data/
+*.parquet
+
+# Ignore large model binaries
+# The canonical models are stored externally in D:\civix_data\models\
+# Metadata JSON files are preserved in models/metadata/
+*.pkl
+*.pt
+*.pth
+*.joblib
+*.onnx
+
+# Explicit exceptions to ensure we never ignore ML code/metadata
+!civix_ml/
+!civix_generator/
+!docs/
+!scratch/
+!scripts/
+!models/metadata/
+!*.json

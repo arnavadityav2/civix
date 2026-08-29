@@ -1,0 +1,96 @@
+{
+  "model_id": "graph_isolation_forest_20260829T143400",
+  "model_name": "isolation_forest",
+  "feature_set": "graph",
+  "n_features": 25,
+  "train_size": 175000,
+  "val_metrics": {
+    "model": "isolation_forest_graph_val",
+    "pr_auc": 0.1048,
+    "roc_auc": 0.5588,
+    "precision": 0.0656,
+    "recall": 0.0467,
+    "f1": 0.0546,
+    "brier_score": 0.1259,
+    "false_positive_rate": 0.0729,
+    "false_negative_rate": 0.9533,
+    "confusion_matrix": [
+      [
+        31333,
+        2464
+      ],
+      [
+        3530,
+        173
+      ]
+    ],
+    "threshold": 0.5,
+    "n_positives": 3703,
+    "n_total": 37500,
+    "precision_at_1pct": 0.064,
+    "recall_at_1pct": 0.0065,
+    "precision_at_5pct": 0.0592,
+    "recall_at_5pct": 0.03,
+    "precision_at_10pct": 0.0709,
+    "recall_at_10pct": 0.0718
+  },
+  "test_metrics": {
+    "model": "isolation_forest_graph_test",
+    "pr_auc": 0.1049,
+    "roc_auc": 0.5465,
+    "precision": 0.0706,
+    "recall": 0.0491,
+    "f1": 0.0579,
+    "brier_score": 0.1281,
+    "false_positive_rate": 0.0727,
+    "false_negative_rate": 0.9509,
+    "confusion_matrix": [
+      [
+        31261,
+        2450
+      ],
+      [
+        3603,
+        186
+      ]
+    ],
+    "threshold": 0.5,
+    "n_positives": 3789,
+    "n_total": 37500,
+    "precision_at_1pct": 0.08,
+    "recall_at_1pct": 0.0079,
+    "precision_at_5pct": 0.0715,
+    "recall_at_5pct": 0.0354,
+    "precision_at_10pct": 0.0715,
+    "recall_at_10pct": 0.0707
+  },
+  "train_seconds": 4.93668532371521,
+  "features": [
+    "cdr_out_degree",
+    "cdr_unique_out_contacts",
+    "cdr_total_out_calls",
+    "cdr_total_out_duration",
+    "cdr_max_pair_calls",
+    "cdr_in_degree",
+    "cdr_unique_in_contacts",
+    "cdr_total_in_calls",
+    "cdr_reciprocal_pairs",
+    "cdr_total_degree",
+    "cdr_reciprocity_ratio",
+    "cdr_call_concentration",
+    "txn_out_degree",
+    "txn_unique_out_cp",
+    "txn_total_out",
+    "txn_total_out_amount",
+    "txn_max_pair_txns",
+    "txn_in_degree",
+    "txn_unique_in_cp",
+    "txn_total_in",
+    "txn_total_in_amount",
+    "txn_total_degree",
+    "txn_flow_concentration",
+    "txn_net_flow_ratio",
+    "cdr_pagerank_approx"
+  ],
+  "seed": 42
+}

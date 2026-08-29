@@ -1,0 +1,721 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "date": "2026-08-29",
+    "coordinate_quality": "SYNTHETIC",
+    "srid": 4326,
+    "district": "Ajmer"
+  },
+  "locations": [
+    {
+      "entity_id": "LOC-01",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.45816,
+      "longitude": 74.62717,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 1 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-02",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.48504,
+      "longitude": 74.65216,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 2 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-03",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.4155,
+      "longitude": 74.6765,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 3 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-04",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.42146,
+      "longitude": 74.65938,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 4 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-05",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.41263,
+      "longitude": 74.67705,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 5 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-06",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.45769,
+      "longitude": 74.613,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 6 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-07",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.44504,
+      "longitude": 74.64439,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 7 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-08",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.48923,
+      "longitude": 74.61313,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 8 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-09",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.45524,
+      "longitude": 74.66995,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 9 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-10",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.48302,
+      "longitude": 74.65666,
+      "uncertainty_radius_meters": 100,
+      "description": "Urban location 10 in Ajmer"
+    },
+    {
+      "entity_id": "LOC-11",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.52474,
+      "longitude": 74.49567,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 11 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-12",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.52495,
+      "longitude": 74.56933,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 12 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-13",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.39609,
+      "longitude": 74.61634,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 13 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-14",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.58194,
+      "longitude": 74.62205,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 14 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-15",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.56106,
+      "longitude": 74.59655,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 15 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-16",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.48131,
+      "longitude": 74.6426,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 16 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-17",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.39437,
+      "longitude": 74.71991,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 17 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-18",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.49113,
+      "longitude": 74.75882,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 18 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-19",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.30348,
+      "longitude": 74.51009,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 19 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-20",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.58386,
+      "longitude": 74.51703,
+      "uncertainty_radius_meters": 500,
+      "description": "Peri-urban location 20 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-21",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.38318,
+      "longitude": 74.38901,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 21 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-22",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.43909,
+      "longitude": 74.37248,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 22 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-23",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.48174,
+      "longitude": 74.62638,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 23 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-24",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.49926,
+      "longitude": 74.66208,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 24 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-25",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.16423,
+      "longitude": 74.37161,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 25 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-26",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.44617,
+      "longitude": 74.37784,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 26 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-27",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.61443,
+      "longitude": 74.76656,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 27 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-28",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.33564,
+      "longitude": 74.61191,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 28 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-29",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.32207,
+      "longitude": 74.74656,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 29 in Ajmer District"
+    },
+    {
+      "entity_id": "LOC-30",
+      "location_type": "ESTIMATED_POINT",
+      "latitude": 26.47245,
+      "longitude": 74.36244,
+      "uncertainty_radius_meters": 1000,
+      "description": "Rural location 30 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-01",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.75482,
+      "centroid_longitude": 74.57535,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 1 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-02",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.23152,
+      "centroid_longitude": 74.42556,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 2 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-03",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.51776,
+      "centroid_longitude": 74.26025,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 3 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-04",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.17181,
+      "centroid_longitude": 74.49191,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 4 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-05",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.09548,
+      "centroid_longitude": 74.66552,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 5 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-06",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.26298,
+      "centroid_longitude": 74.96122,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 6 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-07",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.21241,
+      "centroid_longitude": 74.37683,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 7 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-08",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.30852,
+      "centroid_longitude": 74.5279,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 8 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-09",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.74726,
+      "centroid_longitude": 74.25728,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 9 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-10",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.33719,
+      "centroid_longitude": 74.51484,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 10 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-11",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.23323,
+      "centroid_longitude": 74.64837,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 11 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-12",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.21731,
+      "centroid_longitude": 74.43876,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 12 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-13",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.19713,
+      "centroid_longitude": 74.45989,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 13 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-14",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.5714,
+      "centroid_longitude": 74.28088,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 14 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-15",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.3685,
+      "centroid_longitude": 74.85815,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 15 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-16",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.58929,
+      "centroid_longitude": 74.84199,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 16 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-17",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.08565,
+      "centroid_longitude": 74.50756,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 17 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-18",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.34666,
+      "centroid_longitude": 74.34849,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 18 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-19",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.50634,
+      "centroid_longitude": 74.49911,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 19 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-20",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.50428,
+      "centroid_longitude": 74.93235,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 20 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-21",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.5277,
+      "centroid_longitude": 74.37949,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 21 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-22",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.42194,
+      "centroid_longitude": 74.53462,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 22 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-23",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.81908,
+      "centroid_longitude": 74.9418,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 23 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-24",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.24573,
+      "centroid_longitude": 74.61414,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 24 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-25",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.35419,
+      "centroid_longitude": 74.84437,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 25 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-26",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.69444,
+      "centroid_longitude": 74.79875,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 26 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-27",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.48941,
+      "centroid_longitude": 74.24955,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 27 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-28",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.10254,
+      "centroid_longitude": 74.76752,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 28 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-29",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.6182,
+      "centroid_longitude": 74.24863,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 29 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-30",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.42436,
+      "centroid_longitude": 74.89799,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 30 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-31",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.38853,
+      "centroid_longitude": 75.0166,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 31 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-32",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.62376,
+      "centroid_longitude": 74.74521,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 32 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-33",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.61307,
+      "centroid_longitude": 74.85658,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 33 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-34",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.8245,
+      "centroid_longitude": 74.94137,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 34 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-35",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.2178,
+      "centroid_longitude": 74.82107,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 35 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-36",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.74416,
+      "centroid_longitude": 74.9919,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 36 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-37",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.37428,
+      "centroid_longitude": 74.35478,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 37 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-38",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.11124,
+      "centroid_longitude": 74.43606,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 38 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-39",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.58157,
+      "centroid_longitude": 74.98424,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 39 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-40",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.36573,
+      "centroid_longitude": 74.98812,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 40 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-41",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.49367,
+      "centroid_longitude": 74.9409,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 41 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-42",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.45967,
+      "centroid_longitude": 74.95405,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 42 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-43",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.61847,
+      "centroid_longitude": 74.46532,
+      "azimuth_degrees": 240,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 43 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-44",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.31566,
+      "centroid_longitude": 74.27129,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 44 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-45",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.65202,
+      "centroid_longitude": 74.45548,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 10000,
+      "description": "Cell tower sector 45 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-46",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.48046,
+      "centroid_longitude": 74.62622,
+      "azimuth_degrees": 120,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 2000,
+      "description": "Cell tower sector 46 in Ajmer District"
+    },
+    {
+      "entity_id": "CELL-47",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "centroid_latitude": 26.3342,
+      "centroid_longitude": 74.30227,
+      "azimuth_degrees": 0,
+      "beamwidth_degrees": 120,
+      "uncertainty_radius_meters": 5000,
+      "description": "Cell tower sector 47 in Ajmer District"
+    }
+  ]
+}
