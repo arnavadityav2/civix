@@ -13,10 +13,9 @@ output_run1/
 civix_data/
 *.parquet
 
-# Ignore large model binaries
-# The canonical models are stored externally in D:\civix_data\models\
-# Metadata JSON files are preserved in models/metadata/
+# Ignore large model binaries (allow trained CIVIX model files)
 *.pkl
+!models/**/*.pkl
 *.pt
 *.pth
 *.joblib
