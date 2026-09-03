@@ -58,6 +58,10 @@ Person P-01 "Vikram Malhotra" now has a confirmed association to this phone numb
 - **REJECTED**: Source identity is not this person
 - **SUPERSEDED**: A newer resolution has replaced this one (set `superseded_by`)
 - Resolutions are NEVER updated — they are superseded by inserting a new row
+- **AUTHORIZATION (ADR-029)**: `POST /identity/resolve` modifies global canonical entity state. It requires `SUPERVISOR` or `ADMIN` authorization. An `INVESTIGATOR` cannot execute a global identity merge/split.
+- **CONCURRENCY (ADR-031)**: The application MUST lock the `civix.source_identity` row (`SELECT ... FOR UPDATE`) before creating a new active resolution to prevent conflicting duplicate accepted resolutions by multiple supervisors.
+- **NEO4J (ADR-031)**: `REJECTED` resolutions are NOT projected into Neo4j. The CDC consumer MUST gracefully ignore them. No negative relationships are authorized.
+- **AUDIT (ADR-031)**: Every resolution MUST generate an immutable `audit_event`. The event uses `target_table='identity_resolution'`, `target_id=resolution_id`, `action='IDENTITY_RESOLVE'`, and `case_context_id=NULL`. Metadata must contain `source_identity_id`, `resolved_person_id`, `candidate_id`, and `decision`.
 
 ---
 

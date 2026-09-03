@@ -52,7 +52,7 @@ legal_restriction(EXPUNGED) created in PostgreSQL
 | `:Event` | `civix.event` | event_id, event_type, occurred_at_lower, occurred_at_upper | Never excluded |
 | `:Assertion` | `civix.assertion` | assertion_id, predicate, epistemic_status | `epistemic_status=REFUTED` |
 | `:Hypothesis` | `civix.hypothesis` | hypothesis_id, status | `status=ARCHIVED` |
-| `:Lead` | `civix.investigative_lead` | lead_id, priority, status | `status IN ('CLOSED', 'FALSE_POSITIVE')` |
+| `:Lead` | `civix.investigative_lead` | lead_id, case_id, priority, status | `status IN ('CLOSED', 'FALSE_POSITIVE')` |
 
 **NOT projected**: `source_record`, `evidence_artifact`, `evidence_instance`, `observation`, `extraction`, `audit_event`, `legal_restriction`, `provenance`, `data_quality_issue`, `scenario.ground_truth`, any row with `generation_run_id IS NOT NULL`
 
@@ -86,6 +86,13 @@ legal_restriction(EXPUNGED) created in PostgreSQL
 > ```
 >
 > **Algorithm projection rule**: All structural graph algorithms (PageRank, Louvain, shortest path) MUST use a projection that filters `stance = 'SUPPORT'`. See Section 5.
+
+> [!IMPORTANT]
+> **ADR-030: Investigative Lead Graph Representation**
+>
+> The `:Lead` node is strictly projected as a disconnected node. 
+> There are NO authorized structural relationships from or to a `:Lead` node (e.g., `[:TARGETS]`, `[:HAS_STANCE]`, `[:GENERATED_FROM]`, `[:SUPPORTS]`).
+> Its foreign keys (`target_entity_id`, `hypothesis_id`) remain PostgreSQL-only workflow properties. Leads are filtered by `case_id` for isolation.
 
 ---
 
@@ -146,6 +153,11 @@ RETURN e
 2. Outbox emits: update `SourceIdentity` B's `[:RESOLVES_TO]` to point to P-99 (new node)
 3. Historical events on `:SourceIdentity` B are now correctly attributed to P-99
 4. No event records are modified — just the resolution edge
+
+**Rejected Resolution (ADR-031)**:
+1. `REJECTED` identity resolutions are NOT represented by any Neo4j relationship.
+2. The CDC projection MUST gracefully ignore a rejected resolution.
+3. No negative relationship (e.g., `REJECTS` or `NOT_RESOLVES_TO`) is authorized.
 
 ---
 

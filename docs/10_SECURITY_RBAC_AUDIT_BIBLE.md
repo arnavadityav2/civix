@@ -56,6 +56,18 @@ CREATE POLICY case_access_policy ON civix.evidence_instance
   );
 ```
 
+### 3.2 Global Entity Exposure (ADR-028 & ADR-029)
+
+While `civix.entity` is globally canonical and lacks DB-level RLS, API exposure is restricted:
+- **Read (ADR-028)**: `GET /entities/{entity_id}` must manually enforce that the user can only retrieve an entity if it is associated with at least one case they are authorized to access (via `case_entity_role`). Unassociated entities must remain invisible.
+- **Modify (ADR-029)**: `POST /identity/resolve` modifies global identity state and thus requires `SUPERVISOR` or `ADMIN` authorization. An `INVESTIGATOR` cannot execute a global identity merge/split.
+
+### 3.3 Investigative Lead Disposition (ADR-032)
+
+Unlike Identity Resolution, an Investigative Lead is a case-scoped workflow state.
+- **Authorization**: A user must have `WRITE` access to the specific case (via `civix.case_access`). Therefore, a case-authorized `INVESTIGATOR`, `SUPERVISOR`, or `ADMIN` may dispose of a lead.
+- **Isolation**: The actor must explicitly possess access to the `case_id` to which the lead belongs. Cross-case disposition attempts must be rejected with information-hiding semantics (404 Not Found).
+
 ---
 
 ## 4. Clearance Levels

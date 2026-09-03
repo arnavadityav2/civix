@@ -188,3 +188,24 @@ WHERE dqi.status IN ('OPEN', 'ACKNOWLEDGED')
 ```
 
 When a data_quality_issue is resolved, the risk score drops automatically — no cascading writes.
+
+---
+
+## 7. Investigative Leads (ADR-032)
+
+Investigative Leads follow a strictly governed state machine:
+
+| FROM | TO | Status |
+|---|---|---|
+| OPEN | IN_PROGRESS | AUTHORIZED |
+| OPEN | CLOSED | AUTHORIZED |
+| OPEN | FALSE_POSITIVE | AUTHORIZED |
+| IN_PROGRESS | CONFIRMED | AUTHORIZED |
+| IN_PROGRESS | FALSE_POSITIVE | AUTHORIZED |
+| IN_PROGRESS | DEFERRED | AUTHORIZED |
+| DEFERRED | IN_PROGRESS | AUTHORIZED |
+| CONFIRMED | (Any) | FORBIDDEN (Terminal) |
+| CLOSED | (Any) | FORBIDDEN (Terminal) |
+| FALSE_POSITIVE | (Any) | FORBIDDEN (Terminal) |
+
+Reopening terminal states is NOT supported in V1. If further investigation is required after a terminal Lead, a new Lead must be created to maintain strict audit chains.

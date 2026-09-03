@@ -30,3 +30,10 @@ civix_data/
 !scripts/
 !models/metadata/
 !*.json
+
+# Ignore temporary local binaries inside scratch or frontend
+scratch/neo4j/
+node_modules/
+frontend/node_modules/
+.env.local
+.env.*

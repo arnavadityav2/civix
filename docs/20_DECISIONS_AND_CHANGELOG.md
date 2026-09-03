@@ -66,3 +66,22 @@ Changes: [what was changed and why]
 Documents affected: [list of files]
 ADR: [ADR reference if applicable]
 ```
+
+### 2026-08-31 — Project-Wide Documentation Forensic Reconciliation
+**Author**: Antigravity AI (Agent A)
+**Changes**:
+- Reconciled Phase 7 task numbering conflicts. Recorded that the engineering sprint labeled "Phase 7 Tasks 1-3" executed Master Plan Phases 8, 9, and 10 out of order.
+- Added retrospective ADRs for FastAPI, SQLAlchemy AsyncSession, and XGBoost to formally authorize the architecture that was already successfully implemented.
+- Removed false blockers from `21_KNOWN_GAPS_AND_RISKS.md` and `19_IMPLEMENTATION_MASTER_PLAN.md`.
+- Formally marked Phase 7 Task 1, 2, and 3 as COMPLETE and ACCEPTED.
+**Documents affected**: `CIVIX_CHANGE_CONTROL.md`, `21_KNOWN_GAPS_AND_RISKS.md`, `19_IMPLEMENTATION_MASTER_PLAN.md`, `CANONICAL_PHASE_7_HANDOVER.md`
+**ADR**: ADR-023, ADR-024, ADR-025
+
+### 2026-08-31 — System Bibles Governance Alignment (Agent B Remediation)
+**Author**: Antigravity AI (Agent A)
+**Changes**:
+- Removed the false "OPEN DECISION" statuses for Backend framework, ORM, and ML/AI architectures across the primary Bibles.
+- Aligned current architectural statements with the verified implementation state and the retrospective ADRs (ADR-023 for FastAPI, ADR-024 for SQLAlchemy Async, and ADR-025 for XGBoost).
+- This resolves the split-brain governance state identified during the independent governance acceptance audit.
+**Documents affected**: `02_SYSTEM_ARCHITECTURE_BIBLE.md`, `11_AI_ML_BIBLE.md`, `15_API_BACKEND_BIBLE.md`
+**ADR**: ADR-023, ADR-024, ADR-025

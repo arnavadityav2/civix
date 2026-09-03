@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 font-sans antialiased selection:bg-amber-100 selection:text-amber-900;
+  }
+}
+
+/* Institutional Card & Panel Standards (No glassmorphism) */
+.civix-panel {
+  @apply bg-white border border-slate-200 rounded shadow-sm;
+}
+
+.civix-table-header {
+  @apply bg-slate-100 border-b border-slate-200 text-xs font-semibold uppercase tracking-wider text-slate-700;
+}

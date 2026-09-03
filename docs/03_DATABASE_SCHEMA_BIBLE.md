@@ -1,6 +1,8 @@
 # 03 — DATABASE SCHEMA BIBLE
 ## Every Table, Column, FK, Constraint, and Invariant
 
+**Canonical PostgreSQL schema**: 50 tables.
+
 **Version**: 1.1 | **Date**: 2026-08-29 | **Status**: AUTHORITATIVE — UNDER REVISION (Phase 1 Blocker Resolution in progress. BLK-01 through BLK-05 resolved. Patches applied 2026-08-29.)
 
 > [!IMPORTANT]
@@ -526,8 +528,9 @@ task_status_enum:         PENDING, ASSIGNED, IN_PROGRESS, COMPLETED, CANCELLED, 
 ## Migration 11: Workflow
 
 ### `civix.investigative_lead`
-| `lead_id` UUID PK, `case_id` UUID FK NOT NULL, `generated_by_run_id` UUID FK NULL, `generated_by_person` UUID FK NULL, `lead_text` TEXT NOT NULL, `explanation` TEXT NULL, `priority` lead_priority_enum NOT NULL DEFAULT 'MEDIUM', `status` lead_status_enum NOT NULL DEFAULT 'OPEN', `ai_confidence` DECIMAL(5,4) NULL, `created_at` TIMESTAMPTZ NOT NULL, `disposition_notes` TEXT NULL, `disposed_by` UUID FK NULL, `disposed_at` TIMESTAMPTZ NULL |
+| `lead_id` UUID PK, `case_id` UUID FK NOT NULL, `target_entity_id` UUID FK→entity NOT NULL, `hypothesis_id` UUID FK→hypothesis NULL, `generated_by_run_id` UUID FK NULL, `generated_by_person` UUID FK NULL, `lead_text` TEXT NOT NULL, `explanation` TEXT NULL, `priority` lead_priority_enum NOT NULL DEFAULT 'MEDIUM', `status` lead_status_enum NOT NULL DEFAULT 'OPEN', `ai_confidence` DECIMAL(5,4) NULL, `created_at` TIMESTAMPTZ NOT NULL, `disposition_notes` TEXT NULL, `disposed_by` UUID FK NULL, `disposed_at` TIMESTAMPTZ NULL |
 **Constraint**: `CHECK (generated_by_run_id IS NOT NULL OR generated_by_person IS NOT NULL)`
+**Note**: `target_entity_id` and `hypothesis_id` added per ADR-026.
 
 ### `civix.investigation_task`
 | `task_id` UUID PK, `lead_id` UUID FK NULL, `case_id` UUID FK NOT NULL, `task_type` task_type_enum NOT NULL, `assigned_to` UUID FK NULL, `status` task_status_enum NOT NULL DEFAULT 'PENDING', `due_date` DATE NULL, `outcome_notes` TEXT NULL, `created_at` TIMESTAMPTZ NOT NULL, `completed_at` TIMESTAMPTZ NULL |
@@ -551,6 +554,7 @@ task_status_enum:         PENDING, ASSIGNED, IN_PROGRESS, COMPLETED, CANCELLED, 
 ### `civix.legal_restriction`
 | `restriction_id` UUID PK, `target_entity_id` UUID FK→entity NULL, `target_artifact_id` UUID FK→evidence_artifact NULL, `restriction_type` legal_restriction_type_enum NOT NULL, `authority` TEXT NOT NULL, `court_order_reference` TEXT NULL, `effective_range` TSTZRANGE NOT NULL, `scope` TEXT NOT NULL, `status` TEXT NOT NULL DEFAULT 'ACTIVE', `created_by` UUID FK NOT NULL, `lifted_by` UUID FK NULL, `lifted_at` TIMESTAMPTZ NULL |
 **Constraint**: `CHECK (target_entity_id IS NOT NULL OR target_artifact_id IS NOT NULL)`
+**Database Finalization Status**: `legal_restriction` is structurally modeled, but global-entity filtering for EXPUNGED/SEALED records is deferred to the Phase 8/9 authorization layer. Phase 6 RLS remains responsible for case isolation. No application endpoint may expose restricted records once authorization enforcement is implemented.
 
 ### `civix.audit_event`
 | `audit_id` UUID PK, `user_id` UUID FK NOT NULL, `action` audit_action_enum NOT NULL, `target_table` TEXT NOT NULL, `target_id` UUID NOT NULL, `case_context_id` UUID FK NULL, `ip_address` INET NULL, `timestamp` TIMESTAMPTZ NOT NULL, `metadata` JSONB NULL |

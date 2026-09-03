@@ -194,7 +194,7 @@ assert count(SELECT entity_id FROM civix.network ...) == 3
 
 **Note**: No actual forensic/medical data in Golden World v2.1. Phase 6 creates sample synthetic forensic records for demo purposes.
 
-STATUS: OPEN DECISION — whether to create synthetic forensic data for demo.
+**STATUS**: DEFERRED (Optional Demo Data) — Does NOT block Phase 7
 
 ---
 
@@ -231,8 +231,8 @@ STATUS: OPEN DECISION — whether to create synthetic forensic data for demo.
 - [ ] All required endpoints (minimum 15 from `15_API_BACKEND_BIBLE.md`)
 - [ ] RLS enforcement verified
 
-STATUS: BLOCKED on OPEN DECISION — backend framework.
-
+**Status**: PARTIALLY COMPLETE (Missing major endpoints required by 15_API_BACKEND_BIBLE.md). Architectural blockers (ADR-026 through ADR-029) are formally resolved.
+> **Blocker**: A schema migration for ADR-026 (adding `target_entity_id` and `hypothesis_id` to `civix.investigative_lead`) MUST be created and applied before API implementation can resume.
 ---
 
 ## Phase 9 — Authentication, RBAC & Audit
@@ -249,6 +249,8 @@ STATUS: BLOCKED on OPEN DECISION — backend framework.
 - [ ] Expungement workflow API
 - [ ] Legal restriction management
 
+**Status**: PARTIALLY COMPLETE (Missing audit and expungement APIs).
+
 ---
 
 ## Phase 10 — ML Feature Generation
@@ -263,7 +265,7 @@ STATUS: BLOCKED on OPEN DECISION — backend framework.
 - [ ] Anomaly detection models (communication burst, financial spike)
 - [ ] Identity candidate generation (similarity model)
 
-STATUS: BLOCKED on OPEN DECISION — ML framework.
+**Status**: Requirements satisfied by the expedited out-of-sequence execution of historical Phase 7 Task 3.
 
 ---
 
@@ -281,7 +283,7 @@ STATUS: OPEN DECISION — Synthetic World Factory architecture.
 
 **Objective**: Run all 30 adversarial tests as automated integration tests.
 
-**Prerequisites**: Phase 8 complete
+**Prerequisites**: Phase 7 complete (Decoupled from Phase 8 for database/graph-level adversarial validation)
 
 **Deliverables**:
 - [ ] Full test suite for all 30 adversarial scenarios

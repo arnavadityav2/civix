@@ -36,7 +36,10 @@ DB_HOST = os.getenv("CIVIX_DB_HOST", "localhost")
 DB_PORT = os.getenv("CIVIX_DB_PORT", "5432")
 DB_NAME = os.getenv("CIVIX_DB_NAME", "civix_verify")
 DB_USER = os.getenv("CIVIX_DB_USER", "postgres")
-DB_PASS = os.getenv("CIVIX_DB_PASSWORD", "civix_test_2026")
+DB_PASS = os.getenv("CIVIX_DB_PASSWORD")
+if not DB_PASS:
+    print("CIVIX_DB_PASSWORD is missing")
+    sys.exit(1)
 
 PSQL_BIN = None  # discovered at runtime
 

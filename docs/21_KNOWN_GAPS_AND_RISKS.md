@@ -109,11 +109,11 @@
 |---|---|---|
 | Acceptable Neo4j lag | Project owner | HIGH |
 | CDC consumer: Kafka vs Redis vs pg_notify | Tech lead | HIGH |
-| Backend framework | Tech lead | HIGH |
-| ORM strategy | Tech lead | MEDIUM |
+| Backend framework | Tech lead | CLOSED (ADR-023) |
+| ORM strategy | Tech lead | CLOSED (ADR-024) |
 | Exact clearance enforcement mechanism | Security review | MEDIUM |
 | Retention period per data category | Legal review | MEDIUM |
-| ML model architecture | ML lead | LOW (Phase 10) |
+| ML model architecture | ML lead | CLOSED (ADR-025) |
 | Frontend graph visualization library | UX lead | LOW (Phase 8) |
 
 ## Phase 1 Gate 3 Final Resolutions

@@ -241,6 +241,8 @@ No frozen artifact changes have been authorized. Any request to modify `syntheti
 **Date**: 2026-08-29
 **Decision**: Enforce `tx_end` closures and automatic `INSERT` on `UPDATE` via PostgreSQL triggers for all bitemporal tables.
 
+
+
 ### ADR-020: Artifact Cryptographic Garbage Collection
 **Date**: 2026-08-29
 **Decision**: Mandate `ON DELETE RESTRICT` from instance to artifact.
@@ -252,3 +254,97 @@ No frozen artifact changes have been authorized. Any request to modify `syntheti
 ### ADR-022: Derived Evidence Hierarchy
 **Date**: 2026-08-29
 **Decision**: Add `parent_artifact_id` to `evidence_artifact` with `ON DELETE RESTRICT`.
+
+---
+
+## Retrospective Change Requests (Phase 7 Reconciliation)
+
+### ADR-023: Backend Framework (FastAPI)
+**Date**: 2026-08-31
+**Status**: CLOSED (Implementation-established decision, retrospectively formalized)
+**Problem**: The project needed a backend API framework. This was marked as an OPEN DECISION blocking Phase 8.
+**Decision**: FastAPI is the canonical backend framework.
+**Rationale**: It was successfully implemented, tested, and validated (18/18 tests passing) during the historical execution of Phase 7 Task 1 & 2.
+**Affected Documents**: `21_KNOWN_GAPS_AND_RISKS.md`, `19_IMPLEMENTATION_MASTER_PLAN.md`
+
+### ADR-024: ORM Strategy (SQLAlchemy AsyncSession)
+**Date**: 2026-08-31
+**Status**: CLOSED (Implementation-established decision, retrospectively formalized)
+**Problem**: The project needed an ORM strategy. This was marked as an OPEN DECISION.
+**Decision**: SQLAlchemy AsyncSession is the canonical ORM.
+**Rationale**: Successfully implemented and proven during Phase 7 Task 1 & 2 API and RLS validation.
+**Affected Documents**: `21_KNOWN_GAPS_AND_RISKS.md`
+
+### ADR-025: ML Model Architecture (XGBoost)
+**Date**: 2026-08-31
+**Status**: CLOSED (Implementation-established decision, retrospectively formalized)
+**Problem**: The ML model framework was an OPEN DECISION blocking Phase 10.
+**Decision**: XGBoost is the canonical model architecture.
+**Rationale**: Extensively validated and independently accepted by Agent B during Phase 7 Task 3 ML Parity verification.
+**Affected Documents**: `21_KNOWN_GAPS_AND_RISKS.md`, `19_IMPLEMENTATION_MASTER_PLAN.md`
+
+### ADR-026: Investigative Lead Entity Targeting
+**Date**: 2026-08-31
+**Status**: ACCEPTED
+**Problem**: Persistent investigative leads lacked a structured relationship to the entity they concern, breaking the disposition workflow.
+**Decision**: Modify `civix.investigative_lead` schema to add `target_entity_id` (FK to canonical entity) and `hypothesis_id` (FK to originating hypothesis). ML-generated recommendations must be persisted explicitly to retain `generated_by_run_id` and provenance.
+**Affected Documents**: `03_DATABASE_SCHEMA_BIBLE.md`, `11_AI_ML_BIBLE.md`, `15_API_BACKEND_BIBLE.md`
+
+### ADR-027: Graph Traversal API Contract
+**Date**: 2026-08-31
+**Status**: ACCEPTED
+**Problem**: Original API contract required entity-centric graph traversal (`GET /graph/neighbors/{entity_id}`), which posed severe cross-case data leakage risks without extreme Cypher query complexity.
+**Decision**: Formalize the case-centric API (`GET /cases/{case_id}/graph`) as the authoritative contract. The entity-centric route is superseded and deferred.
+**Affected Documents**: `15_API_BACKEND_BIBLE.md`
+
+### ADR-028: Global Entity API Authorization
+**Date**: 2026-08-31
+**Status**: ACCEPTED
+**Problem**: `civix.entity` is a globally readable registry in PostgreSQL (no RLS), but API exposure requires restrictions.
+**Decision**: `GET /entities/{entity_id}` must enforce API-level authorization. Users may only retrieve an entity if it is associated with at least one case they are authorized to access (via `case_entity_role`). Unassociated entities remain inaccessible to ordinary investigators.
+**Affected Documents**: `15_API_BACKEND_BIBLE.md`, `10_SECURITY_RBAC_AUDIT_BIBLE.md`
+
+### ADR-029: Identity Resolution RBAC
+**Date**: 2026-08-31
+**Status**: ACCEPTED
+**Problem**: Identity resolution (`POST /identity/resolve`) modifies a globally shared canonical entity, impacting all cases that entity participates in.
+**Decision**: Require `SUPERVISOR` or `ADMIN` authorization. An `INVESTIGATOR` cannot execute a global identity merge/split. Must generate an `audit_event` and preserve bitemporal/forensic trace.
+**Affected Documents**: `06_IDENTITY_RESOLUTION_BIBLE.md`, `10_SECURITY_RBAC_AUDIT_BIBLE.md`
+
+### ADR-030: Investigative Lead Graph Representation
+**Date**: 2026-08-31
+**Status**: ACCEPTED
+**Problem**: After ADR-026, SQL persistence was added for Investigative Leads (`target_entity_id`, `hypothesis_id`). The graph projection needed authorization on whether these foreign keys map to structural Neo4j relationships.
+**Decision**: The Neo4j `:Lead` node remains graph-visible but strictly disconnected. No structural relationships (`[:TARGETS]`, `[:GENERATED_FROM]`, `[:HAS_STANCE]`, `[:SUPPORTS]`, etc.) are authorized. `case_id` remains the graph security boundary. Provenance (`generated_by_run_id`) is excluded from projection.
+**Rationale**: A Lead is a workflow recommendation, not an established epistemic fact. Connecting it structurally violates the epistemic model and ADR-015 (Stance semantics). Isolated nodes filtered by `case_id` are safe, maintain graph purity, and fulfill visualization needs without breaking algorithms.
+**Consequences**: Neo4j projection for leads only involves a node `MERGE` with properties.
+**Affected Documents**: `13_NEO4J_GRAPH_BIBLE.md`, `00_CIVIX_CURRENT_STATE.md`
+
+---
+
+### ADR-031: Identity Resolution Contract, Rejection Semantics, Concurrency, and Audit
+**Date**: 2026-08-31
+**Status**: ACCEPTED
+**Problem**: ADR-029 established RBAC for identity resolution but left the exact API contract, Neo4j rejection behavior, concurrency model, and audit metadata completely undefined, blocking implementation.
+**Decision**: 
+1. **API Contract**: Domain-faithful contract using `source_identity_id` (required), `person_id` (required for ACCEPTED, null for REJECTED), `candidate_id` (optional), `decision`, and `decision_notes`. Supports both candidate-driven and manual resolutions.
+2. **Neo4j Rejection**: `REJECTED` resolutions are NOT projected as graph edges. The CDC outbox consumer MUST gracefully ignore them. No negative relationships (e.g., `REJECTS`) are permitted.
+3. **Concurrency**: Application-layer `SELECT ... FOR UPDATE` locking on the `civix.source_identity` row before inserting a new resolution, preventing concurrent supervisors from creating conflicting active accepted resolutions. No new DB constraints.
+4. **Audit Event**: Resolution-targeted events where `target_table`="identity_resolution", `target_id`=resolution_id, and metadata contains the specific UUIDs involved.
+**Rationale**: Adheres to the established append-only tracking, preserves the structural purity of the graph (no negative structural edges), safely resolves race conditions without altering frozen DDL, and complies with strict forensic auditing rules.
+**Affected Documents**: `15_API_BACKEND_BIBLE.md`, `13_NEO4J_GRAPH_BIBLE.md`, `06_IDENTITY_RESOLUTION_BIBLE.md`
+
+---
+
+### ADR-032: Investigative Lead Disposition Workflow
+**Date**: 2026-08-31
+**Status**: ACCEPTED
+**Problem**: The disposition API for investigative leads (`POST /api/v1/cases/{case_id}/leads/{lead_id}/disposition`) lacked a formalized contract, valid state transition matrix, concurrency model, and RBAC rules.
+**Decision**:
+1. **API Contract**: The endpoint represents an explicit workflow action accepting `{"status": "...", "disposition_notes": "..."}`.
+2. **State Machine**: Supported transitions from OPEN are IN_PROGRESS, CLOSED, FALSE_POSITIVE. Supported from IN_PROGRESS are CONFIRMED, FALSE_POSITIVE, DEFERRED. DEFERRED can return to IN_PROGRESS. CONFIRMED, CLOSED, and FALSE_POSITIVE are strictly terminal (no reopening).
+3. **Mutation & Audit**: Authorized in-place UPDATE of the `investigative_lead` row within the same transaction as an `audit_event` insertion (`action = LEAD_DISPOSITION`).
+4. **Concurrency**: Authorized pessimistic locking (`SELECT ... FOR UPDATE`) to serialize simultaneous dispositions.
+5. **Idempotency**: Requests for the current status return `200 OK` but do not mutate or duplicate the audit. Invalid transitions return `409 Conflict`.
+6. **RBAC**: Permitted for case-authorized `INVESTIGATOR`, `SUPERVISOR`, and `ADMIN` users (unlike identity resolution which requires SUPERVISOR). Cross-case access is strictly rejected.
+**Affected Documents**: `15_API_BACKEND_BIBLE.md`, `05_EPISTEMIC_MODEL.md`, `10_SECURITY_RBAC_AUDIT_BIBLE.md`

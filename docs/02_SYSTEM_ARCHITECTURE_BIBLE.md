@@ -36,7 +36,7 @@ CIVIX uses a **layered, dual-engine architecture**:
                              │
 ┌────────────────────────────▼────────────────────────────────────┐
 │                      BACKEND / API                              │
-│              Python / FastAPI (STATUS: OPEN DECISION)          │
+│              Python / FastAPI (CLOSED: ADR-023)                 │
 └────────────────────────────┬────────────────────────────────────┘
                              │
 ┌────────────────────────────▼────────────────────────────────────┐
@@ -57,11 +57,11 @@ CIVIX uses a **layered, dual-engine architecture**:
 | Temporal | PostgreSQL `TSTZRANGE` + `btree_gist` exclusion | DECIDED |
 | CDC/Sync | Outbox pattern → CDC consumer | DECIDED |
 | Auth | External provider (Keycloak/Auth0) + civix_user table | DECIDED |
-| ORM | STATUS: OPEN DECISION | |
-| Backend | STATUS: OPEN DECISION | |
+| ORM | SQLAlchemy AsyncSession | CLOSED (ADR-024) |
+| Backend | Python / FastAPI | CLOSED (ADR-023) |
 | Frontend | STATUS: OPEN DECISION | |
 | Container | Docker Compose (dev), Kubernetes (production) | PLANNED |
-| ML/AI | STATUS: OPEN DECISION — Python-based, likely PyTorch | |
+| ML/AI | XGBoost | CLOSED (ADR-025) |
 
 ---
 

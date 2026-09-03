@@ -8,8 +8,10 @@
 :: =============================================================================
 
 SET CONN=%1
-IF "%CONN%"=="" SET CONN=postgresql://civix_admin:@localhost:5432/civix
-
+IF "%CONN%"=="" (
+    echo "No connection string provided. Pass it as the first argument."
+    exit /b 1
+)
 echo CIVIX Phase 2A — Applying all migrations
 echo Connection: %CONN%
 echo.
