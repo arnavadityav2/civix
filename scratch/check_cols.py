@@ -1,11 +1,13 @@
-import asyncio
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy import text
+import psycopg2
 
-async def main():
-    e = create_async_engine('postgresql+asyncpg://civix_api:cHoOG4PMDTdWzqTSuOWAeGbt_In-lBhx@localhost:5433/civix_test')
-    async with e.connect() as conn:
-        res = await conn.execute(text("SELECT column_name FROM information_schema.columns WHERE table_name = 'case_entity_role'"))
-        print([r[0] for r in res.fetchall()])
+conn = psycopg2.connect(dbname="civix_demo", user="postgres", password="postgres", host="localhost", port=5432)
+cur = conn.cursor()
 
-asyncio.run(main())
+for table in ["location", "event", "event_location", "investigative_case"]:
+    cur.execute(f"SELECT column_name, data_type FROM information_schema.columns WHERE table_schema='civix' AND table_name='{table}';")
+    cols = cur.fetchall()
+    print(f"--- Table civix.{table} ---")
+    for c in cols:
+        print(f"  {c[0]:<25} : {c[1]}")
+
+conn.close()

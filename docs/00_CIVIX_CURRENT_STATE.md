@@ -36,11 +36,10 @@ This document records the verified current state of CIVIX 2.0, overriding all hi
 ## 5. Phase Ledger
 - **Phases 1-5**: COMPLETE
 - **Phase 7 (Graph Write)**: COMPLETE
-- **Phase 8 (API)**: PARTIALLY COMPLETE
-- **Phase 9 (Security)**: PARTIALLY COMPLETE
-- **Phase 10 (ML)**: NEEDS VERIFICATION / PARTIAL
-- **Phase 11 (Scale Factory)**: BLOCKED
-- **Phase 12 (Adversarial Testing)**: PLANNED (Decoupled from Phase 8 API completion)
+- **Phase 8 (PostgreSQL Demo Materialization)**: COMPLETE & LIVE RECONCILED (civix_demo)
+- **Phase 9 (Neo4j Graph Projection)**: COMPLETE & LIVE RECONCILED (civix_demo_graph, 59,850 nodes, 733,411 relationships)
+- **Phase 10 (Demo Environment Integration)**: COMPLETE & LIVE VERIFIED (Frontend → FastAPI → civix_demo → civix_demo_graph :7688 → C3/XGBoost)
+- **Phase 11 (Scale Factory / Full Demo Validation)**: READY FOR EXECUTION
 
 ## 6. Completion Rules
 - An ADR authorizes a framework/decision; it **does not** prove implementation completion.

@@ -18,6 +18,6 @@ BEGIN
     ) THEN
         CREATE TRIGGER enforce_no_delete_unless_synthetic
         BEFORE DELETE ON civix.entity
-        FOR EACH ROW EXECUTE FUNCTION civix.block_operational_delete();
+        FOR EACH ROW EXECUTE FUNCTION civix.trg_entity_no_delete();
     END IF;
 END $$;

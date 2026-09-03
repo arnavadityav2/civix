@@ -24,11 +24,11 @@ logger = logging.getLogger(__name__)
 
 # Default store root — resolved relative to the project root.
 # Override via env var CIVIX_EVIDENCE_STORE_PATH.
-_DEFAULT_STORE_ROOT = Path(__file__).resolve().parent.parent.parent / "civix_evidence_store"
+_DEFAULT_STORE_ROOT = Path(r"c:\data\civix_demo\evidence_store")
 
 
 def get_store_root() -> Path:
-    raw = os.environ.get("CIVIX_EVIDENCE_STORE_PATH", "")
+    raw = os.environ.get("CIVIX_EVIDENCE_STORE_PATH", r"c:\data\civix_demo\evidence_store")
     root = Path(raw) if raw else _DEFAULT_STORE_ROOT
     root.mkdir(parents=True, exist_ok=True)
     return root

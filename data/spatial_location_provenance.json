@@ -1,0 +1,193 @@
+{
+  "provenance_metadata": {
+    "version": "1.0.0",
+    "description": "Deterministic spatial location provenance chain for CIVIX 2.0 Delhi NCR spatial intelligence layer.",
+    "viewport": "DEMO_NCR_VIEWPORT (lat 28.3 - 28.9, lon 76.8 - 77.4)",
+    "crs": "EPSG:4326 (WGS84)"
+  },
+  "locations": [
+    {
+      "logical_location_id": "LOC_RED_LINE_WH",
+      "location_name": "Chandni Chowk Logistics Warehouse",
+      "location_type": "EXACT_POINT",
+      "district": "Old Delhi",
+      "coordinates": {"latitude": 28.6500, "longitude": 77.2300},
+      "coordinate_source": "Deliberately mapped to Chandni Chowk wholesale logistics corridor, Old Delhi",
+      "hero_case": "HL-001"
+    },
+    {
+      "logical_location_id": "LOC_RED_LINE_DROP",
+      "location_name": "Sadar Bazaar Wholesale Hub",
+      "location_type": "EXACT_POINT",
+      "district": "Old Delhi",
+      "coordinates": {"latitude": 28.6550, "longitude": 77.2150},
+      "coordinate_source": "Deliberately mapped to Sadar Bazaar wholesale market, Old Delhi",
+      "hero_case": "HL-001"
+    },
+    {
+      "logical_location_id": "LOC_RED_LINE_TOWER",
+      "location_name": "Kashmere Gate Cell Tower",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "district": "Old Delhi",
+      "coordinates": {"latitude": 28.6670, "longitude": 77.2280},
+      "coordinate_source": "Deliberately mapped to Kashmere Gate ISBT telecom sector polygon, North Delhi",
+      "hero_case": "HL-001"
+    },
+    {
+      "logical_location_id": "LOC_SHELL_BANK",
+      "location_name": "DLF Cyber City Bank Branch",
+      "location_type": "EXACT_POINT",
+      "district": "Gurugram",
+      "coordinates": {"latitude": 28.4950, "longitude": 77.0880},
+      "coordinate_source": "Deliberately mapped to DLF Cyber City banking sector, Gurugram",
+      "hero_case": "HL-002"
+    },
+    {
+      "logical_location_id": "LOC_SHELL_OFFICE",
+      "location_name": "Udyog Vihar Corporate Tower",
+      "location_type": "EXACT_POINT",
+      "district": "Gurugram",
+      "coordinates": {"latitude": 28.5020, "longitude": 77.0820},
+      "coordinate_source": "Deliberately mapped to Udyog Vihar Phase IV corporate cluster, Gurugram",
+      "hero_case": "HL-002"
+    },
+    {
+      "logical_location_id": "LOC_SHELL_TOWER",
+      "location_name": "Golf Course Road Cell Tower",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "district": "Gurugram",
+      "coordinates": {"latitude": 28.4480, "longitude": 77.1050},
+      "coordinate_source": "Deliberately mapped to Golf Course Road sector cell tower, Gurugram",
+      "hero_case": "HL-002"
+    },
+    {
+      "logical_location_id": "LOC_MIDNIGHT_CAFE",
+      "location_name": "Sector 18 Tech Hub Cafe",
+      "location_type": "EXACT_POINT",
+      "district": "Noida",
+      "coordinates": {"latitude": 28.5700, "longitude": 77.3260},
+      "coordinate_source": "Deliberately mapped to Sector 18 commercial market, Noida",
+      "hero_case": "HL-003"
+    },
+    {
+      "logical_location_id": "LOC_MIDNIGHT_EXCHANGE",
+      "location_name": "Sector 62 Data Center",
+      "location_type": "EXACT_POINT",
+      "district": "Noida",
+      "coordinates": {"latitude": 28.6280, "longitude": 77.3620},
+      "coordinate_source": "Deliberately mapped to Sector 62 institutional IT park, Noida",
+      "hero_case": "HL-003"
+    },
+    {
+      "logical_location_id": "LOC_PHANTOM_ROUTE",
+      "location_name": "DND Flyway Toll Plaza",
+      "location_type": "ROUTE_LINESTRING",
+      "district": "Transit Corridor",
+      "coordinates": {
+        "start": {"latitude": 28.5680, "longitude": 77.2600},
+        "end": {"latitude": 28.5350, "longitude": 77.2750}
+      },
+      "coordinate_source": "Deliberately mapped to DND Flyway toll plaza to Okhla corridor linestring",
+      "hero_case": "HL-004"
+    },
+    {
+      "logical_location_id": "LOC_PHANTOM_DEPOT",
+      "location_name": "Okhla Industrial Area Phase III",
+      "location_type": "EXACT_POINT",
+      "district": "South Delhi",
+      "coordinates": {"latitude": 28.5350, "longitude": 77.2750},
+      "coordinate_source": "Deliberately mapped to Okhla Industrial Area Phase III freight depot, South Delhi",
+      "hero_case": "HL-004"
+    },
+    {
+      "logical_location_id": "LOC_MIRAGE_SITE_A",
+      "location_name": "Connaught Place Inner Circle",
+      "location_type": "EXACT_POINT",
+      "district": "Central Delhi",
+      "coordinates": {"latitude": 28.6328, "longitude": 77.2197},
+      "coordinate_source": "Deliberately mapped to Connaught Place Inner Circle, Central Delhi",
+      "hero_case": "HL-005"
+    },
+    {
+      "logical_location_id": "LOC_MIRAGE_SITE_B",
+      "location_name": "Janpath Market Complex",
+      "location_type": "EXACT_POINT",
+      "district": "Central Delhi",
+      "coordinates": {"latitude": 28.6250, "longitude": 77.2185},
+      "coordinate_source": "Deliberately mapped to Janpath Market commercial complex, Central Delhi",
+      "hero_case": "HL-005"
+    },
+    {
+      "logical_location_id": "LOC_MIRAGE_TOWER",
+      "location_name": "Barakhamba Road Cell Tower",
+      "location_type": "CELL_SECTOR_POLYGON",
+      "district": "Central Delhi",
+      "coordinates": {"latitude": 28.6300, "longitude": 77.2250},
+      "coordinate_source": "Deliberately mapped to Barakhamba Road commercial tower sector, Central Delhi",
+      "hero_case": "HL-005"
+    },
+    {
+      "logical_location_id": "LOC_CITADEL_HQ",
+      "location_name": "Chanakyapuri Defense Enclave",
+      "location_type": "EXACT_POINT",
+      "district": "South Delhi",
+      "coordinates": {"latitude": 28.5900, "longitude": 77.1900},
+      "coordinate_source": "Deliberately mapped to Chanakyapuri diplomatic enclave, New Delhi",
+      "hero_case": "HL-006"
+    },
+    {
+      "logical_location_id": "LOC_CITADEL_SAFEHOUSE",
+      "location_name": "Vasant Kunj Sector C",
+      "location_type": "EXACT_POINT",
+      "district": "South Delhi",
+      "coordinates": {"latitude": 28.5250, "longitude": 77.1550},
+      "coordinate_source": "Deliberately mapped to Vasant Kunj Sector C residential enclave, South Delhi",
+      "hero_case": "HL-006"
+    },
+    {
+      "logical_location_id": "LOC_IRON_STASH",
+      "location_name": "Mayapuri Scrap Market",
+      "location_type": "EXACT_POINT",
+      "district": "West Delhi",
+      "coordinates": {"latitude": 28.6300, "longitude": 77.1200},
+      "coordinate_source": "Deliberately mapped to Mayapuri industrial scrap market, West Delhi",
+      "hero_case": "HL-007"
+    },
+    {
+      "logical_location_id": "LOC_CHIMERA_AGENCY",
+      "location_name": "Nehru Place Commercial Complex",
+      "location_type": "EXACT_POINT",
+      "district": "South Delhi",
+      "coordinates": {"latitude": 28.5480, "longitude": 77.2500},
+      "coordinate_source": "Deliberately mapped to Nehru Place commercial hub, South Delhi",
+      "hero_case": "HL-008"
+    },
+    {
+      "logical_location_id": "LOC_GLASSHOUSE_HQ",
+      "location_name": "Netaji Subhash Place Commercial Hub",
+      "location_type": "EXACT_POINT",
+      "district": "North West Delhi",
+      "coordinates": {"latitude": 28.6920, "longitude": 77.1520},
+      "coordinate_source": "Deliberately mapped to Netaji Subhash Place NSP district center, North West Delhi",
+      "hero_case": "HL-009"
+    },
+    {
+      "logical_location_id": "LOC_SILK_HUB",
+      "location_name": "Karol Bagh Electronics Market",
+      "location_type": "EXACT_POINT",
+      "district": "Central Delhi",
+      "coordinates": {"latitude": 28.6520, "longitude": 77.1900},
+      "coordinate_source": "Deliberately mapped to Gaffar Market / Karol Bagh electronics market, Central Delhi",
+      "hero_case": "HL-010"
+    },
+    {
+      "logical_location_id": "LOC_BLACKOUT_SUBSTATION",
+      "location_name": "Maharani Bagh Power Substation",
+      "location_type": "EXACT_POINT",
+      "district": "South East Delhi",
+      "coordinates": {"latitude": 28.5750, "longitude": 77.2650},
+      "coordinate_source": "Deliberately mapped to Maharani Bagh power utility substation, South East Delhi",
+      "hero_case": "HL-012"
+    }
+  ]
+}

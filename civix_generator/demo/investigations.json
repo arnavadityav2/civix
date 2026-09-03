@@ -1,0 +1,13 @@
+{
+  "cases": [
+    {
+      "case_id": "DELHI-2026-HL-001",
+      "title": "Operation Red Line",
+      "scenario_family": "organized_crime",
+      "roles": [
+        {"role_id": "HL001_PRIMARY_01", "target_cdrs": 50},
+        {"role_id": "HL001_SECONDARY_02", "target_cdrs": 20}
+      ]
+    }
+  ]
+}

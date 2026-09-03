@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from .database import engine
 from .dependencies import get_db_session
-from .routers import users, cases, leads, hypotheses, identity, entities, search, ingest, evidence, cctv
+from .routers import users, cases, leads, hypotheses, identity, entities, search, ingest, evidence, cctv, spatial
 from .services.ml_service import MLService
 import logging
 
@@ -15,6 +15,8 @@ import logging
 async def lifespan(app: FastAPI):
     # Application startup logic
     logging.basicConfig(level=logging.INFO)
+    from .safety_gate import verify_demo_environment_safety_gate
+    verify_demo_environment_safety_gate()
     try:
         MLService.initialize()
     except Exception as e:
@@ -53,6 +55,7 @@ app.include_router(search.router)
 app.include_router(ingest.router)
 app.include_router(evidence.router)
 app.include_router(cctv.router)
+app.include_router(spatial.router)
 
 @app.exception_handler(IntegrityError)
 async def integrity_error_handler(request: Request, exc: IntegrityError):

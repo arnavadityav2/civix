@@ -91,20 +91,10 @@ async def create_case(
     case_id = uuid4()
     access_id = uuid4()
 
-    # 1. Insert case_access FIRST
-    await session.execute(
-        text("""
-            INSERT INTO civix.case_access (access_id, case_id, user_id, permission_level, granted_by)
-            VALUES (:aid, :cid, :uid, 'ADMIN', :uid)
-        """),
-        {
-            "aid": access_id,
-            "cid": case_id,
-            "uid": user.user_id
-        }
-    )
+    VALID_CASE_TYPES = {'CRIMINAL', 'FINANCIAL', 'FORENSIC', 'INTELLIGENCE', 'MULTI_CASE', 'PROPERTY', 'SURVEILLANCE'}
+    c_type = case_data.case_type.upper() if case_data.case_type and case_data.case_type.upper() in VALID_CASE_TYPES else 'CRIMINAL'
 
-    # 2. Insert investigative_case SECOND
+    # 1. Insert investigative_case FIRST
     await session.execute(
         text("""
             INSERT INTO civix.investigative_case (
@@ -119,10 +109,23 @@ async def create_case(
             "cid": case_id,
             "num": case_data.case_number,
             "title": case_data.title,
-            "type": case_data.case_type,
+            "type": c_type,
             "prio": case_data.priority,
             "jur": case_data.jurisdiction,
             "unit": case_data.investigating_unit,
+            "uid": user.user_id
+        }
+    )
+
+    # 2. Insert case_access SECOND (satisfying FK constraint)
+    await session.execute(
+        text("""
+            INSERT INTO civix.case_access (access_id, case_id, user_id, permission_level, granted_by)
+            VALUES (:aid, :cid, :uid, 'ADMIN', :uid)
+        """),
+        {
+            "aid": access_id,
+            "cid": case_id,
             "uid": user.user_id
         }
     )

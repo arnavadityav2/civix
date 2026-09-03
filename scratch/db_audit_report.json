@@ -1,0 +1,1372 @@
+{
+  "rls_policies": [
+    {
+      "schemaname": "civix",
+      "tablename": "hypothesis_support",
+      "policyname": "hypothesis_support_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (civix.hypothesis h\n     JOIN civix.case_access ca ON ((h.case_id = ca.case_id)))\n  WHERE ((h.hypothesis_id = hypothesis_support.hypothesis_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM (civix.hypothesis h\n     JOIN civix.case_access ca ON ((h.case_id = ca.case_id)))\n  WHERE ((h.hypothesis_id = hypothesis_support.hypothesis_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "investigative_lead",
+      "policyname": "investigative_lead_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = investigative_lead.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = investigative_lead.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "investigative_case",
+      "policyname": "investigative_case_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = investigative_case.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = investigative_case.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "case_entity_role",
+      "policyname": "case_entity_role_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = case_entity_role.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = case_entity_role.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "evidence_instance",
+      "policyname": "evidence_instance_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = evidence_instance.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = evidence_instance.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "fir",
+      "policyname": "fir_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = fir.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = fir.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "hypothesis",
+      "policyname": "hypothesis_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = hypothesis.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = hypothesis.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "investigation_task",
+      "policyname": "investigation_task_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = investigation_task.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = investigation_task.case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "case_link",
+      "policyname": "case_link_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = case_link.source_case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM civix.case_access\n  WHERE ((case_access.case_id = case_link.source_case_id) AND (case_access.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (case_access.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "medical_report",
+      "policyname": "medical_report_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (civix.evidence_instance e\n     JOIN civix.case_access ca ON ((e.case_id = ca.case_id)))\n  WHERE ((e.instance_id = medical_report.instance_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM (civix.evidence_instance e\n     JOIN civix.case_access ca ON ((e.case_id = ca.case_id)))\n  WHERE ((e.instance_id = medical_report.instance_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "forensic_report",
+      "policyname": "forensic_report_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (civix.evidence_instance e\n     JOIN civix.case_access ca ON ((e.case_id = ca.case_id)))\n  WHERE ((e.instance_id = forensic_report.instance_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM (civix.evidence_instance e\n     JOIN civix.case_access ca ON ((e.case_id = ca.case_id)))\n  WHERE ((e.instance_id = forensic_report.instance_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "observation",
+      "policyname": "observation_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (civix.evidence_instance e\n     JOIN civix.case_access ca ON ((e.case_id = ca.case_id)))\n  WHERE ((e.instance_id = observation.instance_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM (civix.evidence_instance e\n     JOIN civix.case_access ca ON ((e.case_id = ca.case_id)))\n  WHERE ((e.instance_id = observation.instance_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))"
+    },
+    {
+      "schemaname": "civix",
+      "tablename": "extraction",
+      "policyname": "extraction_access_policy",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (civix.evidence_instance e\n     JOIN civix.case_access ca ON ((e.case_id = ca.case_id)))\n  WHERE ((e.instance_id = extraction.instance_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM (civix.evidence_instance e\n     JOIN civix.case_access ca ON ((e.case_id = ca.case_id)))\n  WHERE ((e.instance_id = extraction.instance_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))"
+    }
+  ],
+  "indexes": [
+    {
+      "tablename": "financial_account",
+      "indexname": "financial_account_pkey",
+      "indexdef": "CREATE UNIQUE INDEX financial_account_pkey ON civix.financial_account USING btree (entity_id)"
+    },
+    {
+      "tablename": "organization",
+      "indexname": "organization_pkey",
+      "indexdef": "CREATE UNIQUE INDEX organization_pkey ON civix.organization USING btree (entity_id)"
+    },
+    {
+      "tablename": "network",
+      "indexname": "network_pkey",
+      "indexdef": "CREATE UNIQUE INDEX network_pkey ON civix.network USING btree (entity_id)"
+    },
+    {
+      "tablename": "location",
+      "indexname": "location_pkey",
+      "indexdef": "CREATE UNIQUE INDEX location_pkey ON civix.location USING btree (entity_id)"
+    },
+    {
+      "tablename": "civix_user",
+      "indexname": "civix_user_pkey",
+      "indexdef": "CREATE UNIQUE INDEX civix_user_pkey ON civix.civix_user USING btree (user_id)"
+    },
+    {
+      "tablename": "civix_user",
+      "indexname": "civix_user_external_auth_id_key",
+      "indexdef": "CREATE UNIQUE INDEX civix_user_external_auth_id_key ON civix.civix_user USING btree (external_auth_id)"
+    },
+    {
+      "tablename": "civix_user",
+      "indexname": "civix_user_username_key",
+      "indexdef": "CREATE UNIQUE INDEX civix_user_username_key ON civix.civix_user USING btree (username)"
+    },
+    {
+      "tablename": "source",
+      "indexname": "source_pkey",
+      "indexdef": "CREATE UNIQUE INDEX source_pkey ON civix.source USING btree (source_id)"
+    },
+    {
+      "tablename": "source",
+      "indexname": "source_source_name_key",
+      "indexdef": "CREATE UNIQUE INDEX source_source_name_key ON civix.source USING btree (source_name)"
+    },
+    {
+      "tablename": "dataset",
+      "indexname": "dataset_pkey",
+      "indexdef": "CREATE UNIQUE INDEX dataset_pkey ON civix.dataset USING btree (dataset_id)"
+    },
+    {
+      "tablename": "entity",
+      "indexname": "entity_pkey",
+      "indexdef": "CREATE UNIQUE INDEX entity_pkey ON civix.entity USING btree (entity_id)"
+    },
+    {
+      "tablename": "entity",
+      "indexname": "uq_entity_id_type",
+      "indexdef": "CREATE UNIQUE INDEX uq_entity_id_type ON civix.entity USING btree (entity_id, entity_type)"
+    },
+    {
+      "tablename": "generation_run",
+      "indexname": "generation_run_pkey",
+      "indexdef": "CREATE UNIQUE INDEX generation_run_pkey ON civix.generation_run USING btree (generation_run_id)"
+    },
+    {
+      "tablename": "scenario",
+      "indexname": "scenario_pkey",
+      "indexdef": "CREATE UNIQUE INDEX scenario_pkey ON civix.scenario USING btree (scenario_id)"
+    },
+    {
+      "tablename": "source_record",
+      "indexname": "source_record_pkey",
+      "indexdef": "CREATE UNIQUE INDEX source_record_pkey ON civix.source_record USING btree (source_record_id)"
+    },
+    {
+      "tablename": "source_record",
+      "indexname": "idx_source_record_idempotency",
+      "indexdef": "CREATE UNIQUE INDEX idx_source_record_idempotency ON civix.source_record USING btree (source_id, external_reference) WHERE (external_reference IS NOT NULL)"
+    },
+    {
+      "tablename": "source_identity",
+      "indexname": "source_identity_pkey",
+      "indexdef": "CREATE UNIQUE INDEX source_identity_pkey ON civix.source_identity USING btree (entity_id)"
+    },
+    {
+      "tablename": "person",
+      "indexname": "person_pkey",
+      "indexdef": "CREATE UNIQUE INDEX person_pkey ON civix.person USING btree (entity_id)"
+    },
+    {
+      "tablename": "phone_number",
+      "indexname": "phone_number_pkey",
+      "indexdef": "CREATE UNIQUE INDEX phone_number_pkey ON civix.phone_number USING btree (entity_id)"
+    },
+    {
+      "tablename": "phone_number",
+      "indexname": "phone_number_msisdn_key",
+      "indexdef": "CREATE UNIQUE INDEX phone_number_msisdn_key ON civix.phone_number USING btree (msisdn)"
+    },
+    {
+      "tablename": "sim",
+      "indexname": "sim_pkey",
+      "indexdef": "CREATE UNIQUE INDEX sim_pkey ON civix.sim USING btree (entity_id)"
+    },
+    {
+      "tablename": "sim",
+      "indexname": "sim_iccid_key",
+      "indexdef": "CREATE UNIQUE INDEX sim_iccid_key ON civix.sim USING btree (iccid)"
+    },
+    {
+      "tablename": "sim",
+      "indexname": "sim_imsi_key",
+      "indexdef": "CREATE UNIQUE INDEX sim_imsi_key ON civix.sim USING btree (imsi)"
+    },
+    {
+      "tablename": "device",
+      "indexname": "device_pkey",
+      "indexdef": "CREATE UNIQUE INDEX device_pkey ON civix.device USING btree (entity_id)"
+    },
+    {
+      "tablename": "device",
+      "indexname": "device_imei_key",
+      "indexdef": "CREATE UNIQUE INDEX device_imei_key ON civix.device USING btree (imei)"
+    },
+    {
+      "tablename": "device",
+      "indexname": "device_mac_address_key",
+      "indexdef": "CREATE UNIQUE INDEX device_mac_address_key ON civix.device USING btree (mac_address)"
+    },
+    {
+      "tablename": "vehicle",
+      "indexname": "vehicle_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vehicle_pkey ON civix.vehicle USING btree (entity_id)"
+    },
+    {
+      "tablename": "vehicle",
+      "indexname": "vehicle_registration_number_key",
+      "indexdef": "CREATE UNIQUE INDEX vehicle_registration_number_key ON civix.vehicle USING btree (registration_number)"
+    },
+    {
+      "tablename": "vehicle",
+      "indexname": "vehicle_vin_key",
+      "indexdef": "CREATE UNIQUE INDEX vehicle_vin_key ON civix.vehicle USING btree (vin)"
+    },
+    {
+      "tablename": "property",
+      "indexname": "property_pkey",
+      "indexdef": "CREATE UNIQUE INDEX property_pkey ON civix.property USING btree (entity_id)"
+    },
+    {
+      "tablename": "sim_number_assignment",
+      "indexname": "sim_number_assignment_pkey",
+      "indexdef": "CREATE UNIQUE INDEX sim_number_assignment_pkey ON civix.sim_number_assignment USING btree (assignment_id)"
+    },
+    {
+      "tablename": "sim_number_assignment",
+      "indexname": "excl_sim_number_assignment",
+      "indexdef": "CREATE INDEX excl_sim_number_assignment ON civix.sim_number_assignment USING gist (phone_number_id, valid_time)"
+    },
+    {
+      "tablename": "sim_in_device",
+      "indexname": "sim_in_device_pkey",
+      "indexdef": "CREATE UNIQUE INDEX sim_in_device_pkey ON civix.sim_in_device USING btree (id)"
+    },
+    {
+      "tablename": "sim_in_device",
+      "indexname": "excl_sim_in_device",
+      "indexdef": "CREATE INDEX excl_sim_in_device ON civix.sim_in_device USING gist (sim_id, valid_time)"
+    },
+    {
+      "tablename": "account_holder",
+      "indexname": "account_holder_pkey",
+      "indexdef": "CREATE UNIQUE INDEX account_holder_pkey ON civix.account_holder USING btree (holder_id)"
+    },
+    {
+      "tablename": "case_access",
+      "indexname": "case_access_pkey",
+      "indexdef": "CREATE UNIQUE INDEX case_access_pkey ON civix.case_access USING btree (access_id)"
+    },
+    {
+      "tablename": "case_access",
+      "indexname": "uq_case_access",
+      "indexdef": "CREATE UNIQUE INDEX uq_case_access ON civix.case_access USING btree (case_id, user_id)"
+    },
+    {
+      "tablename": "analysis_run",
+      "indexname": "analysis_run_pkey",
+      "indexdef": "CREATE UNIQUE INDEX analysis_run_pkey ON civix.analysis_run USING btree (run_id)"
+    },
+    {
+      "tablename": "person_alias",
+      "indexname": "person_alias_pkey",
+      "indexdef": "CREATE UNIQUE INDEX person_alias_pkey ON civix.person_alias USING btree (alias_id)"
+    },
+    {
+      "tablename": "person_alias",
+      "indexname": "uq_person_alias",
+      "indexdef": "CREATE UNIQUE INDEX uq_person_alias ON civix.person_alias USING btree (person_id, alias_value, alias_type)"
+    },
+    {
+      "tablename": "identity_candidate",
+      "indexname": "identity_candidate_pkey",
+      "indexdef": "CREATE UNIQUE INDEX identity_candidate_pkey ON civix.identity_candidate USING btree (candidate_id)"
+    },
+    {
+      "tablename": "identity_candidate",
+      "indexname": "uq_identity_candidate",
+      "indexdef": "CREATE UNIQUE INDEX uq_identity_candidate ON civix.identity_candidate USING btree (source_identity_id, proposed_person_id)"
+    },
+    {
+      "tablename": "identity_resolution",
+      "indexname": "identity_resolution_pkey",
+      "indexdef": "CREATE UNIQUE INDEX identity_resolution_pkey ON civix.identity_resolution USING btree (resolution_id)"
+    },
+    {
+      "tablename": "identity_merge_event",
+      "indexname": "identity_merge_event_pkey",
+      "indexdef": "CREATE UNIQUE INDEX identity_merge_event_pkey ON civix.identity_merge_event USING btree (merge_event_id)"
+    },
+    {
+      "tablename": "evidence_artifact",
+      "indexname": "evidence_artifact_pkey",
+      "indexdef": "CREATE UNIQUE INDEX evidence_artifact_pkey ON civix.evidence_artifact USING btree (artifact_id)"
+    },
+    {
+      "tablename": "evidence_artifact",
+      "indexname": "uq_evidence_artifact_hash",
+      "indexdef": "CREATE UNIQUE INDEX uq_evidence_artifact_hash ON civix.evidence_artifact USING btree (sha256_hash, hash_algorithm)"
+    },
+    {
+      "tablename": "identity_split_event",
+      "indexname": "identity_split_event_pkey",
+      "indexdef": "CREATE UNIQUE INDEX identity_split_event_pkey ON civix.identity_split_event USING btree (split_event_id)"
+    },
+    {
+      "tablename": "event",
+      "indexname": "event_pkey",
+      "indexdef": "CREATE UNIQUE INDEX event_pkey ON civix.event USING btree (event_id)"
+    },
+    {
+      "tablename": "event_participant",
+      "indexname": "event_participant_pkey",
+      "indexdef": "CREATE UNIQUE INDEX event_participant_pkey ON civix.event_participant USING btree (participant_id)"
+    },
+    {
+      "tablename": "event_participant",
+      "indexname": "uq_event_participant",
+      "indexdef": "CREATE UNIQUE INDEX uq_event_participant ON civix.event_participant USING btree (event_id, entity_id, participant_role)"
+    },
+    {
+      "tablename": "assertion",
+      "indexname": "assertion_pkey",
+      "indexdef": "CREATE UNIQUE INDEX assertion_pkey ON civix.assertion USING btree (assertion_id)"
+    },
+    {
+      "tablename": "legal_restriction",
+      "indexname": "legal_restriction_pkey",
+      "indexdef": "CREATE UNIQUE INDEX legal_restriction_pkey ON civix.legal_restriction USING btree (restriction_id)"
+    },
+    {
+      "tablename": "audit_event",
+      "indexname": "audit_event_pkey",
+      "indexdef": "CREATE UNIQUE INDEX audit_event_pkey ON civix.audit_event USING btree (audit_id)"
+    },
+    {
+      "tablename": "outbox",
+      "indexname": "outbox_pkey",
+      "indexdef": "CREATE UNIQUE INDEX outbox_pkey ON civix.outbox USING btree (id)"
+    },
+    {
+      "tablename": "outbox",
+      "indexname": "outbox_seq_no_key",
+      "indexdef": "CREATE UNIQUE INDEX outbox_seq_no_key ON civix.outbox USING btree (seq_no)"
+    },
+    {
+      "tablename": "outbox",
+      "indexname": "idx_outbox_pending_events",
+      "indexdef": "CREATE INDEX idx_outbox_pending_events ON civix.outbox USING btree (seq_no) WHERE (consumed_at IS NULL)"
+    },
+    {
+      "tablename": "data_quality_issue",
+      "indexname": "data_quality_issue_pkey",
+      "indexdef": "CREATE UNIQUE INDEX data_quality_issue_pkey ON civix.data_quality_issue USING btree (issue_id)"
+    },
+    {
+      "tablename": "provenance",
+      "indexname": "provenance_pkey",
+      "indexdef": "CREATE UNIQUE INDEX provenance_pkey ON civix.provenance USING btree (provenance_id)"
+    },
+    {
+      "tablename": "hypothesis_support",
+      "indexname": "hypothesis_support_pkey",
+      "indexdef": "CREATE UNIQUE INDEX hypothesis_support_pkey ON civix.hypothesis_support USING btree (support_id)"
+    },
+    {
+      "tablename": "hypothesis_support",
+      "indexname": "uq_hypothesis_support",
+      "indexdef": "CREATE UNIQUE INDEX uq_hypothesis_support ON civix.hypothesis_support USING btree (hypothesis_id, assertion_id)"
+    },
+    {
+      "tablename": "investigative_lead",
+      "indexname": "investigative_lead_pkey",
+      "indexdef": "CREATE UNIQUE INDEX investigative_lead_pkey ON civix.investigative_lead USING btree (lead_id)"
+    },
+    {
+      "tablename": "investigative_case",
+      "indexname": "investigative_case_pkey",
+      "indexdef": "CREATE UNIQUE INDEX investigative_case_pkey ON civix.investigative_case USING btree (case_id)"
+    },
+    {
+      "tablename": "investigative_case",
+      "indexname": "investigative_case_case_number_key",
+      "indexdef": "CREATE UNIQUE INDEX investigative_case_case_number_key ON civix.investigative_case USING btree (case_number)"
+    },
+    {
+      "tablename": "case_entity_role",
+      "indexname": "case_entity_role_pkey",
+      "indexdef": "CREATE UNIQUE INDEX case_entity_role_pkey ON civix.case_entity_role USING btree (role_id)"
+    },
+    {
+      "tablename": "case_entity_role",
+      "indexname": "uq_case_entity_role",
+      "indexdef": "CREATE UNIQUE INDEX uq_case_entity_role ON civix.case_entity_role USING btree (case_id, entity_id, role)"
+    },
+    {
+      "tablename": "evidence_instance",
+      "indexname": "evidence_instance_pkey",
+      "indexdef": "CREATE UNIQUE INDEX evidence_instance_pkey ON civix.evidence_instance USING btree (instance_id)"
+    },
+    {
+      "tablename": "fir",
+      "indexname": "fir_pkey",
+      "indexdef": "CREATE UNIQUE INDEX fir_pkey ON civix.fir USING btree (fir_id)"
+    },
+    {
+      "tablename": "hypothesis",
+      "indexname": "hypothesis_pkey",
+      "indexdef": "CREATE UNIQUE INDEX hypothesis_pkey ON civix.hypothesis USING btree (hypothesis_id)"
+    },
+    {
+      "tablename": "hypothesis",
+      "indexname": "uq_hypothesis_case",
+      "indexdef": "CREATE UNIQUE INDEX uq_hypothesis_case ON civix.hypothesis USING btree (hypothesis_id, case_id)"
+    },
+    {
+      "tablename": "investigation_task",
+      "indexname": "investigation_task_pkey",
+      "indexdef": "CREATE UNIQUE INDEX investigation_task_pkey ON civix.investigation_task USING btree (task_id)"
+    },
+    {
+      "tablename": "case_link",
+      "indexname": "case_link_pkey",
+      "indexdef": "CREATE UNIQUE INDEX case_link_pkey ON civix.case_link USING btree (link_id)"
+    },
+    {
+      "tablename": "medical_report",
+      "indexname": "medical_report_pkey",
+      "indexdef": "CREATE UNIQUE INDEX medical_report_pkey ON civix.medical_report USING btree (report_id)"
+    },
+    {
+      "tablename": "forensic_report",
+      "indexname": "forensic_report_pkey",
+      "indexdef": "CREATE UNIQUE INDEX forensic_report_pkey ON civix.forensic_report USING btree (report_id)"
+    },
+    {
+      "tablename": "observation",
+      "indexname": "observation_pkey",
+      "indexdef": "CREATE UNIQUE INDEX observation_pkey ON civix.observation USING btree (observation_id)"
+    },
+    {
+      "tablename": "extraction",
+      "indexname": "extraction_pkey",
+      "indexdef": "CREATE UNIQUE INDEX extraction_pkey ON civix.extraction USING btree (extraction_id)"
+    }
+  ],
+  "triggers": [
+    {
+      "event_object_table": "audit_event",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "audit_event",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "source_record",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "source_record",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "evidence_artifact",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "evidence_artifact",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "identity_resolution",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "identity_resolution",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "identity_merge_event",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "identity_merge_event",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "identity_split_event",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "identity_split_event",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "legal_restriction",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "legal_restriction",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "provenance",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "provenance",
+      "trigger_name": "block_mutation_trigger",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.block_mutation()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "person",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "phone_number",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "sim",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "device",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "vehicle",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "property",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "financial_account",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "organization",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "network",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "location",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "case_entity_role",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "fir",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "case_link",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "observation",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "extraction",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "event",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "event_participant",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "hypothesis",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "hypothesis_support",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "investigative_lead",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "investigation_task",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "forensic_report",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "medical_report",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "sim_number_assignment",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "sim_in_device",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "account_holder",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "assertion",
+      "trigger_name": "enforce_no_delete_unless_synthetic",
+      "event_manipulation": "DELETE",
+      "action_statement": "EXECUTE FUNCTION civix.block_operational_delete()",
+      "action_timing": "BEFORE"
+    },
+    {
+      "event_object_table": "person",
+      "trigger_name": "trg_person_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "person",
+      "trigger_name": "trg_person_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "phone_number",
+      "trigger_name": "trg_phone_number_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "phone_number",
+      "trigger_name": "trg_phone_number_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "device",
+      "trigger_name": "trg_device_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "device",
+      "trigger_name": "trg_device_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "vehicle",
+      "trigger_name": "trg_vehicle_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "vehicle",
+      "trigger_name": "trg_vehicle_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "property",
+      "trigger_name": "trg_property_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "property",
+      "trigger_name": "trg_property_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "financial_account",
+      "trigger_name": "trg_financial_account_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "financial_account",
+      "trigger_name": "trg_financial_account_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "organization",
+      "trigger_name": "trg_organization_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "organization",
+      "trigger_name": "trg_organization_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "network",
+      "trigger_name": "trg_network_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "network",
+      "trigger_name": "trg_network_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "location",
+      "trigger_name": "trg_location_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "location",
+      "trigger_name": "trg_location_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "source_identity",
+      "trigger_name": "trg_source_identity_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "source_identity",
+      "trigger_name": "trg_source_identity_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "sim",
+      "trigger_name": "trg_sim_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "sim",
+      "trigger_name": "trg_sim_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "investigative_case",
+      "trigger_name": "trg_investigative_case_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "investigative_case",
+      "trigger_name": "trg_investigative_case_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "fir",
+      "trigger_name": "trg_fir_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "fir",
+      "trigger_name": "trg_fir_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "event",
+      "trigger_name": "trg_event_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "event",
+      "trigger_name": "trg_event_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "assertion",
+      "trigger_name": "trg_assertion_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "assertion",
+      "trigger_name": "trg_assertion_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "hypothesis",
+      "trigger_name": "trg_hypothesis_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "hypothesis",
+      "trigger_name": "trg_hypothesis_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "investigative_lead",
+      "trigger_name": "trg_lead_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "investigative_lead",
+      "trigger_name": "trg_lead_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "event_participant",
+      "trigger_name": "trg_event_participant_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "event_participant",
+      "trigger_name": "trg_event_participant_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "hypothesis_support",
+      "trigger_name": "trg_hypothesis_support_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "hypothesis_support",
+      "trigger_name": "trg_hypothesis_support_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "identity_resolution",
+      "trigger_name": "trg_identity_resolution_upsert_outbox",
+      "event_manipulation": "INSERT",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    },
+    {
+      "event_object_table": "identity_resolution",
+      "trigger_name": "trg_identity_resolution_upsert_outbox",
+      "event_manipulation": "UPDATE",
+      "action_statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()",
+      "action_timing": "AFTER"
+    }
+  ],
+  "rls_enabled": [
+    {
+      "relname": "financial_account",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "organization",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "network",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "location",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "civix_user",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "source",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "dataset",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "entity",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "generation_run",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "scenario",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "source_record",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "source_identity",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "person",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "phone_number",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "sim",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "device",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "vehicle",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "property",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "sim_number_assignment",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "sim_in_device",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "account_holder",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "case_access",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "analysis_run",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "person_alias",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "identity_candidate",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "identity_resolution",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "identity_merge_event",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "evidence_artifact",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "identity_split_event",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "event",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "event_participant",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "assertion",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "legal_restriction",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "audit_event",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "outbox",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "data_quality_issue",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "provenance",
+      "relrowsecurity": false,
+      "relforcerowsecurity": false
+    },
+    {
+      "relname": "hypothesis_support",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "investigative_lead",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "investigative_case",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "case_entity_role",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "evidence_instance",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "fir",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "hypothesis",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "investigation_task",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "case_link",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "medical_report",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "forensic_report",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "observation",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    },
+    {
+      "relname": "extraction",
+      "relrowsecurity": true,
+      "relforcerowsecurity": true
+    }
+  ]
+}

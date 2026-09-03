@@ -40,7 +40,7 @@ def generate_cases(
         case_type = str(rng.choice(_CASE_TYPES))
         status    = str(rng.choice(_CASE_STATUS, p=_STATUS_WEIGHTS))
         priority  = str(rng.choice(_PRIORITY, p=_PRIORITY_WEIGHTS))
-        day_open  = int(rng.integers(0, total_days - 30))
+        day_open  = int(rng.integers(0, max(1, total_days - 30)))
         opened_at = (start_dt + datetime.timedelta(days=day_open)).isoformat()
 
         # Assign 1-8 persons to this case

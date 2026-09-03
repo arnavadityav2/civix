@@ -9,6 +9,7 @@ import { SearchPage } from '../pages/SearchPage';
 import { EntityDossierPage } from '../pages/EntityDossierPage';
 import { InvestigativeGraphPage } from '../pages/InvestigativeGraphPage';
 import { CCTVCommandCenterPage } from '../pages/CCTVCommandCenterPage';
+import { SpatialIntelligencePage } from '../pages/SpatialIntelligencePage';
 
 export const AppRouter: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ export const AppRouter: React.FC = () => {
             <Route path="/cases/:caseId" element={<CaseWorkspacePage />} />
             <Route path="/cases/:caseId/graph" element={<InvestigativeGraphPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/spatial" element={<SpatialIntelligencePage />} />
             <Route path="/cctv" element={<CCTVCommandCenterPage />} />
             <Route path="/entities/:entityId" element={<EntityDossierPage />} />
             <Route path="*" element={<CommandCenterPage />} />

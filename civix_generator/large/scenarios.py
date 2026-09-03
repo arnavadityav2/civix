@@ -10,6 +10,7 @@ Scenario assignment is deterministic per (seed, person_index).
 """
 from __future__ import annotations
 import random
+import hashlib
 from typing import Dict, Any, List, Optional
 import numpy as np
 
@@ -110,17 +111,32 @@ ACTIVITY_PROFILES = {
 }
 
 
-def assign_scenarios(config: ProfileConfig, seed_bank: SeedBank) -> List[Dict[str, Any]]:
-    """Return a lightweight population index: one row per person.
+class RoleResolver:
+    def __init__(self, config: ProfileConfig):
+        self.config = config
+        self.role_to_index: Dict[str, int] = {}
+        self.reserved_indices = set()
+        
+    def resolve(self, scenario_id: str, role_id: str) -> int:
+        if role_id in self.role_to_index:
+            return self.role_to_index[role_id]
+            
+        key = f"{self.config.seed}|{scenario_id}|{role_id}".encode()
+        base_index = int(hashlib.sha256(key).hexdigest(), 16) % self.config.persons
+        
+        idx = base_index
+        i = 1
+        while idx in self.reserved_indices:
+            idx = (base_index + i * i) % self.config.persons
+            i += 1
+            
+        self.reserved_indices.add(idx)
+        self.role_to_index[role_id] = idx
+        return idx
 
-    Kept in RAM for the entire generation run (~30–40 bytes per person).
-    For 250K persons: ~10MB — completely safe.
 
-    Columns:
-        person_id, scenario_class, scenario_type, scenario_id_str,
-        cdr_activity_min, cdr_activity_max, risk_score,
-        home_region_index, active_start_offset, active_end_offset
-    """
+def assign_scenarios(config: ProfileConfig, seed_bank: SeedBank, manifests: Optional[Dict[str, Any]] = None) -> tuple[List[Dict[str, Any]], RoleResolver]:
+    """Return a lightweight population index and the role resolver."""
     dist = config.scenario_dist
     rng: np.random.Generator = seed_bank.get("scenario")
 
@@ -128,23 +144,54 @@ def assign_scenarios(config: ProfileConfig, seed_bank: SeedBank) -> List[Dict[st
     classes = ["normal", "suspicious", "confirmed_pattern", "false_positive"]
     weights = [dist.normal, dist.suspicious, dist.confirmed_pattern, dist.false_positive]
 
+    # Pre-generate stochastic assignments so the stream doesn't shift
     class_assignments = rng.choice(classes, size=n, p=weights)
     total_days = config.total_days
 
-    population = []
-    for i, sc_class in enumerate(class_assignments):
+    resolver = RoleResolver(config)
+    population = [None] * n
+
+    # 1. Manifest Reservation
+    if manifests and "investigations" in manifests:
+        for case in manifests["investigations"].get("cases", []):
+            scenario_id = case["case_id"]
+            for role in case.get("roles", []):
+                role_id = role["role_id"]
+                idx = resolver.resolve(scenario_id, role_id)
+                
+                # Force population[idx] to match role requirements
+                population[idx] = {
+                    "person_index":     idx,
+                    "person_id":        make_uuid("civix-large-person", config.seed, idx),
+                    "scenario_class":   "confirmed_pattern",
+                    "scenario_family":  case.get("scenario_family", "organized_crime"),
+                    "scenario_id_str":  scenario_id,
+                    "scenario_category": "crime",
+                    "difficulty":       "VERY_HIGH",
+                    "target_cdrs":      int(role.get("target_cdrs", 500)),
+                    "home_region":      0,
+                    "active_start_day": 0,
+                    "active_end_day":   config.total_days - 1,
+                    "risk_score":       0.99,
+                    "logical_role":     role_id
+                }
+
+    # 2. Stochastic fill
+    for i in range(n):
+        if population[i] is not None:
+            continue
+            
+        sc_class = class_assignments[i]
         sc = rng.choice(_BY_CLASS[sc_class])
         act_min, act_max = ACTIVITY_PROFILES[sc_class]
         activity = int(rng.integers(act_min, act_max))
 
-        # How many regions exist?
         n_regions = len(
             ["ajmer","jaipur","jodhpur","kota","bikaner","udaipur","alwar","sikar","bharatpur","pali"]
             if config.geography == "multi_region" else ["ajmer"]
         )
         home_region = int(rng.integers(0, n_regions))
 
-        # When this person is "active"
         active_start = int(rng.integers(0, max(1, total_days // 4)))
         active_end = int(rng.integers(max(active_start + 1, total_days // 2), total_days))
 
@@ -157,7 +204,7 @@ def assign_scenarios(config: ProfileConfig, seed_bank: SeedBank) -> List[Dict[st
             0.4
         )), 3)
 
-        population.append({
+        population[i] = {
             "person_index":     i,
             "person_id":        make_uuid("civix-large-person", config.seed, i),
             "scenario_class":   sc_class,
@@ -170,5 +217,6 @@ def assign_scenarios(config: ProfileConfig, seed_bank: SeedBank) -> List[Dict[st
             "active_start_day": active_start,
             "active_end_day":   active_end,
             "risk_score":       risk_score,
-        })
-    return population
+        }
+        
+    return population, resolver

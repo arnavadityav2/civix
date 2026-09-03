@@ -1,0 +1,632 @@
+[
+  {
+    "feature_name": "total_calls",
+    "model_position": 0,
+    "offline_value": 3.0,
+    "postgres_value": 3.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "active_days",
+    "model_position": 1,
+    "offline_value": 2.0,
+    "postgres_value": 2.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "unique_contacts",
+    "model_position": 2,
+    "offline_value": 2.0,
+    "postgres_value": 2.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "unique_cell_sectors",
+    "model_position": 3,
+    "offline_value": 2.0,
+    "postgres_value": 2.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "voice_calls",
+    "model_position": 4,
+    "offline_value": 3.0,
+    "postgres_value": 3.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "sms_count",
+    "model_position": 5,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "data_sessions",
+    "model_position": 6,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "median_duration_sec",
+    "model_position": 7,
+    "offline_value": 120.0,
+    "postgres_value": 120.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "short_call_ratio",
+    "model_position": 8,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "night_call_count",
+    "model_position": 9,
+    "offline_value": 1.0,
+    "postgres_value": 1.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "night_call_ratio",
+    "model_position": 10,
+    "offline_value": 0.3333333333333333,
+    "postgres_value": 0.3333333333333333,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "weekend_call_ratio",
+    "model_position": 11,
+    "offline_value": 0.3333333333333333,
+    "postgres_value": 0.3333333333333333,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "calls_per_active_day",
+    "model_position": 12,
+    "offline_value": 1.5,
+    "postgres_value": 1.5,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "contact_concentration",
+    "model_position": 13,
+    "offline_value": 0.6666666666666666,
+    "postgres_value": 0.6666666666666666,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "unique_counterparties",
+    "model_position": 14,
+    "offline_value": 1.0,
+    "postgres_value": 1.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "txn_type_diversity",
+    "model_position": 15,
+    "offline_value": 1.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 1.0,
+    "semantic_status": "SCHEMA GAP",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "total_sent_amount",
+    "model_position": 16,
+    "offline_value": 20000.0,
+    "postgres_value": 20000.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "avg_txn_amount",
+    "model_position": 17,
+    "offline_value": 10000.0,
+    "postgres_value": 10000.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "median_txn_amount",
+    "model_position": 18,
+    "offline_value": 10000.0,
+    "postgres_value": 10000.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "max_txn_amount",
+    "model_position": 19,
+    "offline_value": 15000.0,
+    "postgres_value": 15000.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "min_txn_amount",
+    "model_position": 20,
+    "offline_value": 5000.0,
+    "postgres_value": 5000.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "std_txn_amount",
+    "model_position": 21,
+    "offline_value": 7071.067811865475,
+    "postgres_value": 7071.067811865475,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "high_value_txn_count",
+    "model_position": 22,
+    "offline_value": 1.0,
+    "postgres_value": 1.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "high_value_txn_ratio",
+    "model_position": 23,
+    "offline_value": 0.5,
+    "postgres_value": 0.5,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "amount_concentration",
+    "model_position": 24,
+    "offline_value": 1.0,
+    "postgres_value": 1.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "unique_sectors",
+    "model_position": 25,
+    "offline_value": 2.0,
+    "postgres_value": 2.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "unique_regions",
+    "model_position": 26,
+    "offline_value": 1.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 1.0,
+    "semantic_status": "SCHEMA GAP",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "geo_spread_degrees",
+    "model_position": 27,
+    "offline_value": 0.14142135623731653,
+    "postgres_value": 0.14142135623731653,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "lat_stddev",
+    "model_position": 28,
+    "offline_value": 0.05773502691896366,
+    "postgres_value": 0.0577350269189634,
+    "absolute_delta": 2.5673907444456745e-16,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "lon_stddev",
+    "model_position": 29,
+    "offline_value": 0.05773502691896852,
+    "postgres_value": 0.0577350269189675,
+    "absolute_delta": 1.0200174038743626e-15,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "location_active_days",
+    "model_position": 30,
+    "offline_value": 2.0,
+    "postgres_value": 2.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "cross_region_ratio",
+    "model_position": 31,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "active_day_delta",
+    "model_position": 32,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "calls_per_txn",
+    "model_position": 33,
+    "offline_value": 1.5,
+    "postgres_value": 1.5,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "call_duration_cv",
+    "model_position": 34,
+    "offline_value": 0.7806247497997998,
+    "postgres_value": 0.7806247497998,
+    "absolute_delta": 2.220446049250313e-16,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "txn_amount_cv",
+    "model_position": 35,
+    "offline_value": 0.7071067811865475,
+    "postgres_value": 0.7071067811865475,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "comm_span_days",
+    "model_position": 36,
+    "offline_value": 6.0,
+    "postgres_value": 6.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "txn_span_days",
+    "model_position": 37,
+    "offline_value": 4.0,
+    "postgres_value": 4.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "dual_concentration",
+    "model_position": 38,
+    "offline_value": 0.6666666666666666,
+    "postgres_value": 0.6666666666666666,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "total_network_size",
+    "model_position": 39,
+    "offline_value": 3.0,
+    "postgres_value": 3.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "gender_MALE",
+    "model_position": 40,
+    "offline_value": 1.0,
+    "postgres_value": 1.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "gender_OTHER",
+    "model_position": 41,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Businessman",
+    "model_position": 42,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Carpenter",
+    "model_position": 43,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Contractor",
+    "model_position": 44,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Doctor",
+    "model_position": 45,
+    "offline_value": 1.0,
+    "postgres_value": 1.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Driver",
+    "model_position": 46,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Electrician",
+    "model_position": 47,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Engineer",
+    "model_position": 48,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Farmer",
+    "model_position": 49,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Government Employee",
+    "model_position": 50,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Hawker",
+    "model_position": 51,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Housewife",
+    "model_position": 52,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Laborer",
+    "model_position": 53,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Mechanic",
+    "model_position": 54,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Police Officer",
+    "model_position": 55,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Shopkeeper",
+    "model_position": 56,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Student",
+    "model_position": 57,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Tailor",
+    "model_position": 58,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Teacher",
+    "model_position": 59,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "occupation_Trader",
+    "model_position": 60,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "home_region_alwar",
+    "model_position": 61,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "home_region_bharatpur",
+    "model_position": 62,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "home_region_bikaner",
+    "model_position": 63,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "home_region_jaipur",
+    "model_position": 64,
+    "offline_value": 1.0,
+    "postgres_value": 1.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "home_region_jodhpur",
+    "model_position": 65,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "home_region_kota",
+    "model_position": 66,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "home_region_pali",
+    "model_position": 67,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "home_region_sikar",
+    "model_position": 68,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  },
+  {
+    "feature_name": "home_region_udaipur",
+    "model_position": 69,
+    "offline_value": 0.0,
+    "postgres_value": 0.0,
+    "absolute_delta": 0.0,
+    "semantic_status": "EXACT",
+    "evidence/source": "tests/harness/parity_harness.py fixture output"
+  }
+]

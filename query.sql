@@ -1,0 +1,1 @@
+SELECT trigger_name, event_manipulation, event_object_table, action_statement FROM information_schema.triggers WHERE event_object_schema = 'civix' AND event_object_table IN ('event', 'assertion', 'hypothesis', 'identity_resolution'); 

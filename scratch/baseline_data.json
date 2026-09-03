@@ -1,0 +1,57 @@
+{
+  "pg": {
+    "outbox_total": 835,
+    "outbox_pending": 48,
+    "outbox_failed": 0,
+    "oldest_pending": "('c2d408c7-8413-48a8-89ae-83edf6c9313d', datetime.datetime(2026, 9, 2, 0, 38, 38, 286063, tzinfo=datetime.timezone(datetime.timedelta(seconds=19800))))",
+    "newest_pending": "('9acf828a-8e00-4c3d-b607-3e6297055a01', datetime.datetime(2026, 9, 2, 0, 41, 44, 186903, tzinfo=datetime.timezone(datetime.timedelta(seconds=19800))))",
+    "sample_pending": [
+      [
+        "c2d408c7-8413-48a8-89ae-83edf6c9313d",
+        "UPSERT_NODE",
+        null,
+        null
+      ],
+      [
+        "d78823db-6969-437f-9805-ba84253dde09",
+        "UPSERT_NODE",
+        null,
+        null
+      ],
+      [
+        "fa49b646-5337-4287-9f58-c1fc7fe67e16",
+        "UPSERT_NODE",
+        null,
+        null
+      ],
+      [
+        "6af67e2d-c946-4001-86ca-39b502cb4154",
+        "UPSERT_NODE",
+        null,
+        null
+      ],
+      [
+        "92d775fc-db64-4e1d-866b-19aacf8ef83d",
+        "UPSERT_NODE",
+        null,
+        null
+      ]
+    ],
+    "columns": [
+      "id",
+      "entity_id",
+      "action",
+      "entity_type",
+      "payload",
+      "created_at",
+      "consumed_at",
+      "error_status",
+      "error_message",
+      "seq_no"
+    ]
+  },
+  "neo4j": {
+    "node_count": 580,
+    "rel_count": 310
+  }
+}

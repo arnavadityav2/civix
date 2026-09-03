@@ -1,0 +1,10 @@
+{
+  "relationships": [
+    {
+      "role_a": "HL001_PRIMARY_01",
+      "role_b": "HL001_SECONDARY_02",
+      "is_positive": true,
+      "description": "Known associates"
+    }
+  ]
+}

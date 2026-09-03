@@ -33,7 +33,23 @@ civix_data/
 
 # Ignore temporary local binaries inside scratch or frontend
 scratch/neo4j/
+scratch/neo4j_demo/
 node_modules/
 frontend/node_modules/
 .env.local
-.env.*
+.env.demo
+.env.test
+*.ps1
+
+# Ignore temporary output datasets and local stores
+demo_output/
+demo_world/
+demo_world_15k_output/
+civix_cctv_artifacts/
+civix_evidence_store/
+civix_golden_evidence/
+validation/
+*.txt
+!requirements.txt
+!README.md
+!AGENTS.md

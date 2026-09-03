@@ -1,0 +1,11 @@
+{
+  "constraints": [
+    {
+      "event_type": "TELECOM_CALL",
+      "actor": "HL001_PRIMARY_01",
+      "target": "HL001_SECONDARY_02",
+      "time_offset_hours": 12,
+      "location": "ajmer_center"
+    }
+  ]
+}

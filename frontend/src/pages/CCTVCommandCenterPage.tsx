@@ -41,7 +41,7 @@ export const CCTVCommandCenterPage: React.FC = () => {
   }, [selectedCameraId]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (jobId && jobStatus !== 'COMPLETED' && jobStatus !== 'FAILED') {
       interval = setInterval(() => {
         cctvApi.getSearchJob(jobId)

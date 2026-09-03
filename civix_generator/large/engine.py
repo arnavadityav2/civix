@@ -179,7 +179,16 @@ class LargeScaleEngine:
         # -- Stage 0: Assign scenarios to population ---------------------------
         log.info("Building population index (%d persons)...", self.config.persons)
         t_pop = time.time()
-        population = assign_scenarios(self.config, self.seed_bank)
+        
+        # Load manifests for Demo World if present
+        manifests = None
+        manifest_dir = os.path.join(os.path.dirname(__file__), "..", "demo")
+        if os.path.exists(manifest_dir) and os.path.exists(os.path.join(manifest_dir, "investigations.json")):
+            from .manifest_loader import load_and_validate_manifests
+            manifests = load_and_validate_manifests(manifest_dir)
+            log.info("Loaded Gemini manifests for Demo World injection.")
+            
+        population, self.role_resolver = assign_scenarios(self.config, self.seed_bank, manifests)
         log.info("Population index built in %.1fs (%.1f MB)", time.time() - t_pop, len(population) * 120 / 1e6)
 
         # -- Stage 1: Geography ------------------------------------------------
@@ -283,6 +292,12 @@ class LargeScaleEngine:
         self._row_counts["train_val_test_split"] = split_stats["total_rows"]
 
         self.ckpt.mark_stage_done("ground_truth", gt_stats["total_rows"])
+
+        # -- Stage 7.5: Demo Manifest Constraint Injection ---------------------
+        if manifests:
+            log.info("Translating Gemini evidence constraints into exact Parquet events...")
+            from .translator import translate_evidence
+            translate_evidence(manifests, self.role_resolver, self.config.seed, self.output_dir)
 
         # -- Stage 8: ML Feature aggregation (DuckDB, post-generation) ---------
         log.info("Aggregating ML features via DuckDB...")

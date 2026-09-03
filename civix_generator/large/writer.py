@@ -32,12 +32,14 @@ class ShardWriter:
         partition_keys: Optional[List[str]] = None,
         shard_rows: int = 1_000_000,
         compression: str = "snappy",
+        shard_prefix: str = "part-",
     ):
         self.base_dir = base_dir
         self.entity_type = entity_type
         self.partition_keys = partition_keys or []
         self.shard_rows = shard_rows
         self.compression = compression
+        self.shard_prefix = shard_prefix
 
         self._buffer: List[Dict[str, Any]] = []
         self._shard_index = 0
@@ -54,6 +56,11 @@ class ShardWriter:
         if not records:
             return
 
+        # Ensure generation_origin is present
+        for rec in records:
+            if "generation_origin" not in rec:
+                rec["generation_origin"] = "STOCHASTIC_BACKGROUND"
+
         # Group by partition key values (for hive partitioning)
         if self.partition_keys:
             groups = self._group_by_partition(records)
@@ -61,8 +68,9 @@ class ShardWriter:
             groups = {(): records}
 
         for pkey_vals, group_records in groups.items():
-            self._buffer.extend(group_records)
             partition_dict = dict(zip(self.partition_keys, pkey_vals))
+            self._current_partition = partition_dict
+            self._buffer.extend(group_records)
 
             while len(self._buffer) >= self.shard_rows:
                 shard = self._buffer[:self.shard_rows]
@@ -118,7 +126,7 @@ class ShardWriter:
             clean = {k: v for k, v in rec.items() if k not in self.partition_keys}
             clean_records.append(clean)
 
-        shard_filename = f"part-{self._shard_index:05d}.parquet"
+        shard_filename = f"{self.shard_prefix}{self._shard_index:05d}.parquet"
         shard_path = os.path.join(out_dir, shard_filename)
 
         table = pa.Table.from_pylist(clean_records)

@@ -13,6 +13,7 @@ import {
   Eye, 
   Clock, 
   Navigation, 
+  MapPin,
   DollarSign, 
   Video, 
   MessageSquare, 
@@ -45,9 +46,10 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ onNewCaseClick }) => {
     { label: 'Investigative Leads', icon: Sparkles, path: '/leads', exact: false },
   ];
 
-  // Analysis tools — Global Search is live, others are phase-gated
+  // Analysis tools — Global Search, CCTV & Spatial are live
   const toolsNavLive = [
     { label: 'Global Search', icon: Search, path: '/search', badge: 'READY' },
+    { label: 'Spatial Intelligence', icon: MapPin, path: '/spatial', badge: 'READY' },
     { label: 'CCTV Analysis', icon: Video, path: '/cctv', badge: 'PHASE A' },
   ];
   const toolsNavFuture = [

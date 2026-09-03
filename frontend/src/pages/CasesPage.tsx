@@ -86,7 +86,7 @@ interface NewCaseModalProps {
   onSuccess: (newCaseId: string) => void;
 }
 
-const CASE_TYPES = ['FINANCIAL', 'INTELLIGENCE', 'CRIMINAL', 'COUNTERTERRORISM', 'CYBER', 'NARCOTICS', 'OTHER'];
+const CASE_TYPES = ['CRIMINAL', 'FINANCIAL', 'FORENSIC', 'INTELLIGENCE', 'MULTI_CASE', 'PROPERTY', 'SURVEILLANCE'];
 const PRIORITIES = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
 
 const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
