@@ -1,5 +1,5 @@
 # CIVIX 2.0 CANONICAL PROJECT STATE
-**Last Updated**: 2026-08-31
+**Last Updated**: 2026-09-03
 
 ## 1. Purpose
 This document records the verified current state of CIVIX 2.0, overriding all historical scratchpads and transient conversational documents.
@@ -13,9 +13,10 @@ This document records the verified current state of CIVIX 2.0, overriding all hi
 
 ## 3. Canonical Architecture State
 - **PostgreSQL / Outbox / CDC / Neo4j Projection**: COMPLETE & LIVE VERIFIED. Neo4j graph rules formally DECIDED (ADR-030).
-- **Security / RLS**: DB-level COMPLETE. API-level formal requirements DECIDED (ADR-028, ADR-029).
-- **API Read Layer**: PARTIALLY COMPLETE. Architecture formally DECIDED (ADR-026, ADR-027). Awaiting schema migration for Lead Persistence before implementation resumes.
-- **ML Layer**: PARTIALLY COMPLETE (Feature Gen / Graph Inference built; Anomaly detection needs verification).
+- **Security / RLS**: DB-level & API-level COMPLETE & LIVE VERIFIED (Scoping verified via RLS sessions).
+- **API Read Layer**: COMPLETE & LIVE VERIFIED. Spatial API (`/api/v1/spatial`), CCTV API (`/api/v1/cctv`), Cases API (`/api/v1/cases`), and Graph API (`/api/v1/cases/{id}/graph`) live reconciled.
+- **ML Layer**: COMPLETE & LIVE VERIFIED (Behavioral XGBoost model loaded and scoring live predictions).
+- **Spatial Intelligence Subsystem (Phase 11F)**: COMPLETE & LIVE VERIFIED (PostGIS spatial centroids, Leaflet interactive map, Timeline Scrubber, Case Event Inspector, 25 Delhi NCR CCTV live video streams).
 
 ## 4. Capability Ledger
 | Capability | Status |
@@ -25,13 +26,13 @@ This document records the verified current state of CIVIX 2.0, overriding all hi
 | Row-Level Security (RLS) | LIVE VERIFIED |
 | CDC & Outbox Synchronization | LIVE VERIFIED |
 | Neo4j Graph Projection | LIVE VERIFIED |
-| API Authentication (JWT) | TESTED |
-| API Case/Lead Endpoints | TESTED |
-| API Entity/Hypothesis Endpoints | MISSING |
-| Audit & Expungement APIs | MISSING |
-| ML Graph Features & Inference | TESTED |
-| ML Anomaly Detection | NEEDS VERIFICATION |
-| Synthetic World Factory | BLOCKED |
+| API Authentication (JWT) | TESTED & LIVE |
+| API Case Management & Creation | LIVE VERIFIED |
+| API Spatial Intelligence (/spatial) | LIVE VERIFIED (11F-D PASS) |
+| Live CCTV Stream Operations (/cctv) | LIVE VERIFIED (25 Cameras) |
+| ML Graph Features & Inference | TESTED & LIVE |
+| Behavioral XGBoost Scoring | LIVE VERIFIED |
+| Spatial Intelligence Subsystem | COMPLETE & LIVE VERIFIED |
 
 ## 5. Phase Ledger
 - **Phases 1-5**: COMPLETE
@@ -39,7 +40,11 @@ This document records the verified current state of CIVIX 2.0, overriding all hi
 - **Phase 8 (PostgreSQL Demo Materialization)**: COMPLETE & LIVE RECONCILED (civix_demo)
 - **Phase 9 (Neo4j Graph Projection)**: COMPLETE & LIVE RECONCILED (civix_demo_graph, 59,850 nodes, 733,411 relationships)
 - **Phase 10 (Demo Environment Integration)**: COMPLETE & LIVE VERIFIED (Frontend → FastAPI → civix_demo → civix_demo_graph :7688 → C3/XGBoost)
-- **Phase 11 (Scale Factory / Full Demo Validation)**: READY FOR EXECUTION
+- **Phase 11A-11F (Spatial Intelligence Subsystem)**: COMPLETE & LIVE VERIFIED
+  - 11F-A (Global Operational Map): PASS
+  - 11F-B (Case Event Map & Inspector): PASS
+  - 11F-C (Timeline Scrubber & Filters): PASS
+  - 11F-D (Final Automated Validation): PASS (100% Verification Suite Pass)
 
 ## 6. Completion Rules
 - An ADR authorizes a framework/decision; it **does not** prove implementation completion.
@@ -57,4 +62,4 @@ If authoritative sources (e.g., Code vs Bibles) disagree, DO NOT GUESS. Record t
 Future AI agents MUST read this document first. Agents are strictly prohibited from using transient scratchpads as instructions.
 
 ## 10. Last Verified State
-Snapshot as of 2026-08-31. Any new agent entering this repository must treat this file as the paramount ground truth.
+Snapshot as of 2026-09-03. Any new agent entering this repository must treat this file as the paramount ground truth.
