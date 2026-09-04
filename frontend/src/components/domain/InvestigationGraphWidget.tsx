@@ -54,19 +54,13 @@ function getDisplayName(node: GraphNode): string {
   return `…${node.id.slice(-6)}`;
 }
 
-function formatPredicate(pred: string): string {
-  return pred.split('_').map((w) => w.charAt(0) + w.slice(1).toLowerCase()).join(' ');
-}
+
 
 function buildMiniGraph(nodes: GraphNode[], rels: GraphRelationship[]): cytoscape.ElementDefinition[] {
   const elements: cytoscape.ElementDefinition[] = [];
+  const nodeIds = new Set(nodes.map((n) => n.id));
 
-  // Only domain nodes
-  const domainNodes = nodes.filter((n) => isDomainEntity(n.labels));
-  const domainIds = new Set(domainNodes.map((n) => n.id));
-  const assertionNodes = nodes.filter((n) => getPrimaryLabel(n.labels) === 'Assertion');
-
-  for (const node of domainNodes) {
+  for (const node of nodes) {
     const primary = getPrimaryLabel(node.labels);
     const colors = NODE_COLORS[primary] ?? FALLBACK_COLOR;
     const name = getDisplayName(node);
@@ -81,38 +75,15 @@ function buildMiniGraph(nodes: GraphNode[], rels: GraphRelationship[]): cytoscap
     });
   }
 
-  // Collapse Assertion nodes into predicate edges
-  for (const assertion of assertionNodes) {
-    const p = assertion.properties;
-    const subjectId = p.subject_entity_id as string | undefined;
-    const objectId = p.object_entity_id as string | undefined;
-    const predicate = p.predicate as string | undefined;
-    if (!subjectId || !objectId || !predicate) continue;
-    if (!domainIds.has(subjectId) || !domainIds.has(objectId)) continue;
-    if (subjectId === objectId) continue;
-    elements.push({
-      data: {
-        id: `a_${assertion.id}`,
-        source: subjectId,
-        target: objectId,
-        label: formatPredicate(predicate),
-        edgeType: 'investigative',
-      },
-    });
-  }
-
-  // CANDIDATE_FOR edges
   for (const rel of rels) {
-    if (rel.type !== 'CANDIDATE_FOR') continue;
-    if (!domainIds.has(rel.start_node) || !domainIds.has(rel.end_node)) continue;
-    if (rel.start_node === rel.end_node) continue;
+    if (!nodeIds.has(rel.start_node) || !nodeIds.has(rel.end_node)) continue;
     elements.push({
       data: {
         id: rel.id,
         source: rel.start_node,
         target: rel.end_node,
-        label: 'Candidate',
-        edgeType: 'candidate',
+        label: (rel.properties?.role as string) || rel.type,
+        edgeType: rel.type === 'CANDIDATE_FOR' ? 'candidate' : 'investigative',
       },
     });
   }

@@ -68,7 +68,7 @@ export const RecentEvidenceWidget: React.FC = () => {
                     {item.mime_type || 'application/octet-stream'}
                   </td>
                   <td className="py-2.5 px-3">
-                    {item.processing_status === 'COMPLETED' || item.processing_status === 'STORED' ? (
+                    {item.processing_status === 'COMPLETED' || item.processing_status === 'STORED' || item.processing_status === 'GENERATED' ? (
                       <Badge variant="confirmed" className="flex items-center space-x-1 w-fit">
                         <FileCheck className="w-3 h-3 mr-1" />
                         <span>PROCESSED</span>

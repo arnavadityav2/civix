@@ -530,10 +530,27 @@ function buildCytoscapeElements(
 
   if (viewMode === 'investigative') {
     // Only domain nodes with at least one edge, OR all domain nodes at depth 1
-    const connectedIds = new Set<string>();
-    for (const e of pg.investigativeEdges) {
-      connectedIds.add(e.source);
-      connectedIds.add(e.target);
+    const edgesToRender = pg.investigativeEdges.length > 0 ? pg.investigativeEdges : pg.caseContextEdges;
+
+    if (pg.investigativeEdges.length === 0 && pg.caseNodes.length > 0) {
+      for (const caseNode of pg.caseNodes) {
+        const cfg = getNodeConfig(caseNode.labels);
+        elements.push({
+          group: 'nodes',
+          data: {
+            id: caseNode.id,
+            label: caseNode.properties.case_number ?? 'Case',
+            name: caseNode.properties.case_number ?? 'Case',
+            nodeType: 'Case',
+            labels: caseNode.labels,
+            properties: caseNode.properties,
+            bgColor: cfg.color,
+            borderColor: cfg.borderColor,
+            textColor: cfg.textColor,
+            entityId: caseNode.id,
+          },
+        });
+      }
     }
 
     for (const node of pg.domainNodes) {
@@ -559,7 +576,7 @@ function buildCytoscapeElements(
       });
     }
 
-    for (const edge of pg.investigativeEdges) {
+    for (const edge of edgesToRender) {
       elements.push({
         group: 'edges',
         data: {

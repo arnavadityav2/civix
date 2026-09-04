@@ -5,13 +5,22 @@ import { useCaseSelection } from '../../context/CaseSelectionContext';
 import type { GraphNode, GraphRelationship } from '../../types/api';
 import { User, Car, Building2, UserCheck, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react';
 
+import { casesApi } from '../../api/cases';
+
 export const StructuredGraphView: React.FC = () => {
   const { selectedCaseId } = useCaseSelection();
 
+  const { data: cases = [] } = useQuery({
+    queryKey: ['cases'],
+    queryFn: casesApi.listCases,
+  });
+
+  const activeCaseId = selectedCaseId || (cases.length > 0 ? cases[0].case_id : null);
+
   const { data: graphData, isLoading, error } = useQuery({
-    queryKey: ['caseGraphStructured', selectedCaseId],
-    queryFn: () => (selectedCaseId ? graphApi.getCaseGraph(selectedCaseId) : Promise.resolve(null)),
-    enabled: !!selectedCaseId,
+    queryKey: ['caseGraphStructured', activeCaseId],
+    queryFn: () => (activeCaseId ? graphApi.getCaseGraph(activeCaseId) : Promise.resolve(null)),
+    enabled: !!activeCaseId,
   });
 
   const getIcon = (type: string) => {
@@ -27,7 +36,7 @@ export const StructuredGraphView: React.FC = () => {
     }
   };
 
-  if (!selectedCaseId) {
+  if (!activeCaseId) {
     return (
       <div className="py-12 text-center text-xs text-slate-500 font-mono">
         Select an active case to view relationship intelligence.
@@ -55,25 +64,31 @@ export const StructuredGraphView: React.FC = () => {
     );
   }
 
-  // Derive primary subject (first PERSON node or first node)
-  const primarySubjectNode = graphData.nodes.find((n: GraphNode) => n.labels?.includes('PERSON')) || graphData.nodes[0];
+  // Derive primary subject (Case node or first Person node)
+  const caseNode = graphData.nodes.find((n: GraphNode) => n.labels?.includes('Case'));
+  const primarySubjectNode = caseNode || graphData.nodes.find((n: GraphNode) => n.labels?.includes('PERSON')) || graphData.nodes[0];
   const primarySubjectName = primarySubjectNode
-    ? (primarySubjectNode.properties?.display_name || primarySubjectNode.properties?.name || primarySubjectNode.id)
-    : 'Subject Entity';
+    ? (primarySubjectNode.properties?.title || primarySubjectNode.properties?.display_name || primarySubjectNode.properties?.name || primarySubjectNode.id)
+    : 'Selected Case';
+
 
   // Map relationships
   const relationships = (graphData.relationships || []).map((rel: GraphRelationship) => {
-    const targetNode = graphData.nodes.find((n: GraphNode) => n.id === rel.end_node);
+    // Find target node (the node that is not the primary subject)
+    const targetNode = graphData.nodes.find((n: GraphNode) => n.id === (rel.start_node === primarySubjectNode?.id ? rel.end_node : rel.start_node))
+      || graphData.nodes.find((n: GraphNode) => n.id === rel.end_node);
+
     const targetName = targetNode
-      ? (targetNode.properties?.display_name || targetNode.properties?.name || targetNode.id)
+      ? (targetNode.properties?.display_name || targetNode.properties?.name || targetNode.properties?.legal_name || targetNode.properties?.registration_number || targetNode.id)
       : rel.end_node;
     const targetType = targetNode && targetNode.labels ? targetNode.labels[0] : 'UNKNOWN';
+    const roleName = (rel.properties?.role || rel.type).replace(/_/g, ' ');
 
     return {
-      relationType: rel.type,
+      relationType: roleName,
       targetName: targetName,
       targetType: targetType,
-      provenance: rel.properties?.provenance || rel.properties?.source || 'Graph Relationship',
+      provenance: rel.properties?.role_basis || rel.properties?.provenance || rel.properties?.source || 'Verified Case Entity',
     };
   });
 
