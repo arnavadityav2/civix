@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppShell } from '../components/layouts/AppShell';
 import { CaseSelectionProvider } from '../context/CaseSelectionContext';
@@ -10,11 +10,28 @@ import { EntityDossierPage } from '../pages/EntityDossierPage';
 import { InvestigativeGraphPage } from '../pages/InvestigativeGraphPage';
 import { CCTVCommandCenterPage } from '../pages/CCTVCommandCenterPage';
 import { SpatialIntelligencePage } from '../pages/SpatialIntelligencePage';
+import { CivixSplashScreen } from '../components/splash/CivixSplashScreen';
 
 export const AppRouter: React.FC = () => {
+  const [showSplash, setShowSplash] = useState<boolean>(() => {
+    // Check URL param ?splash=true or default to showing splash on initial load
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('splash') === 'true') return true;
+    return true; // Show splash by default on fresh session
+  });
+
+  useEffect(() => {
+    const handleReplay = () => setShowSplash(true);
+    window.addEventListener('civix:replay_splash', handleReplay);
+    return () => window.removeEventListener('civix:replay_splash', handleReplay);
+  }, []);
+
   return (
     <CaseSelectionProvider>
       <BrowserRouter>
+        {showSplash && (
+          <CivixSplashScreen onComplete={() => setShowSplash(false)} />
+        )}
         <AppShell>
           <Routes>
             <Route path="/" element={<CommandCenterPage />} />
@@ -32,4 +49,5 @@ export const AppRouter: React.FC = () => {
     </CaseSelectionProvider>
   );
 };
+
 
