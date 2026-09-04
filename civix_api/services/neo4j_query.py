@@ -39,16 +39,15 @@ class Neo4jQueryService:
         WITH collect(path) AS paths
 
         // 1. Gather distinct valid nodes up to the node_limit
-        UNWIND paths AS p
-        UNWIND nodes(p) AS node
+        UNWIND (CASE WHEN size(paths) > 0 THEN paths ELSE [null] END) AS p
+        UNWIND (CASE WHEN p IS NOT NULL THEN nodes(p) ELSE [] END) AS node
         WITH collect(DISTINCT node)[0..$node_limit] AS valid_nodes, paths
 
-        // 2. Extract relationships directly from the bounded paths
-        UNWIND paths AS p
-        UNWIND relationships(p) AS rel
-        WITH valid_nodes, rel
-        WHERE startNode(rel) IN valid_nodes AND endNode(rel) IN valid_nodes
-        WITH valid_nodes, collect(DISTINCT rel)[0..$rel_limit] AS valid_rels
+        // 2. Extract relationships safely without dropping rows if empty
+        UNWIND (CASE WHEN size(paths) > 0 THEN paths ELSE [null] END) AS p
+        UNWIND (CASE WHEN p IS NOT NULL THEN relationships(p) ELSE [] END) AS rel
+        WITH valid_nodes, collect(DISTINCT rel) AS raw_rels
+        WITH valid_nodes, [r IN raw_rels WHERE r IS NOT NULL AND startNode(r) IN valid_nodes AND endNode(r) IN valid_nodes][0..$rel_limit] AS valid_rels
 
         RETURN valid_nodes, valid_rels
         """

@@ -370,3 +370,45 @@ async def get_evidence_status(
         acquired_by=row.acquired_by,
         acquisition_method=row.acquisition_method,
     )
+
+
+global_router = APIRouter(
+    prefix="/api/v1/evidence",
+    tags=["evidence_global"]
+)
+
+@global_router.get("", summary="List all evidence artifacts across active cases")
+async def list_all_evidence(
+    user: AuthenticatedCivixUser = Depends(get_current_user_from_token),
+    session: AsyncSession = Depends(get_rls_session),
+):
+    result = await session.execute(text("""
+        SELECT ea.artifact_id, ea.storage_uri, ea.mime_type, ea.file_size_bytes,
+               ea.sha256_hash, ea.processing_status, ea.created_at,
+               c.case_id, c.case_number, c.title AS case_title,
+               m.evidence_type, m.title AS artifact_title
+        FROM civix.evidence_artifact ea
+        LEFT JOIN civix.evidence_generation_manifest m ON ea.artifact_id = m.artifact_id
+        LEFT JOIN civix.evidence_instance ei ON ei.artifact_id = ea.artifact_id AND ei.tx_end IS NULL
+        LEFT JOIN civix.investigative_case c ON c.case_id = ei.case_id
+        ORDER BY ea.created_at DESC
+    """))
+
+    items = []
+    for row in result.fetchall():
+        hash_hex = row.sha256_hash.hex() if isinstance(row.sha256_hash, bytes) else str(row.sha256_hash or '')
+        items.append({
+            "artifact_id": str(row.artifact_id),
+            "storage_uri": row.storage_uri,
+            "mime_type": row.mime_type,
+            "file_size_bytes": row.file_size_bytes,
+            "sha256_hash": hash_hex,
+            "processing_status": row.processing_status,
+            "created_at": row.created_at.isoformat() if row.created_at else None,
+            "case_id": str(row.case_id) if row.case_id else None,
+            "case_number": row.case_number or "CIV-GLOBAL",
+            "case_title": row.case_title or "Global Investigation Workspace",
+            "evidence_type": row.evidence_type or "PHOTOGRAPH",
+            "artifact_title": row.artifact_title or f"Evidence Artifact {str(row.artifact_id)[:8]}"
+        })
+    return items

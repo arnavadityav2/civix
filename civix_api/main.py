@@ -45,6 +45,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from fastapi.staticfiles import StaticFiles
+import os
+
+evidence_store_path = r"C:\data\civix_demo\evidence_store"
+if os.path.exists(evidence_store_path):
+    app.mount("/evidence_store", StaticFiles(directory=evidence_store_path), name="evidence_store")
+
 app.include_router(users.router)
 app.include_router(cases.router)
 app.include_router(leads.router)
@@ -54,6 +61,7 @@ app.include_router(entities.router)
 app.include_router(search.router)
 app.include_router(ingest.router)
 app.include_router(evidence.router)
+app.include_router(evidence.global_router)
 app.include_router(cctv.router)
 app.include_router(spatial.router)
 
