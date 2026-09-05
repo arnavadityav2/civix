@@ -39,6 +39,7 @@ import {
   FileText,
   Clock,
   MapPin,
+  Play,
 } from 'lucide-react';
 
 // ── View Modes ────────────────────────────────────────────────────────────────
@@ -521,6 +522,11 @@ function buildPresentationGraph(
 
 // ── Cytoscape element builder ─────────────────────────────────────────────────
 
+const PRIORITY_ENTITY_TYPES = new Set([
+  'Person', 'Organization', 'Vehicle', 'PhoneNumber', 'Device',
+  'FinancialAccount', 'Location', 'Evidence', 'Lead',
+]);
+
 function buildCytoscapeElements(
   pg: PresentationGraph,
   viewMode: ViewMode,
@@ -536,6 +542,7 @@ function buildCytoscapeElements(
         const cfg = getNodeConfig(caseNode.labels);
         elements.push({
           group: 'nodes',
+          classes: 'priority-node',
           data: {
             id: caseNode.id,
             label: caseNode.properties.case_number ?? 'Case',
@@ -554,17 +561,21 @@ function buildCytoscapeElements(
 
     for (const node of pg.domainNodes) {
       const cfg = getNodeConfig(node.labels);
+      const primary = getPrimaryLabel(node.labels);
       const name = deriveDisplayName(node);
       const subtitle = deriveNodeSubtitle(node);
       const label = subtitle ? `${name}\n${subtitle}` : name;
+      const isPriority = PRIORITY_ENTITY_TYPES.has(primary);
+
       elements.push({
         group: 'nodes',
+        classes: isPriority ? 'priority-node' : '',
         data: {
           id: node.id,
           label,
           name,
           subtitle: subtitle ?? '',
-          nodeType: getPrimaryLabel(node.labels),
+          nodeType: primary,
           labels: node.labels,
           properties: node.properties,
           bgColor: cfg.color,
@@ -599,6 +610,7 @@ function buildCytoscapeElements(
       const cfg = getNodeConfig(caseNode.labels);
       elements.push({
         group: 'nodes',
+        classes: 'priority-node',
         data: {
           id: caseNode.id,
           label: caseNode.properties.case_number ?? 'Case',
@@ -616,14 +628,18 @@ function buildCytoscapeElements(
 
     for (const node of pg.domainNodes) {
       const cfg = getNodeConfig(node.labels);
+      const primary = getPrimaryLabel(node.labels);
       const name = deriveDisplayName(node);
+      const isPriority = PRIORITY_ENTITY_TYPES.has(primary);
+
       elements.push({
         group: 'nodes',
+        classes: isPriority ? 'priority-node' : '',
         data: {
           id: node.id,
           label: name,
           name,
-          nodeType: getPrimaryLabel(node.labels),
+          nodeType: primary,
           labels: node.labels,
           properties: node.properties,
           bgColor: cfg.color,
@@ -656,8 +672,11 @@ function buildCytoscapeElements(
       const label = primary === 'Assertion'
         ? (node.properties.predicate ? `${node.properties.predicate}` : name)
         : name;
+      const isPriority = PRIORITY_ENTITY_TYPES.has(primary);
+
       elements.push({
         group: 'nodes',
+        classes: isPriority ? 'priority-node' : '',
         data: {
           id: node.id,
           label,
@@ -693,8 +712,11 @@ function buildProvenanceElements(
       : primary === 'Event'
         ? `EVENT\n${(node.properties.description as string ?? '').slice(0, 30)}…`
         : name;
+    const isPriority = PRIORITY_ENTITY_TYPES.has(primary);
+
     elements.push({
       group: 'nodes',
+      classes: isPriority ? 'priority-node' : '',
       data: {
         id: node.id,
         label,
@@ -729,7 +751,7 @@ function buildProvenanceElements(
   return elements;
 }
 
-// ── Cytoscape stylesheet ──────────────────────────────────────────────────────
+// ── Cytoscape stylesheet with multi-tier semantic zoom & active interaction ──
 
 const CY_STYLE: cytoscape.StylesheetStyle[] = [
   {
@@ -753,6 +775,57 @@ const CY_STYLE: cytoscape.StylesheetStyle[] = [
       'text-overflow-wrap': 'whitespace',
       'transition-property': 'background-color, border-width, border-color',
       'transition-duration': '120ms',
+    } as any,
+  },
+  // ── Semantic Zoom Tier 1: FAR (zoom < 0.45) ──
+  {
+    selector: 'node.zoom-far',
+    style: {
+      'label': '',
+      'width': 22,
+      'height': 22,
+      'border-width': 1.5,
+    } as any,
+  },
+  {
+    selector: 'node.zoom-far.priority-node',
+    style: {
+      'label': 'data(name)',
+      'font-size': 8,
+      'text-max-width': '80px',
+      'width': 26,
+      'height': 26,
+    } as any,
+  },
+  {
+    selector: 'node.zoom-far:selected, node.zoom-far.highlighted',
+    style: {
+      'label': 'data(name)',
+      'font-size': 9,
+      'width': 32,
+      'height': 32,
+      'border-width': 2.5,
+    } as any,
+  },
+  // ── Semantic Zoom Tier 2: MEDIUM (0.45 <= zoom < 0.85) ──
+  {
+    selector: 'node.zoom-medium',
+    style: {
+      'label': 'data(name)',
+      'font-size': 9,
+      'width': 32,
+      'height': 32,
+      'text-max-width': '100px',
+    } as any,
+  },
+  // ── Semantic Zoom Tier 3 & 4: CLOSE / VERY CLOSE (zoom >= 0.85) ──
+  {
+    selector: 'node.zoom-close, node.zoom-very-close',
+    style: {
+      'label': 'data(label)',
+      'font-size': 10,
+      'width': 40,
+      'height': 40,
     } as any,
   },
   {
@@ -790,6 +863,7 @@ const CY_STYLE: cytoscape.StylesheetStyle[] = [
       'border-width': 3,
       'border-color': '#ffb703',
       'background-color': '#1e293b',
+      'z-index': 999,
     } as any,
   },
   {
@@ -798,8 +872,10 @@ const CY_STYLE: cytoscape.StylesheetStyle[] = [
       'border-width': 3,
       'border-color': '#f59e0b',
       'background-color': '#1e293b',
+      'z-index': 998,
     } as any,
   },
+  // ── Base Edge Styles ──
   {
     selector: 'edge',
     style: {
@@ -821,6 +897,64 @@ const CY_STYLE: cytoscape.StylesheetStyle[] = [
       'text-wrap': 'ellipsis',
       'transition-property': 'line-color, width, target-arrow-color',
       'transition-duration': '120ms',
+    } as any,
+  },
+  // ── Edge Zoom Levels ──
+  {
+    selector: 'edge.zoom-far',
+    style: {
+      'label': '',
+      'width': 1,
+      'target-arrow-shape': 'none',
+    } as any,
+  },
+  {
+    selector: 'edge.zoom-far:selected, edge.zoom-far.highlighted',
+    style: {
+      'label': 'data(label)',
+      'width': 2.5,
+      'target-arrow-shape': 'triangle',
+    } as any,
+  },
+  {
+    selector: 'edge.zoom-medium',
+    style: {
+      'label': '',
+      'width': 1.5,
+      'target-arrow-shape': 'triangle',
+      'arrow-scale': 0.8,
+    } as any,
+  },
+  {
+    selector: 'edge.zoom-medium:selected, edge.zoom-medium.highlighted',
+    style: {
+      'label': 'data(label)',
+      'width': 2.5,
+      'arrow-scale': 1.0,
+    } as any,
+  },
+  {
+    selector: 'edge.zoom-close, edge.zoom-very-close',
+    style: {
+      'label': 'data(label)',
+      'width': 2,
+      'target-arrow-shape': 'triangle',
+      'arrow-scale': 1.0,
+    } as any,
+  },
+  // ── Active Interaction Mode (during Pan / Zoom / Drag) ──
+  {
+    selector: 'edge.is-interacting',
+    style: {
+      'label': '',
+      'curve-style': 'straight',
+      'transition-duration': '0ms',
+    } as any,
+  },
+  {
+    selector: 'node.is-interacting',
+    style: {
+      'transition-duration': '0ms',
     } as any,
   },
   {
@@ -859,6 +993,68 @@ const CY_STYLE: cytoscape.StylesheetStyle[] = [
       'width': 3,
       'line-color': '#ffb703',
       'target-arrow-color': '#ffb703',
+      'z-index': 999,
+    } as any,
+  },
+  // ── Focus & Network Isolation Selectors ──
+  {
+    selector: '.network-hidden',
+    style: {
+      'display': 'none',
+    } as any,
+  },
+  {
+    selector: 'node.focus-anchor',
+    style: {
+      'border-width': 4,
+      'border-color': '#ffb703',
+      'background-color': '#1e293b',
+      'z-index': 999,
+    } as any,
+  },
+  {
+    selector: 'node.focus-direct',
+    style: {
+      'border-width': 3,
+      'opacity': 1.0,
+      'z-index': 990,
+    } as any,
+  },
+  {
+    selector: 'node.focus-secondary',
+    style: {
+      'opacity': 0.65,
+      'z-index': 980,
+    } as any,
+  },
+  {
+    selector: 'node.bridge-node',
+    style: {
+      'border-color': '#00f0ff',
+      'border-width': 4,
+      'background-color': '#091c32',
+      'z-index': 1000,
+    } as any,
+  },
+  {
+    selector: 'edge.bridge-edge',
+    style: {
+      'line-color': '#00f0ff',
+      'target-arrow-color': '#00f0ff',
+      'width': 4,
+      'color': '#00f0ff',
+      'font-weight': '700',
+      'opacity': 1.0,
+      'z-index': 999,
+    } as any,
+  },
+  {
+    selector: 'edge.spine-edge',
+    style: {
+      'line-color': '#00f0ff',
+      'target-arrow-color': '#00f0ff',
+      'width': 4,
+      'z-index': 995,
     } as any,
   },
 ];
@@ -887,21 +1083,173 @@ const EpistemicBadge: React.FC<{ status?: string }> = ({ status }) => {
 };
 
 // ── Node Inspector Panel ──────────────────────────────────────────────────────
+// ── Focus Depth Type & Helper Functions ─────────────────────────────────────────
+type FocusDepth = '1hop' | '2hops' | 'all';
+
+function computeConnectedIntelligence(
+  nodeId: string,
+  graphData: { nodes: GraphNode[]; relationships: GraphRelationship[] } | null
+): Record<string, number> {
+  if (!graphData) return {};
+  const nodeMap = new Map(graphData.nodes.map((n) => [n.id, n]));
+  const connectedIds = new Set<string>();
+
+  for (const rel of graphData.relationships) {
+    if (rel.start_node === nodeId) connectedIds.add(rel.end_node);
+    if (rel.end_node === nodeId) connectedIds.add(rel.start_node);
+  }
+
+  const counts: Record<string, number> = {};
+  for (const id of connectedIds) {
+    const connectedNode = nodeMap.get(id);
+    if (!connectedNode) continue;
+    const primary = getPrimaryLabel(connectedNode.labels);
+    if (!INFRASTRUCTURE_LABELS.has(primary)) {
+      counts[primary] = (counts[primary] || 0) + 1;
+    }
+  }
+  return counts;
+}
+
+function detectInterNetworkBridges(cy: Core) {
+  if (!cy) return;
+  cy.batch(() => {
+    cy.elements().removeClass('bridge-node bridge-edge');
+    const nodes = cy.nodes();
+    if (nodes.length < 5) return;
+
+    nodes.forEach((node) => {
+      const neighbors = node.neighborhood('node');
+      if (neighbors.length >= 2) {
+        const types = new Set(neighbors.map((n) => n.data('nodeType')));
+        if (types.size >= 2 && neighbors.length >= 3) {
+          node.addClass('bridge-node');
+          node.connectedEdges().addClass('bridge-edge');
+        }
+      }
+    });
+  });
+}
+
+function applyFocusView(
+  cy: Core,
+  focusNodeId: string | null,
+  focusDepth: FocusDepth,
+  onFocusStatsUpdate?: (visibleNodes: number, visibleEdges: number) => void
+) {
+  if (!cy) return;
+
+  cy.batch(() => {
+    const all = cy.elements();
+    all.removeClass('network-hidden focus-anchor focus-direct focus-secondary spine-edge');
+
+    if (!focusNodeId) {
+      if (onFocusStatsUpdate) onFocusStatsUpdate(0, 0);
+      return;
+    }
+
+    const anchor = cy.nodes(`#${focusNodeId}`);
+    if (anchor.length === 0) {
+      if (onFocusStatsUpdate) onFocusStatsUpdate(0, 0);
+      return;
+    }
+
+    anchor.addClass('focus-anchor');
+
+    let visibleNodes: cytoscape.NodeCollection;
+    let visibleEdges: cytoscape.EdgeCollection;
+
+    if (focusDepth === '1hop') {
+      const direct = anchor.closedNeighborhood();
+      visibleNodes = direct.nodes();
+      visibleEdges = direct.edges();
+
+      visibleNodes.forEach((n) => {
+        if (n.id() !== focusNodeId) n.addClass('focus-direct');
+      });
+    } else if (focusDepth === '2hops') {
+      const hop1 = anchor.closedNeighborhood();
+      const hop2 = hop1.closedNeighborhood();
+
+      visibleNodes = hop2.nodes();
+      visibleEdges = hop2.edges();
+
+      hop1.nodes().forEach((n) => {
+        if (n.id() !== focusNodeId) n.addClass('focus-direct');
+      });
+      hop2.nodes().forEach((n) => {
+        if (!hop1.nodes().contains(n) && n.id() !== focusNodeId) {
+          n.addClass('focus-secondary');
+        }
+      });
+    } else {
+      const component = anchor.component();
+      visibleNodes = component.nodes();
+      visibleEdges = component.edges();
+
+      const hop1 = anchor.closedNeighborhood().nodes();
+      visibleNodes.forEach((n) => {
+        if (n.id() === focusNodeId) return;
+        if (hop1.contains(n)) n.addClass('focus-direct');
+        else n.addClass('focus-secondary');
+      });
+    }
+
+    // Visually hide elements outside focus neighborhood (display: none)
+    const hiddenNodes = cy.nodes().difference(visibleNodes);
+    const hiddenEdges = cy.edges().difference(visibleEdges);
+
+    hiddenNodes.addClass('network-hidden');
+    hiddenEdges.addClass('network-hidden');
+
+    // Emphasize primary investigative spine edges within visible focus set
+    visibleEdges.forEach((e) => {
+      const srcType = e.source().data('nodeType');
+      const tgtType = e.target().data('nodeType');
+      if (
+        (srcType === 'Person' || srcType === 'Organization') &&
+        (tgtType === 'PhoneNumber' || tgtType === 'Vehicle' || tgtType === 'Evidence')
+      ) {
+        e.addClass('spine-edge');
+      }
+    });
+
+    if (onFocusStatsUpdate) {
+      onFocusStatsUpdate(visibleNodes.length, visibleEdges.length);
+    }
+  });
+
+  const anchorNode = cy.nodes(`#${focusNodeId}`);
+  if (anchorNode.length > 0) {
+    cy.animate({
+      center: { eles: anchorNode },
+      zoom: Math.max(cy.zoom(), 0.9),
+      duration: 350,
+    });
+  }
+}
+
+// ── Node Inspector Panel ──────────────────────────────────────────────────────
 interface NodeInspectorProps {
   node: GraphNode;
   displayName: string;
   primaryLabel: string;
+  graphData: { nodes: GraphNode[]; relationships: GraphRelationship[] } | null;
   onClose: () => void;
   onOpenDossier: (entityId: string) => void;
+  onFocusNetwork: (nodeId: string) => void;
+  isFocused: boolean;
 }
 
 const NodeInspector: React.FC<NodeInspectorProps> = ({
-  node, displayName, primaryLabel, onClose, onOpenDossier,
+  node, displayName, primaryLabel, graphData, onClose, onOpenDossier, onFocusNetwork, isFocused,
 }) => {
   const cfg = getNodeConfig(node.labels);
   const Icon = cfg.icon;
   const p = node.properties;
   const entityId = p.entity_id || null;
+
+  const connectedIntel = computeConnectedIntelligence(node.id, graphData);
 
   // Only surface investigator-relevant properties
   const identifiers: { label: string; value: string }[] = [];
@@ -941,18 +1289,47 @@ const NodeInspector: React.FC<NodeInspectorProps> = ({
       </div>
 
       {/* Body */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-5">
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+
+        {/* Focus Action Button */}
+        <button
+          id="focus-network-btn"
+          onClick={() => onFocusNetwork(node.id)}
+          className={`w-full flex items-center justify-center space-x-2 py-2 px-3 text-xs font-bold rounded-sm border transition-colors ${
+            isFocused
+              ? 'bg-civix-gold-950 border-civix-gold-500 text-civix-gold-400'
+              : 'bg-civix-blue-950/80 border-civix-blue-600/60 text-civix-blue-300 hover:bg-civix-blue-900/80'
+          }`}
+        >
+          <Eye className="w-3.5 h-3.5" />
+          <span>{isFocused ? 'FOCUS ACTIVE' : 'FOCUS NETWORK'}</span>
+        </button>
 
         {/* Case Role — if available */}
         {p.role && (
           <div>
-            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2">Case Role</p>
+            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-1.5">Case Role</p>
             <span className="inline-flex items-center text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-red-950 border-civix-red-600/50 text-civix-red-400">
               {String(p.role)}
             </span>
             {p.role_basis && (
               <p className="text-[10px] text-civix-text-muted mt-1">{String(p.role_basis)}</p>
             )}
+          </div>
+        )}
+
+        {/* Connected Intelligence Breakdown */}
+        {Object.keys(connectedIntel).length > 0 && (
+          <div>
+            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2">Connected Intelligence</p>
+            <div className="grid grid-cols-2 gap-1.5 font-mono text-[10px]">
+              {Object.entries(connectedIntel).map(([type, count]) => (
+                <div key={type} className="flex items-center justify-between bg-civix-surface-2 border border-civix-border rounded-sm px-2 py-1">
+                  <span className="text-civix-text-secondary truncate">{type}</span>
+                  <span className="font-bold text-civix-gold-400 ml-1">{count}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -1028,13 +1405,11 @@ const EdgeInspector: React.FC<EdgeInspectorProps> = ({ edge, sourceNode, targetN
   return (
     <div className="flex flex-col h-full bg-civix-surface text-civix-text-main">
       {/* Header */}
-      <div className={`px-4 py-3 border-b border-civix-border flex items-start justify-between flex-shrink-0 ${
-        isCandidate ? 'bg-civix-gold-950/60' : isCaseContext ? 'bg-civix-surface-2' : 'bg-civix-blue-950/60'
-      }`}>
+      <div className={`px-4 py-3 border-b border-civix-border flex items-start justify-between flex-shrink-0 ${isCandidate ? 'bg-civix-gold-950/60' : isCaseContext ? 'bg-civix-surface-2' : 'bg-civix-blue-950/60'
+        }`}>
         <div>
-          <p className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${
-            isCandidate ? 'text-civix-gold-400' : isCaseContext ? 'text-civix-text-secondary' : 'text-civix-blue-400'
-          }`}>
+          <p className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${isCandidate ? 'text-civix-gold-400' : isCaseContext ? 'text-civix-text-secondary' : 'text-civix-blue-400'
+            }`}>
             {isCandidate ? 'IDENTITY CANDIDATE' : isCaseContext ? 'CASE CONTEXT' : 'INVESTIGATIVE RELATIONSHIP'}
           </p>
           <p className="text-sm font-bold text-civix-text-main leading-tight">{edge.predicate}</p>
@@ -1089,13 +1464,12 @@ const EdgeInspector: React.FC<EdgeInspectorProps> = ({ edge, sourceNode, targetN
               )}
             </div>
             <div className="flex justify-center">
-              <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border ${
-                isCandidate
+              <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border ${isCandidate
                   ? 'bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400'
                   : isCaseContext
                     ? 'bg-civix-surface-2 border-civix-border text-civix-text-secondary'
                     : 'bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400'
-              }`}>
+                }`}>
                 {edge.rawPredicate}
               </span>
             </div>
@@ -1321,8 +1695,8 @@ const GraphLegend: React.FC<{ viewMode: ViewMode }> = ({ viewMode }) => {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const DEFAULT_DEPTH = 1;
-const DEFAULT_NODE_LIMIT = 200;
-const DEFAULT_REL_LIMIT = 500;
+const DEFAULT_NODE_LIMIT = 500;
+const DEFAULT_REL_LIMIT = 1000;
 
 interface InvestigativeGraphPageProps {
   caseIdProp?: string;
@@ -1339,8 +1713,15 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  // ── Focus State ──────────────────────────────────────────────────────────
+  const [focusNodeId, setFocusNodeId] = useState<string | null>(null);
+  const [focusDepth, setFocusDepth] = useState<FocusDepth>('1hop');
+  const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
+  const [focusStats, setFocusStats] = useState<{ visibleNodes: number; visibleEdges: number } | null>(null);
+
   const cyContainerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<Core | null>(null);
+  const prevTopologyRef = useRef<{ caseId: string | undefined; depth: number; viewMode: ViewMode } | null>(null);
 
   // ── Case fetch ──────────────────────────────────────────────────────────
   const { data: caseData, isLoading: caseLoading, error: caseError } = useQuery({
@@ -1368,6 +1749,20 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
     staleTime: 30_000,
   });
 
+  // Refs for Cytoscape event handlers to prevent stale closure issues
+  const graphDataRef = useRef(graphData);
+  const viewModeRef = useRef(viewMode);
+  useEffect(() => { graphDataRef.current = graphData; }, [graphData]);
+  useEffect(() => { viewModeRef.current = viewMode; }, [viewMode]);
+
+  // ── Focus Anchor Name derivation ──────────────────────────────────────────
+  const focusNodeName = useMemo(() => {
+    if (!focusNodeId || !graphData) return '';
+    const node = graphData.nodes.find((n) => n.id === focusNodeId);
+    if (!node) return focusNodeId.length > 12 ? `…${focusNodeId.slice(-8)}` : focusNodeId;
+    return deriveDisplayName(node);
+  }, [focusNodeId, graphData]);
+
   // ── Build presentation graph ─────────────────────────────────────────────
   const presentationGraph = useMemo<PresentationGraph | null>(() => {
     if (!graphData) return null;
@@ -1383,108 +1778,312 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
     return buildCytoscapeElements(presentationGraph, viewMode, graphData.nodes);
   }, [graphData, presentationGraph, viewMode]);
 
-  // ── Initialize / update Cytoscape ───────────────────────────────────────
-  useEffect(() => {
-    if (!cyContainerRef.current) return;
-    if (cytoscapeElements.length === 0) {
-      if (cyRef.current) { cyRef.current.destroy(); cyRef.current = null; }
-      return;
+  // ── Semantic zoom classifier ──────────────────────────────────────────────
+  const updateZoomClasses = useCallback((cy: Core) => {
+    if (!cy) return;
+    const zoom = cy.zoom();
+    let zoomClass = 'zoom-close';
+    if (zoom < 0.45) {
+      zoomClass = 'zoom-far';
+    } else if (zoom < 0.85) {
+      zoomClass = 'zoom-medium';
+    } else if (zoom < 1.6) {
+      zoomClass = 'zoom-close';
+    } else {
+      zoomClass = 'zoom-very-close';
     }
-    if (cyRef.current) { cyRef.current.destroy(); cyRef.current = null; }
 
-    // Layout configuration by view mode
-    const layoutConfig: any = viewMode === 'investigative'
+    cy.batch(() => {
+      const eles = cy.elements();
+      eles.removeClass('zoom-far zoom-medium zoom-close zoom-very-close');
+      eles.addClass(zoomClass);
+    });
+  }, []);
+
+  // ── Active Interaction Handlers (Pan / Zoom / Drag) ─────────────────────────
+  const isInteractingRef = useRef(false);
+  const interactionTimerRef = useRef<number | null>(null);
+
+  const handleInteractionStart = useCallback(() => {
+    const cy = cyRef.current;
+    if (!cy) return;
+    if (!isInteractingRef.current) {
+      isInteractingRef.current = true;
+      cy.batch(() => {
+        cy.elements().addClass('is-interacting');
+      });
+    }
+    if (interactionTimerRef.current) {
+      window.clearTimeout(interactionTimerRef.current);
+      interactionTimerRef.current = null;
+    }
+  }, []);
+
+  const handleInteractionEnd = useCallback(() => {
+    if (interactionTimerRef.current) {
+      window.clearTimeout(interactionTimerRef.current);
+    }
+    interactionTimerRef.current = window.setTimeout(() => {
+      const cy = cyRef.current;
+      if (!cy) return;
+      isInteractingRef.current = false;
+      requestAnimationFrame(() => {
+        if (!cyRef.current) return;
+        cy.batch(() => {
+          cy.elements().removeClass('is-interacting');
+          updateZoomClasses(cy);
+        });
+      });
+    }, 150);
+  }, [updateZoomClasses]);
+
+  // ── Layout Runner with 4-5 Hop Spatial Breathing Room Tuning ──────────────
+  const runLayout = useCallback((cy: Core, mode: ViewMode, hopDepth: number = 1) => {
+    // Detect bridge elements first so Cytoscape layout can use .bridge-edge class
+    detectInterNetworkBridges(cy);
+
+    const layoutConfig: any = mode === 'investigative'
       ? {
-          name: 'cose',
+        name: 'cose',
+        animate: true,
+        animationDuration: 600,
+        randomize: false,
+        nodeRepulsion: () => (hopDepth >= 4 ? 50000 : 18000),
+        idealEdgeLength: (edge: any) => {
+          if (edge.hasClass('bridge-edge')) return 350;
+          return hopDepth >= 4 ? 140 : 100;
+        },
+        edgeElasticity: (edge: any) => {
+          if (edge.hasClass('bridge-edge')) return 0.1;
+          return 0.8;
+        },
+        nestingFactor: 1.2,
+        gravity: hopDepth >= 4 ? 0.1 : 0.35,
+        numIter: 1200,
+        padding: 60,
+        fit: true,
+      }
+      : mode === 'case_context'
+        ? {
+          name: 'breadthfirst',
+          directed: true,
           animate: true,
-          animationDuration: 600,
-          randomize: false,
-          nodeRepulsion: () => 12000,
-          idealEdgeLength: () => 140,
-          edgeElasticity: () => 0.6,
-          nestingFactor: 1.5,
-          gravity: 0.4,
-          numIter: 1500,
-          padding: 50,
+          animationDuration: 400,
+          padding: 40,
+          spacingFactor: 1.4,
           fit: true,
         }
-      : viewMode === 'case_context'
-        ? {
-            name: 'breadthfirst',
-            directed: true,
-            animate: true,
-            animationDuration: 400,
-            padding: 40,
-            spacingFactor: 1.4,
-            fit: true,
-          }
         : {
-            name: 'cose',
-            animate: false,
-            randomize: false,
-            nodeRepulsion: () => 5000,
-            idealEdgeLength: () => 90,
-            numIter: 800,
-            padding: 30,
-            fit: true,
-          };
+          name: 'cose',
+          animate: false,
+          randomize: false,
+          nodeRepulsion: () => 5000,
+          idealEdgeLength: () => 90,
+          numIter: 600,
+          padding: 30,
+          fit: true,
+        };
 
-    const cy = cytoscape({
-      container: cyContainerRef.current,
-      elements: cytoscapeElements,
-      style: CY_STYLE,
-      layout: layoutConfig,
-      wheelSensitivity: 0.3,
-      minZoom: 0.15,
-      maxZoom: 4,
-      boxSelectionEnabled: false,
+    const layout = cy.layout(layoutConfig);
+    layout.one('layoutstop', () => {
+      detectInterNetworkBridges(cy);
     });
+    layout.run();
+  }, []);
 
-    // Node click
-    cy.on('tap', 'node', (evt) => {
-      const node = evt.target;
-      const graphNode = graphData?.nodes.find((n) => n.id === node.id());
-      if (graphNode) {
-        setSelectedItem({
-          kind: 'node',
-          node: graphNode,
-          displayName: node.data('name') || node.data('label'),
-          primaryLabel: node.data('nodeType'),
+  // ── Focus Handlers ────────────────────────────────────────────────────────
+  const handleFocusNetwork = useCallback((nodeId: string) => {
+    const cy = cyRef.current;
+    if (!cy) return;
+    setFocusNodeId(nodeId);
+    setIsFocusMode(true);
+    applyFocusView(cy, nodeId, focusDepth, (vn, ve) => setFocusStats({ visibleNodes: vn, visibleEdges: ve }));
+  }, [focusDepth]);
+
+  const handleFocusDepthChange = useCallback((newDepth: FocusDepth) => {
+    const cy = cyRef.current;
+    setFocusDepth(newDepth);
+    if (cy && focusNodeId) {
+      applyFocusView(cy, focusNodeId, newDepth, (vn, ve) => setFocusStats({ visibleNodes: vn, visibleEdges: ve }));
+    }
+  }, [focusNodeId]);
+
+  const handleShowFullGraph = useCallback(() => {
+    const cy = cyRef.current;
+    setIsFocusMode(false);
+    setFocusNodeId(null);
+    setFocusStats(null);
+    if (cy) {
+      applyFocusView(cy, null, '1hop');
+    }
+  }, []);
+
+  // ── Persistent Cytoscape Core Initialization ──────────────────────────────
+  useEffect(() => {
+    if (!cyContainerRef.current) return;
+
+    if (!cyRef.current) {
+      const cy = cytoscape({
+        container: cyContainerRef.current,
+        elements: [],
+        style: CY_STYLE,
+        wheelSensitivity: 0.2,
+        minZoom: 0.1,
+        maxZoom: 4.5,
+        boxSelectionEnabled: false,
+        pixelRatio: typeof window !== 'undefined' && window.devicePixelRatio > 1.5 ? 1.5 : 'auto',
+        textureOnViewport: false,
+        hideEdgesOnViewport: false,
+      });
+
+      // Zoom listener
+      cy.on('zoom', () => {
+        handleInteractionStart();
+        handleInteractionEnd();
+      });
+
+      // Pan / Viewport listeners
+      cy.on('pan', () => {
+        handleInteractionStart();
+      });
+
+      cy.on('panend', () => {
+        handleInteractionEnd();
+      });
+
+      // Connected cluster node drag synchronization
+      let dragStartNodePos: { x: number; y: number } | null = null;
+      const dragPositions = new Map<string, { x: number; y: number }>();
+      let dragMovedNodes: cytoscape.NodeCollection | null = null;
+
+      cy.on('dragstart', 'node', (evt) => {
+        handleInteractionStart();
+        const node = evt.target;
+        dragStartNodePos = { ...node.position() };
+        dragPositions.clear();
+
+        // Move all connected nodes in neighborhood together when dragging
+        const connectedNodes = node.closedNeighborhood().nodes();
+        dragMovedNodes = connectedNodes;
+        connectedNodes.forEach((n) => {
+          dragPositions.set(n.id(), { ...n.position() });
         });
-      }
-    });
+      });
 
-    // Edge click
-    cy.on('tap', 'edge', (evt) => {
-      const edge = evt.target;
-      const pe: PresentationEdge | undefined = edge.data('presentationEdge');
+      cy.on('drag', 'node', (evt) => {
+        const node = evt.target;
+        if (!dragStartNodePos || !dragMovedNodes) return;
+        const currentPos = node.position();
+        const dx = currentPos.x - dragStartNodePos.x;
+        const dy = currentPos.y - dragStartNodePos.y;
 
-      if (viewMode === 'provenance') {
-        const relId = edge.id();
-        const rawRel = graphData?.relationships.find((r) => r.id === relId);
-        if (rawRel) {
-          const srcNode = graphData?.nodes.find((n) => n.id === rawRel.start_node);
-          const tgtNode = graphData?.nodes.find((n) => n.id === rawRel.end_node);
-          setSelectedItem({ kind: 'raw_edge', rel: rawRel, sourceNode: srcNode, targetNode: tgtNode });
+        cy.batch(() => {
+          dragMovedNodes.forEach((n) => {
+            if (n.id() === node.id()) return;
+            const initial = dragPositions.get(n.id());
+            if (initial) {
+              n.position({
+                x: initial.x + dx,
+                y: initial.y + dy,
+              });
+            }
+          });
+        });
+      });
+
+      cy.on('dragfree', 'node', () => {
+        dragStartNodePos = null;
+        dragMovedNodes = null;
+        dragPositions.clear();
+        handleInteractionEnd();
+      });
+
+      // Node click — ONLY selects node, does NOT force focus isolation
+      cy.on('tap', 'node', (evt) => {
+        const node = evt.target;
+        const graphNode = graphDataRef.current?.nodes.find((n) => n.id === node.id());
+        if (graphNode) {
+          setSelectedItem({
+            kind: 'node',
+            node: graphNode,
+            displayName: node.data('name') || node.data('label'),
+            primaryLabel: node.data('nodeType'),
+          });
         }
-      } else if (pe) {
-        const srcNode = graphData?.nodes.find((n) => n.id === pe.source);
-        const tgtNode = graphData?.nodes.find((n) => n.id === pe.target);
-        setSelectedItem({ kind: 'edge', edge: pe, sourceNode: srcNode, targetNode: tgtNode });
+      });
+
+      // Edge click
+      cy.on('tap', 'edge', (evt) => {
+        const edge = evt.target;
+        const pe: PresentationEdge | undefined = edge.data('presentationEdge');
+
+        if (viewModeRef.current === 'provenance') {
+          const relId = edge.id();
+          const rawRel = graphDataRef.current?.relationships.find((r) => r.id === relId);
+          if (rawRel) {
+            const srcNode = graphDataRef.current?.nodes.find((n) => n.id === rawRel.start_node);
+            const tgtNode = graphDataRef.current?.nodes.find((n) => n.id === rawRel.end_node);
+            setSelectedItem({ kind: 'raw_edge', rel: rawRel, sourceNode: srcNode, targetNode: tgtNode });
+          }
+        } else if (pe) {
+          const srcNode = graphDataRef.current?.nodes.find((n) => n.id === pe.source);
+          const tgtNode = graphDataRef.current?.nodes.find((n) => n.id === pe.target);
+          setSelectedItem({ kind: 'edge', edge: pe, sourceNode: srcNode, targetNode: tgtNode });
+        }
+      });
+
+      // Background tap → deselect
+      cy.on('tap', (evt) => {
+        if (evt.target === cy) {
+          setSelectedItem(null);
+          cy.elements().removeClass('highlighted');
+        }
+      });
+
+      cyRef.current = cy;
+    }
+
+    return () => {
+      if (interactionTimerRef.current) {
+        window.clearTimeout(interactionTimerRef.current);
       }
+    };
+  }, [handleInteractionStart, handleInteractionEnd]);
+
+  // ── Differential Elements Update & Controlled Layout Trigger ──────────────
+  useEffect(() => {
+    const cy = cyRef.current;
+    if (!cy) return;
+
+    if (cytoscapeElements.length === 0) {
+      cy.batch(() => {
+        cy.elements().remove();
+      });
+      return;
+    }
+
+    const topologyChanged =
+      !prevTopologyRef.current ||
+      prevTopologyRef.current.caseId !== caseId ||
+      prevTopologyRef.current.depth !== depth ||
+      prevTopologyRef.current.viewMode !== viewMode;
+
+    cy.batch(() => {
+      cy.elements().remove();
+      cy.add(cytoscapeElements);
+      updateZoomClasses(cy);
     });
 
-    // Background tap → deselect
-    cy.on('tap', (evt) => {
-      if (evt.target === cy) {
-        setSelectedItem(null);
-        cy.elements().removeClass('highlighted');
+    if (topologyChanged) {
+      runLayout(cy, viewMode, depth);
+      prevTopologyRef.current = { caseId, depth, viewMode };
+      if (isFocusMode && focusNodeId) {
+        applyFocusView(cy, focusNodeId, focusDepth, (vn, ve) => setFocusStats({ visibleNodes: vn, visibleEdges: ve }));
       }
-    });
-
-    cyRef.current = cy;
-    return () => { cy.destroy(); cyRef.current = null; };
-  }, [cytoscapeElements, viewMode]);
+    } else if (isFocusMode && focusNodeId) {
+      applyFocusView(cy, focusNodeId, focusDepth, (vn, ve) => setFocusStats({ visibleNodes: vn, visibleEdges: ve }));
+    }
+  }, [cytoscapeElements, caseId, depth, viewMode, runLayout, updateZoomClasses, isFocusMode, focusNodeId, focusDepth]);
 
   // ── Controls ─────────────────────────────────────────────────────────────
   const handleFit = useCallback(() => cyRef.current?.fit(undefined, 40), []);
@@ -1501,6 +2100,11 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
     cy.center();
   }, []);
   const handleReset = useCallback(() => cyRef.current?.reset(), []);
+  const handleRelayout = useCallback(() => {
+    if (cyRef.current) {
+      runLayout(cyRef.current, viewMode, depth);
+    }
+  }, [runLayout, viewMode, depth]);
 
   // ── Search highlight ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -1526,7 +2130,7 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-full min-h-0 space-y-4 max-w-7xl mx-auto pb-12">
+    <div className="flex flex-col h-full min-h-0 space-y-3 max-w-7xl mx-auto pb-12">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-3 border-b border-civix-border gap-3 flex-shrink-0">
         <div>
@@ -1572,12 +2176,11 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
               <button
                 key={mode}
                 id={`view-${mode}`}
-                onClick={() => { setViewMode(mode); setSelectedItem(null); }}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 text-[10px] font-bold transition-colors border-r border-civix-border last:border-r-0 ${
-                  viewMode === mode
+                onClick={() => { setViewMode(mode); setSelectedItem(null); handleShowFullGraph(); }}
+                className={`flex items-center space-x-1.5 px-3 py-1.5 text-[10px] font-bold transition-colors border-r border-civix-border last:border-r-0 ${viewMode === mode
                     ? 'bg-civix-blue-600 text-white'
                     : 'text-civix-text-secondary hover:bg-civix-surface-2'
-                }`}
+                  }`}
               >
                 <Icon className="w-3 h-3" />
                 <span>{label}</span>
@@ -1591,7 +2194,7 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
               <button
                 key={d}
                 id={`depth-${d}-btn`}
-                onClick={() => { setDepth(d); setSelectedItem(null); }}
+                onClick={() => { setDepth(d); setSelectedItem(null); handleShowFullGraph(); }}
                 className={`px-3 py-1.5 text-xs font-bold transition-colors ${d > 1 ? 'border-l border-civix-border' : ''} ${depth === d ? 'bg-civix-blue-600 text-white' : 'text-civix-text-secondary hover:bg-civix-surface-2'}`}
               >
                 {d} HOP{d > 1 ? 'S' : ''}
@@ -1599,7 +2202,7 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
             ))}
           </div>
 
-          {/* Fit / Reset / Refresh / Zoom */}
+          {/* Fit / Reset / Re-layout / Refresh / Zoom */}
           <button id="graph-fit-btn" onClick={handleFit} disabled={!hasGraph} className="civix-btn-secondary py-1 text-xs">
             <Maximize2 className="w-3.5 h-3.5" />
             <span>Fit</span>
@@ -1607,6 +2210,10 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
           <button id="graph-reset-btn" onClick={handleReset} disabled={!hasGraph} className="civix-btn-secondary py-1 text-xs">
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset</span>
+          </button>
+          <button id="graph-relayout-btn" onClick={handleRelayout} disabled={!hasGraph} className="civix-btn-secondary py-1 text-xs">
+            <Play className="w-3.5 h-3.5" />
+            <span>Re-layout</span>
           </button>
           <button id="graph-refresh-btn" onClick={() => refetchGraph()} disabled={graphFetching} className="civix-btn-secondary py-1 text-xs">
             <RefreshCw className={`w-3.5 h-3.5 ${graphFetching ? 'animate-spin text-civix-gold' : ''}`} />
@@ -1624,6 +2231,56 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
           </div>
         </div>
       </div>
+
+      {/* Focus Context Header Bar */}
+      {isFocusMode && focusNodeId && (
+        <div className="flex items-center justify-between bg-civix-blue-950/90 border border-civix-blue-600/60 rounded-sm px-4 py-2 text-xs text-civix-text-main font-mono shadow-md flex-shrink-0">
+          <div className="flex items-center space-x-2.5 min-w-0">
+            <Eye className="w-4 h-4 text-civix-gold-400 flex-shrink-0" />
+            <span className="font-bold text-civix-gold-400 uppercase tracking-wider text-[10px]">FOCUS NETWORK:</span>
+            <span className="font-bold text-civix-blue-300 text-xs truncate max-w-[200px]">{focusNodeName}</span>
+            {focusStats && (
+              <span className="text-civix-text-muted text-[10px] font-mono hidden sm:inline">
+                ({focusStats.visibleNodes} visible entities · {focusStats.visibleEdges} visible relationships)
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-3 flex-shrink-0">
+            <div className="flex items-center border border-civix-border rounded-sm overflow-hidden bg-civix-surface">
+              <button
+                id="focus-1hop-btn"
+                onClick={() => handleFocusDepthChange('1hop')}
+                className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors ${focusDepth === '1hop' ? 'bg-civix-blue-600 text-white' : 'text-civix-text-secondary hover:bg-civix-surface-2'}`}
+              >
+                1 HOP
+              </button>
+              <button
+                id="focus-2hops-btn"
+                onClick={() => handleFocusDepthChange('2hops')}
+                className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors border-l border-civix-border ${focusDepth === '2hops' ? 'bg-civix-blue-600 text-white' : 'text-civix-text-secondary hover:bg-civix-surface-2'}`}
+              >
+                2 HOPS
+              </button>
+              <button
+                id="focus-all-btn"
+                onClick={() => handleFocusDepthChange('all')}
+                className={`px-3 py-1 text-[10px] font-bold uppercase transition-colors border-l border-civix-border ${focusDepth === 'all' ? 'bg-civix-blue-600 text-white' : 'text-civix-text-secondary hover:bg-civix-surface-2'}`}
+              >
+                ALL CONNECTED
+              </button>
+            </div>
+
+            <button
+              id="show-full-graph-btn"
+              onClick={handleShowFullGraph}
+              className="civix-btn-secondary py-1 px-3 text-[10px] font-bold text-civix-gold-400 border-civix-gold-600/40 hover:bg-civix-gold-950/40 transition-colors"
+            >
+              Show Full Graph
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* View Mode info banner */}
       {viewMode === 'investigative' && presentationGraph && depth === 1 && presentationGraph.investigativeEdges.length === 0 && presentationGraph.domainNodes.length > 0 && (
@@ -1736,13 +2393,12 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
             {/* View mode badge */}
             {hasGraph && (
               <div className="absolute top-3 left-3 z-10">
-                <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border uppercase ${
-                  viewMode === 'investigative' ? 'bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400' :
-                  viewMode === 'case_context' ? 'bg-civix-surface-2 border-civix-border text-civix-text-secondary' :
-                  'bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400'
-                }`}>
+                <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border uppercase ${viewMode === 'investigative' ? 'bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400' :
+                    viewMode === 'case_context' ? 'bg-civix-surface-2 border-civix-border text-civix-text-secondary' :
+                      'bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400'
+                  }`}>
                   {viewMode === 'investigative' ? 'INVESTIGATIVE VIEW' :
-                   viewMode === 'case_context' ? 'CASE CONTEXT VIEW' : 'PROVENANCE VIEW'}
+                    viewMode === 'case_context' ? 'CASE CONTEXT VIEW' : 'PROVENANCE VIEW'}
                 </span>
               </div>
             )}
@@ -1768,8 +2424,11 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ 
                 node={selectedItem.node}
                 displayName={selectedItem.displayName}
                 primaryLabel={selectedItem.primaryLabel}
+                graphData={graphData ?? null}
                 onClose={() => setSelectedItem(null)}
                 onOpenDossier={handleOpenDossier}
+                onFocusNetwork={handleFocusNetwork}
+                isFocused={isFocusMode && focusNodeId === selectedItem.node.id}
               />
             ) : selectedItem.kind === 'edge' ? (
               <EdgeInspector

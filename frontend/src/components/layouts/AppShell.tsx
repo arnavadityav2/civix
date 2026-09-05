@@ -27,19 +27,6 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
 
       {/* 3. LOWER INSTITUTIONAL IDENTITY FOOTER */}
       <footer className="relative flex-shrink-0 border-t border-[#1E2430] overflow-hidden bg-[#07090E] z-30">
-        {/* Photographic Police Parade Lineup & Parliament Banner — Rendered ONLY on Main Dashboard Landing Page */}
-        {isDashboard && (
-          <div className="relative w-full overflow-hidden bg-black flex items-center justify-center border-b border-[#1E2430]">
-            <img 
-              src="/assets/lower_identity_banner_cropped.png" 
-              alt="Delhi Police Parade & Parliament" 
-              className="w-full max-h-[75px] sm:max-h-[85px] object-cover sm:object-contain opacity-100"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = '/assets/police_officers_parade.jpg';
-              }}
-            />
-          </div>
-        )}
 
         {/* Status Bar */}
         <div className="bg-[#05070A] px-5 py-1.5 flex items-center justify-between text-[11px] font-mono text-slate-400">

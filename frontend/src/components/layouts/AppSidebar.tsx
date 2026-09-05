@@ -38,7 +38,7 @@ export const AppSidebar: React.FC = () => {
       exact: false,
       isActiveOverride: () => location.pathname.includes('/graph') 
     },
-    { label: 'Biometric & Facial', icon: Fingerprint, path: '/cctv', exact: false },
+    { label: 'Biometric & Facial', icon: Fingerprint, path: '/biometric', exact: false },
   ];
 
   const toolsNav = [

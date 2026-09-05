@@ -21,6 +21,7 @@ import {
   Radio,
   Fingerprint
 } from 'lucide-react';
+import { FieldOperationsMap } from '../components/dashboard/FieldOperationsMap';
 
 export const CommandCenterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -193,7 +194,7 @@ export const CommandCenterPage: React.FC = () => {
 
           {/* Tile 4: Biometric & Facial Intelligence */}
           <div 
-            onClick={() => navigate('/cctv')}
+            onClick={() => navigate('/biometric')}
             className="group relative h-40 rounded-xl border border-[#1E2430] hover:border-[#E6B325]/80 overflow-hidden p-4 flex flex-col justify-between cursor-pointer transition-all hover:scale-[1.01] shadow-xl bg-[#090C12]"
           >
             {/* Real Background Image — Bright & Vivid */}
@@ -356,121 +357,9 @@ export const CommandCenterPage: React.FC = () => {
       {/* ── 3. BOTTOM OPERATIONAL GRID (3 COLUMNS, 1:1:1 SPLIT) ───────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
 
-        {/* Column 1: Priority Signals */}
-        <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-4 flex flex-col justify-between shadow-md">
-          <div>
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#1E2430] pb-2.5 mb-3">
-              <div className="flex items-center space-x-2">
-                <Bell className="w-4 h-4 text-red-500" />
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Priority Signals</h3>
-                <span className="bg-red-600 text-white font-mono text-[9px] font-bold px-1.5 py-0.2 rounded-full">3</span>
-              </div>
-              <button onClick={() => navigate('/cases')} className="text-[10px] text-blue-400 hover:underline font-semibold">View All →</button>
-            </div>
-
-            {/* List */}
-            <div className="space-y-2.5">
-              {/* Item 1 */}
-              <div onClick={() => navigate('/cases')} className="p-2.5 rounded-lg bg-[#161922] border border-[#1E2430] hover:border-slate-600 cursor-pointer transition-colors flex items-start justify-between gap-2">
-                <div className="flex items-start space-x-2.5">
-                  <div className="p-1.5 bg-red-600/20 text-red-400 rounded mt-0.5">
-                    <AlertTriangle className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white leading-tight">IMEI reuse across multiple cases</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">Linked to 3 investigations including 2012 cash van robbery.</div>
-                  </div>
-                </div>
-                <div className="text-[9px] font-mono text-slate-400 whitespace-nowrap">14 Aug 2026</div>
-              </div>
-
-              {/* Item 2 */}
-              <div onClick={() => navigate('/cases')} className="p-2.5 rounded-lg bg-[#161922] border border-[#1E2430] hover:border-slate-600 cursor-pointer transition-colors flex items-start justify-between gap-2">
-                <div className="flex items-start space-x-2.5">
-                  <div className="p-1.5 bg-amber-500/20 text-amber-400 rounded mt-0.5">
-                    <AlertTriangle className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white leading-tight">Financial transaction flagged</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">Unusual fund flow detected.</div>
-                  </div>
-                </div>
-                <div className="text-[9px] font-mono text-slate-400 whitespace-nowrap">13 Aug 2026</div>
-              </div>
-
-              {/* Item 3 */}
-              <div onClick={() => navigate('/cases')} className="p-2.5 rounded-lg bg-[#161922] border border-[#1E2430] hover:border-slate-600 cursor-pointer transition-colors flex items-start justify-between gap-2">
-                <div className="flex items-start space-x-2.5">
-                  <div className="p-1.5 bg-blue-500/20 text-blue-400 rounded mt-0.5">
-                    <Info className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-white leading-tight">New entity match</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">Possible link to Najafgarh robbery case.</div>
-                  </div>
-                </div>
-                <div className="text-[9px] font-mono text-slate-400 whitespace-nowrap">12 Aug 2026</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Column 2: Recent Activity */}
-        <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-4 flex flex-col justify-between shadow-md">
-          <div>
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#1E2430] pb-2.5 mb-3">
-              <div className="flex items-center space-x-2">
-                <FileText className="w-4 h-4 text-blue-400" />
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Recent Activity</h3>
-              </div>
-              <button onClick={() => navigate('/evidence')} className="text-[10px] text-blue-400 hover:underline font-semibold">View All →</button>
-            </div>
-
-            {/* Timeline Feed */}
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between p-2 rounded bg-[#161922]">
-                <div className="flex items-center space-x-2">
-                  <FileText className="w-3.5 h-3.5 text-blue-400" />
-                  <span className="font-semibold text-white">New evidence uploaded</span>
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">5 min ago</span>
-              </div>
-
-              <div className="flex items-center justify-between p-2 rounded bg-[#161922]">
-                <div className="flex items-center space-x-2">
-                  <Radio className="w-3.5 h-3.5 text-blue-400" />
-                  <span className="font-semibold text-white">CDR Tower Dump correlation complete</span>
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">28 min ago</span>
-              </div>
-
-              <div className="flex items-center justify-between p-2 rounded bg-[#161922]">
-                <div className="flex items-center space-x-2">
-                  <Fingerprint className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="font-semibold text-white">FRT Match Identified (Suresh Valmiki)</span>
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">1 hour ago</span>
-              </div>
-
-              <div className="flex items-center justify-between p-2 rounded bg-[#161922]">
-                <div className="flex items-center space-x-2">
-                  <Video className="w-3.5 h-3.5 text-red-400" />
-                  <span className="font-semibold text-white">CCTV footage linked</span>
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">2 hours ago</span>
-              </div>
-
-              <div className="flex items-center justify-between p-2 rounded bg-[#161922]">
-                <div className="flex items-center space-x-2">
-                  <Folder className="w-3.5 h-3.5 text-blue-400" />
-                  <span className="font-semibold text-white">Case status updated</span>
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">3 hours ago</span>
-              </div>
-            </div>
-          </div>
+        {/* Field Operations Map (Spans 2 columns on lg screens) */}
+        <div className="lg:col-span-2 min-h-[440px] flex flex-col">
+          <FieldOperationsMap />
         </div>
 
         {/* Column 3: Quick Actions (2x2 Grid) */}

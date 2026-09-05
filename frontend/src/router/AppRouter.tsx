@@ -13,6 +13,7 @@ import { VisualAnalysisPage } from '../pages/VisualAnalysisPage';
 import { SpatialIntelligencePage } from '../pages/SpatialIntelligencePage';
 import { EvidencePage } from '../pages/EvidencePage';
 import { TelecomIntelligencePage } from '../pages/TelecomIntelligencePage';
+import BiometricIntelligencePage from '../pages/BiometricIntelligencePage';
 import { CivixSplashScreen } from '../components/splash/CivixSplashScreen';
 
 export const AppRouter: React.FC = () => {
@@ -50,6 +51,7 @@ export const AppRouter: React.FC = () => {
             <Route path="/cctv/analysis/:cameraId" element={<VisualAnalysisPage />} />
             <Route path="/cctv/analysis" element={<VisualAnalysisPage />} />
             <Route path="/entities/:entityId" element={<EntityDossierPage />} />
+            <Route path="/biometric" element={<BiometricIntelligencePage />} />
             <Route path="*" element={<CommandCenterPage />} />
           </Routes>
         </AppShell>

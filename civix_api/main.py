@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from .database import engine
 from .dependencies import get_db_session
-from .routers import users, cases, leads, hypotheses, identity, entities, search, ingest, evidence, cctv, spatial, telecom
+from .routers import users, cases, leads, hypotheses, identity, entities, search, ingest, evidence, cctv, spatial, telecom, biometric
 from .services.ml_service import MLService
 import logging
 
@@ -64,6 +64,7 @@ app.include_router(evidence.router)
 app.include_router(evidence.global_router)
 app.include_router(cctv.router)
 app.include_router(spatial.router)
+app.include_router(biometric.router)
 app.include_router(telecom.case_router)
 app.include_router(telecom.telecom_router)
 
