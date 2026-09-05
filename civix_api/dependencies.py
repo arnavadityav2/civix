@@ -1,3 +1,4 @@
+import logging
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,6 +8,9 @@ from typing import AsyncGenerator
 from .database import AsyncSessionLocal
 from .auth.principal import AuthenticatedCivixUser
 from .auth.jwt import get_user_id_from_token, oauth2_scheme
+
+logger = logging.getLogger(__name__)
+
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     """Provides a raw, unauthenticated DB session (useful for auth checks)."""
@@ -68,10 +72,16 @@ async def get_rls_session(
         raise
 
 async def get_neo4j_session():
-    """Provides an async Neo4j session."""
+    """Provides an async Neo4j session or None if Neo4j is unavailable."""
     from .database import neo4j_driver
     if not neo4j_driver:
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Neo4j driver not initialized")
-    
-    async with neo4j_driver.session() as session:
-        yield session
+        yield None
+        return
+
+    try:
+        async with neo4j_driver.session() as session:
+            yield session
+    except Exception as e:
+        logger.error(f"Neo4j session error: {e}")
+        raise
+

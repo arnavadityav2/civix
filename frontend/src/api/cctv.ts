@@ -83,6 +83,56 @@ export interface SearchJobResponse {
   error_message?: string;
 }
 
+export interface RealDetection {
+  class: string;
+  confidence: number;
+  bbox: [number, number, number, number];
+  normalized_bbox: [number, number, number, number] | null;
+  frame_number: number;
+}
+
+export interface RealTrackObject {
+  track_id: string;
+  object_class: string;
+  first_frame: number;
+  last_frame: number;
+  confidence: number;
+}
+
+export interface LiveInferenceFrame {
+  job_id: string;
+  camera_id: string;
+  status: string;
+  frame_index: number;
+  total_source_frames: number;
+  source_timestamp: number;
+  frame_width: number;
+  frame_height: number;
+  inference_timestamp: string;
+  inference_duration_ms: number;
+  inference_fps: number;
+  frames_analyzed: number;
+  elapsed_sec: number;
+  detections: RealDetection[];
+  tracked_objects: RealTrackObject[];
+  current_frame_counts: {
+    person: number;
+    car: number;
+    motorcycle: number;
+    bus: number;
+    truck: number;
+    total: number;
+  };
+  total_tracked_objects: number;
+  events: string[];
+  model_name: string;
+  model_version: string;
+  device: string;
+  anpr_status: string;
+  error?: boolean;
+  error_message?: string;
+}
+
 export const cctvApi = {
   async listCameras(): Promise<Camera[]> {
     const response = await apiClient.get<Camera[]>('/cctv/cameras');
@@ -116,6 +166,21 @@ export const cctvApi = {
 
   async getJobPlates(jobId: string): Promise<CCTVPlateDetection[]> {
     const response = await apiClient.get<CCTVPlateDetection[]>(`/cctv/search/${jobId}/plates`);
+    return response.data;
+  },
+
+  async stopAnalysis(jobId: string): Promise<{ status: string; job_id: string }> {
+    const response = await apiClient.post<{ status: string; job_id: string }>(`/cctv/analysis/stop/${jobId}`);
+    return response.data;
+  },
+
+  async pauseAnalysis(jobId: string): Promise<{ status: string; job_id: string }> {
+    const response = await apiClient.post<{ status: string; job_id: string }>(`/cctv/analysis/pause/${jobId}`);
+    return response.data;
+  },
+
+  async getLiveFrame(jobId: string): Promise<{ status: string; error_message?: string; latest_frame?: LiveInferenceFrame }> {
+    const response = await apiClient.get<{ status: string; error_message?: string; latest_frame?: LiveInferenceFrame }>(`/cctv/analysis/live/${jobId}`);
     return response.data;
   }
 };

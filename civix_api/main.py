@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from .database import engine
 from .dependencies import get_db_session
-from .routers import users, cases, leads, hypotheses, identity, entities, search, ingest, evidence, cctv, spatial
+from .routers import users, cases, leads, hypotheses, identity, entities, search, ingest, evidence, cctv, spatial, telecom
 from .services.ml_service import MLService
 import logging
 
@@ -64,6 +64,8 @@ app.include_router(evidence.router)
 app.include_router(evidence.global_router)
 app.include_router(cctv.router)
 app.include_router(spatial.router)
+app.include_router(telecom.case_router)
+app.include_router(telecom.telecom_router)
 
 @app.exception_handler(IntegrityError)
 async def integrity_error_handler(request: Request, exc: IntegrityError):

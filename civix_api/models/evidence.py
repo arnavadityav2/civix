@@ -58,6 +58,8 @@ class EvidenceListItem(BaseModel):
     file_size_bytes: Optional[int]
     processing_status: str
     created_at: datetime
+    evidence_type: Optional[str] = None
+    evidence_title: Optional[str] = None
 
 
 # ---------------------------------------------------------------------------

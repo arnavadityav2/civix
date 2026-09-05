@@ -19,7 +19,7 @@ export const RecentEvidenceWidget: React.FC = () => {
     <Panel
       title="RECENT EVIDENCE LOG"
       headerAction={
-        <button className="text-xs font-semibold text-blue-700 hover:text-blue-900 flex items-center space-x-1">
+        <button className="text-[11px] font-semibold text-civix-blue-light hover:text-civix-text-primary flex items-center space-x-1 transition-colors font-mono">
           <span>View All Evidence</span>
           <ArrowRight className="w-3 h-3" />
         </button>
@@ -27,60 +27,60 @@ export const RecentEvidenceWidget: React.FC = () => {
       className="h-full"
     >
       {!selectedCaseId ? (
-        <div className="py-8 text-center text-xs text-slate-500 font-mono">
+        <div className="py-8 text-center text-xs text-civix-text-muted font-mono">
           Select a case to view recent evidence.
         </div>
       ) : isLoading ? (
-        <div className="py-8 flex items-center justify-center text-slate-400 space-x-2 text-xs font-mono">
-          <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
+        <div className="py-8 flex items-center justify-center text-civix-text-muted space-x-2 text-xs font-mono">
+          <Loader2 className="w-4 h-4 animate-spin text-civix-blue-light" />
           <span>Fetching evidence log...</span>
         </div>
       ) : error ? (
-        <div className="py-4 text-center text-xs text-red-600 font-mono">
+        <div className="py-4 text-center text-xs text-civix-red font-mono">
           Failed to load evidence log for selected case.
         </div>
       ) : evidence.length === 0 ? (
-        <div className="py-8 text-center text-xs text-slate-500 font-mono">
+        <div className="py-8 text-center text-xs text-civix-text-muted font-mono">
           No evidence artifacts ingested for this case.
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 bg-slate-50 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-2 px-3">ID / Artifact</th>
-                <th className="py-2 px-3">MIME / Type</th>
-                <th className="py-2 px-3">Status</th>
+        <div className="overflow-x-auto -mx-4 -mb-4">
+          <table className="civix-table">
+            <thead className="civix-table-header">
+              <tr>
+                <th className="py-2 px-3">ARTIFACT</th>
+                <th className="py-2 px-3">TYPE</th>
+                <th className="py-2 px-3">STATUS</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-xs font-sans">
+            <tbody className="civix-table-body">
               {evidence.slice(0, 5).map((item) => (
-                <tr key={item.artifact_id} className="hover:bg-slate-50 transition-colors">
-                  <td className="py-2.5 px-3">
-                    <div className="font-semibold text-slate-900 truncate max-w-[160px]">
+                <tr key={item.artifact_id} className="hover:bg-civix-surface-3 cursor-pointer transition-colors">
+                  <td className="py-2 px-3">
+                    <div className="font-semibold text-civix-text-primary text-xs truncate max-w-[160px]">
                       {item.original_filename || 'Evidence File'}
                     </div>
-                    <div className="text-[10px] font-mono text-slate-500">
+                    <div className="text-[10px] font-mono text-civix-text-mono mt-0.5">
                       ID: {item.artifact_id.slice(0, 8)}...
                     </div>
                   </td>
-                  <td className="py-2.5 px-3 font-mono text-[11px] text-slate-600">
+                  <td className="py-2 px-3 font-mono text-[10px] text-civix-text-muted">
                     {item.mime_type || 'application/octet-stream'}
                   </td>
-                  <td className="py-2.5 px-3">
+                  <td className="py-2 px-3">
                     {item.processing_status === 'COMPLETED' || item.processing_status === 'STORED' || item.processing_status === 'GENERATED' ? (
                       <Badge variant="confirmed" className="flex items-center space-x-1 w-fit">
-                        <FileCheck className="w-3 h-3 mr-1" />
+                        <FileCheck className="w-2.5 h-2.5 mr-1" />
                         <span>PROCESSED</span>
                       </Badge>
                     ) : item.processing_status === 'PROCESSING' ? (
                       <Badge variant="warning" className="flex items-center space-x-1 w-fit">
-                        <FileClock className="w-3 h-3 mr-1 animate-pulse" />
+                        <FileClock className="w-2.5 h-2.5 mr-1 animate-pulse" />
                         <span>PARSING</span>
                       </Badge>
                     ) : (
                       <Badge variant="critical" className="flex items-center space-x-1 w-fit">
-                        <AlertCircle className="w-3 h-3 mr-1" />
+                        <AlertCircle className="w-2.5 h-2.5 mr-1" />
                         <span>{item.processing_status}</span>
                       </Badge>
                     )}

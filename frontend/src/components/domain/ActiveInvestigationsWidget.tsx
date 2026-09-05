@@ -30,9 +30,10 @@ export const ActiveInvestigationsWidget: React.FC = () => {
 
   return (
     <Panel
-      title={`ACTIVE INVESTIGATIONS (${activeCount} ACTIVE)`}
+      title={`ACTIVE INVESTIGATIONS`}
+      subtitle={`${activeCount} active · ${cases.length} total`}
       headerAction={
-        <button className="text-xs font-semibold text-blue-700 hover:text-blue-900 flex items-center space-x-1">
+        <button className="text-[11px] font-semibold text-civix-blue-light hover:text-civix-text-primary flex items-center space-x-1 transition-colors font-mono">
           <span>View All Cases</span>
           <ArrowRight className="w-3 h-3" />
         </button>
@@ -40,63 +41,64 @@ export const ActiveInvestigationsWidget: React.FC = () => {
       className="h-full"
     >
       {isLoading ? (
-        <div className="py-8 flex items-center justify-center text-slate-400 space-x-2 text-xs font-mono">
-          <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
+        <div className="py-8 flex items-center justify-center text-civix-text-muted space-x-2 text-xs font-mono">
+          <Loader2 className="w-4 h-4 animate-spin text-civix-blue-light" />
           <span>Fetching active cases...</span>
         </div>
       ) : error ? (
-        <div className="py-4 text-center text-xs text-red-600 font-mono">
+        <div className="py-4 text-center text-xs text-civix-red font-mono">
           Failed to load cases from backend.
         </div>
       ) : cases.length === 0 ? (
-        <div className="py-8 text-center text-xs text-slate-500 font-mono">
+        <div className="py-8 text-center text-xs text-civix-text-muted font-mono">
           No active cases found.
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 bg-slate-50 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                <th className="py-2 px-3">Case ID</th>
-                <th className="py-2 px-3">Title / Subject</th>
-                <th className="py-2 px-3">Status</th>
-                <th className="py-2 px-3">Priority</th>
-                <th className="py-2 px-3">Jurisdiction</th>
+        <div className="overflow-x-auto -mx-4 -mb-4">
+          <table className="civix-table">
+            <thead className="civix-table-header">
+              <tr>
+                <th className="py-2 px-3">CASE ID</th>
+                <th className="py-2 px-3">TITLE / SUBJECT</th>
+                <th className="py-2 px-3">STATUS</th>
+                <th className="py-2 px-3">PRIORITY</th>
+                <th className="py-2 px-3">JURISDICTION</th>
+                <th className="py-2 px-3">LAST ACTIVITY</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-xs font-sans">
+            <tbody className="civix-table-body">
               {cases.map((c) => {
                 const isSelected = selectedCaseId === c.case_id;
                 return (
                   <tr
                     key={c.case_id}
                     onClick={() => setSelectedCaseId(c.case_id)}
-                    className={`cursor-pointer transition-colors ${
-                      isSelected ? 'bg-blue-50/70 border-l-3 border-blue-700' : 'hover:bg-slate-50'
-                    }`}
+                    className={`cursor-pointer ${isSelected ? 'civix-row-selected' : ''}`}
                   >
-                    <td className="py-2.5 px-3 font-mono font-medium text-slate-900">
+                    <td className="py-2 px-3">
                       <div className="flex items-center space-x-1.5">
-                        <span>{c.case_number || c.case_id.slice(0, 8)}</span>
+                        <span className="font-mono text-[11px] text-civix-text-mono">
+                          {c.case_number || c.case_id.slice(0, 8)}
+                        </span>
                         <button
                           onClick={(e) => copyToClipboard(c.case_number || c.case_id, e)}
-                          className="text-slate-400 hover:text-slate-700 p-0.5 rounded"
+                          className="text-civix-text-muted hover:text-civix-text-secondary p-0.5 rounded transition-colors"
                           title="Copy Case ID"
                         >
-                          <Copy className="w-3 h-3" />
+                          <Copy className="w-2.5 h-2.5" />
                         </button>
                       </div>
                     </td>
-                    <td className="py-2.5 px-3">
-                      <div className="font-semibold text-slate-900">{c.title}</div>
-                      <div className="text-[11px] text-slate-500 font-mono">{c.case_type}</div>
+                    <td className="py-2 px-3">
+                      <div className="font-semibold text-civix-text-primary text-xs">{c.title}</div>
+                      <div className="text-[10px] text-civix-text-muted font-mono mt-0.5">{c.case_type}</div>
                     </td>
-                    <td className="py-2.5 px-3">
+                    <td className="py-2 px-3">
                       <Badge variant={c.status === 'OPEN' || c.status === 'ACTIVE' ? 'active' : 'closed'}>
                         {c.status}
                       </Badge>
                     </td>
-                    <td className="py-2.5 px-3">
+                    <td className="py-2 px-3">
                       <Badge
                         variant={
                           c.priority === 'HIGH' ? 'critical' : c.priority === 'MEDIUM' ? 'warning' : 'default'
@@ -105,8 +107,11 @@ export const ActiveInvestigationsWidget: React.FC = () => {
                         {c.priority}
                       </Badge>
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-slate-600 text-[11px]">
+                    <td className="py-2 px-3 font-mono text-[10px] text-civix-text-muted">
                       {c.jurisdiction}
+                    </td>
+                    <td className="py-2 px-3 font-mono text-[10px] text-civix-text-muted">
+                      —
                     </td>
                   </tr>
                 );

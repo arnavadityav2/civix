@@ -20,6 +20,70 @@ export interface CaseListItem {
   status: string;
   priority: string;
   jurisdiction: string;
+  investigating_unit?: string | null;
+  opened_at?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  fir_number?: string | null;
+  police_station?: string | null;
+  district?: string | null;
+  sections_invoked?: string[] | null;
+}
+
+export interface CaseRegistryItem {
+  case_id: string;
+  case_number: string;
+  title: string;
+  description?: string | null;
+  case_type: string;
+  status: string;
+  priority: string;
+  jurisdiction: string;
+  police_station: string;
+  provenance: 'GOLDEN' | 'SYNTHETIC' | string;
+  source_type: string;
+  entity_count: number;
+  evidence_count: number;
+  event_count: number;
+  lead_count: number;
+  last_activity_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CaseRegistryPagination {
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+}
+
+export interface CaseRegistrySummary {
+  total_cases: number;
+  active_cases: number;
+  critical_cases: number;
+  golden_cases: number;
+  synthetic_cases: number;
+  updated_today: number;
+}
+
+export interface CaseRegistryResponse {
+  items: CaseRegistryItem[];
+  pagination: CaseRegistryPagination;
+  summary: CaseRegistrySummary;
+}
+
+export interface CaseRegistryParams {
+  page?: number;
+  page_size?: number;
+  search?: string;
+  case_type?: string;
+  status?: string;
+  priority?: string;
+  jurisdiction?: string;
+  provenance?: string;
+  sort_by?: string;
+  sort_order?: string;
 }
 
 export interface CaseCreateRequest {
@@ -46,6 +110,19 @@ export interface CaseEntityRoleResponse {
   assigned_by?: string;
   valid_from?: string;
   valid_to?: string;
+}
+
+export interface CaseEntityRoleListItem {
+  role_id: string;
+  entity_id: string;
+  role: string;
+  role_basis?: string;
+  entity_type: string;
+  display_name: string;
+  gender?: string | null;
+  date_of_birth?: string | null;
+  nationality?: string | null;
+  avatar_url?: string | null;
 }
 
 export interface EntityBase {
@@ -87,9 +164,20 @@ export interface GraphRelationship {
   properties: Record<string, any>;
 }
 
+export interface GraphMetadata {
+  requested_depth: number;
+  max_depth: number;
+  node_limit: number;
+  relationship_limit: number;
+  nodes_returned: number;
+  relationships_returned: number;
+  truncated: boolean;
+}
+
 export interface GraphResponse {
   nodes: GraphNode[];
   relationships: GraphRelationship[];
+  metadata?: GraphMetadata;
 }
 
 export interface EvidenceUploadResponse {
@@ -128,6 +216,8 @@ export interface EvidenceListItem {
   file_size_bytes?: number;
   processing_status: string;
   created_at: string;
+  evidence_type?: string | null;
+  evidence_title?: string | null;
 }
 
 export interface InvestigativeLeadResponse {

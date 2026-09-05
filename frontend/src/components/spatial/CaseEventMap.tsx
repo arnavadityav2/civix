@@ -13,16 +13,16 @@ interface CaseEventMapProps {
 const getEpistemicColor = (status: EpistemicStatus): { bg: string; border: string; opacity: number } => {
   switch (status) {
     case 'CONFIRMED':
-      return { bg: '#10b981', border: '#ffffff', opacity: 1.0 };
+      return { bg: '#10b981', border: '#111318', opacity: 1.0 };
     case 'PROBABLE':
-      return { bg: '#d97706', border: '#ffffff', opacity: 0.9 };
+      return { bg: '#f59e0b', border: '#111318', opacity: 0.9 };
     case 'POSSIBLE':
-      return { bg: '#64748b', border: '#ffffff', opacity: 0.75 };
+      return { bg: '#6b7280', border: '#111318', opacity: 0.75 };
     case 'REFUTED':
-      return { bg: '#ef4444', border: '#ffffff', opacity: 0.6 };
+      return { bg: '#ef4444', border: '#111318', opacity: 0.6 };
     case 'INCONCLUSIVE':
     default:
-      return { bg: '#94a3b8', border: '#ffffff', opacity: 0.6 };
+      return { bg: '#4b5563', border: '#111318', opacity: 0.6 };
   }
 };
 
@@ -38,12 +38,12 @@ const createEventMarkerIcon = (feat: SpatialEventFeature, isSelected: boolean) =
       height: ${size}px;
       background-color: ${bg};
       border: 2px solid ${border};
-      border-radius: ${isTower ? '3px' : '50%'};
-      box-shadow: ${isSelected ? `0 0 0 4px ${bg}55, 0 2px 6px rgba(0,0,0,0.3)` : '0 1px 3px rgba(0,0,0,0.25)'};
+      border-radius: ${isTower ? '2px' : '50%'};
+      box-shadow: ${isSelected ? `0 0 0 4px ${bg}66, 0 2px 6px rgba(0,0,0,0.5)` : '0 1px 3px rgba(0,0,0,0.4)'};
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: #0b0c10;
       font-size: ${isSelected ? '10px' : '8px'};
       font-weight: bold;
     ">
@@ -60,6 +60,13 @@ const createEventMarkerIcon = (feat: SpatialEventFeature, isSelected: boolean) =
 
 const MapBoundsUpdater: React.FC<{ events: SpatialEventFeature[]; selectedId: string | null }> = ({ events, selectedId }) => {
   const map = useMap();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [map]);
 
   useEffect(() => {
     if (selectedId) {
@@ -92,6 +99,7 @@ const MapBoundsUpdater: React.FC<{ events: SpatialEventFeature[]; selectedId: st
   return null;
 };
 
+
 export const CaseEventMap: React.FC<CaseEventMapProps> = ({
   events,
   selectedEventId,
@@ -100,28 +108,28 @@ export const CaseEventMap: React.FC<CaseEventMapProps> = ({
   const defaultCenter: [number, number] = [28.6139, 77.2090];
 
   return (
-    <div className="w-full h-full min-h-[460px] relative rounded overflow-hidden border border-slate-200 bg-slate-100 z-0">
+    <div className="w-full h-full min-h-[460px] relative rounded-sm overflow-hidden border border-civix-border bg-civix-bg z-0">
       {/* On-Map Epistemic Status Legend Overlay */}
-      <div className="absolute top-3 right-3 z-[1000] bg-white/95 backdrop-blur-xs border border-slate-200 rounded p-3 shadow-md w-48 text-xs font-sans">
-        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">
+      <div className="absolute top-3 right-3 z-[1000] bg-civix-surface-2/95 backdrop-blur-xs border border-civix-border rounded-sm p-3 shadow-md w-48 text-xs font-sans">
+        <h4 className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2 border-b border-civix-border/40 pb-1">
           EPISTEMIC STATUS
         </h4>
         <div className="space-y-1.5 text-[11px]">
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
-            <span className="text-slate-800 font-semibold">CONFIRMED</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-civix-green-400 inline-block"></span>
+            <span className="text-civix-text-main font-semibold">CONFIRMED</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-600 inline-block"></span>
-            <span className="text-slate-800 font-semibold">PROBABLE</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-civix-gold-400 inline-block"></span>
+            <span className="text-civix-text-main font-semibold">PROBABLE</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-500 inline-block"></span>
-            <span className="text-slate-700">POSSIBLE</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-civix-text-muted inline-block"></span>
+            <span className="text-civix-text-secondary">POSSIBLE</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span>
-            <span className="text-slate-700 line-through">REFUTED</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-civix-red-400 inline-block"></span>
+            <span className="text-civix-text-secondary line-through">REFUTED</span>
           </div>
         </div>
       </div>
@@ -133,8 +141,8 @@ export const CaseEventMap: React.FC<CaseEventMapProps> = ({
         scrollWheelZoom={true}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
         />
 
         <MapBoundsUpdater events={events} selectedId={selectedEventId} />
@@ -156,20 +164,20 @@ export const CaseEventMap: React.FC<CaseEventMapProps> = ({
                 }}
               >
                 <Popup className="civix-map-popup">
-                  <div className="p-1 max-w-xs font-sans">
-                    <span className="text-[9px] font-mono font-bold text-slate-400 uppercase">{event_type}</span>
-                    <h3 className="font-bold text-slate-900 text-xs mt-0.5 leading-tight">{location_name}</h3>
+                  <div className="p-1 max-w-xs font-sans text-civix-text-main">
+                    <span className="text-[9px] font-mono font-bold text-civix-text-muted uppercase">{event_type}</span>
+                    <h3 className="font-bold text-civix-text-main text-xs mt-0.5 leading-tight">{location_name}</h3>
                     <div className="flex items-center space-x-1.5 mt-2">
-                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-blue-50 text-blue-800 border border-blue-200">
+                      <span className="px-1.5 py-0.5 rounded-sm text-[9px] font-bold uppercase bg-civix-blue-950 text-civix-blue-400 border border-civix-blue-600/40">
                         {location_predicate}
                       </span>
-                      <span className="text-[9px] font-bold text-slate-600">
+                      <span className="text-[9px] font-bold text-civix-text-secondary">
                         {epistemic_status}
                       </span>
                     </div>
                     <button
                       onClick={() => onSelectEvent(feat)}
-                      className="mt-2.5 w-full bg-[#1a3a6c] hover:bg-[#132c54] text-white text-[11px] font-semibold py-1 px-2 rounded transition-colors"
+                      className="mt-2.5 w-full civix-btn-primary py-1 px-2 text-[11px] justify-center"
                     >
                       Inspect Event Details
                     </button>
@@ -188,7 +196,7 @@ export const CaseEventMap: React.FC<CaseEventMapProps> = ({
                 key={event_location_id}
                 positions={lineCoords}
                 pathOptions={{
-                  color: isSelected ? '#ff9933' : '#1a3a6c',
+                  color: isSelected ? '#ffb703' : '#3b82f6',
                   weight: isSelected ? 5 : 3.5,
                   opacity: 0.85
                 }}

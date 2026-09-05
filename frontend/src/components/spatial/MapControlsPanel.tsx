@@ -13,34 +13,34 @@ export const MapControlsPanel: React.FC<MapControlsPanelProps> = ({
   onExportView
 }) => {
   return (
-    <div className="bg-white border border-slate-200 rounded p-4 shadow-sm space-y-3">
-      <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">
+    <div className="civix-panel p-4 space-y-3">
+      <h3 className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider border-b border-civix-border pb-2">
         MAP CONTROLS
       </h3>
 
       <div className="grid grid-cols-2 gap-2">
         <button
           onClick={onFitViewport}
-          className="flex items-center justify-center space-x-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold py-2 px-3 rounded border border-slate-200 transition-colors"
+          className="civix-btn-secondary justify-center text-xs py-2"
         >
-          <Maximize2 className="w-3.5 h-3.5 text-slate-500" />
+          <Maximize2 className="w-3.5 h-3.5 text-civix-text-muted" />
           <span>Fit to Viewport</span>
         </button>
 
         <button
           onClick={onResetLayers}
-          className="flex items-center justify-center space-x-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold py-2 px-3 rounded border border-slate-200 transition-colors"
+          className="civix-btn-secondary justify-center text-xs py-2"
         >
-          <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
+          <RotateCcw className="w-3.5 h-3.5 text-civix-text-muted" />
           <span>Reset Layers</span>
         </button>
       </div>
 
       <button
         onClick={onExportView}
-        className="w-full flex items-center justify-center space-x-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold py-2 px-3 rounded border border-slate-200 transition-colors"
+        className="civix-btn-secondary w-full justify-center text-xs py-2"
       >
-        <Download className="w-3.5 h-3.5 text-slate-500" />
+        <Download className="w-3.5 h-3.5 text-civix-text-muted" />
         <span>Export Map View</span>
       </button>
     </div>

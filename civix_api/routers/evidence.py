@@ -23,7 +23,9 @@ from datetime import datetime, timezone
 from typing import List
 from uuid import UUID, uuid4
 
+from pathlib import Path
 from fastapi import APIRouter, Depends, File, Form, HTTPException, BackgroundTasks, UploadFile, status
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 
@@ -305,16 +307,18 @@ async def list_evidence(
     result = await session.execute(text("""
         SELECT ea.artifact_id, ei.instance_id,
                ea.original_filename, ea.mime_type, ea.file_size_bytes,
-               ea.processing_status, ea.created_at
+               ea.processing_status, ea.created_at,
+               m.evidence_type, m.title as evidence_title
         FROM civix.evidence_artifact ea
         JOIN civix.evidence_instance ei ON ei.artifact_id = ea.artifact_id
+        LEFT JOIN civix.evidence_generation_manifest m ON m.artifact_id = ea.artifact_id
         WHERE ei.case_id = :cid AND ei.tx_end IS NULL
         ORDER BY ea.created_at DESC
     """), {"cid": case_id})
 
-    items = []
+    items: List[EvidenceListItem] = []
     for row in result.fetchall():
-        items.append(EvidenceListItem(
+        item = EvidenceListItem(
             artifact_id=row.artifact_id,
             instance_id=row.instance_id,
             original_filename=row.original_filename,
@@ -322,7 +326,10 @@ async def list_evidence(
             file_size_bytes=row.file_size_bytes,
             processing_status=row.processing_status,
             created_at=row.created_at,
-        ))
+            evidence_type=row.evidence_type,
+            evidence_title=row.evidence_title,
+        )
+        items.append(item)
     return items
 
 
@@ -412,3 +419,45 @@ async def list_all_evidence(
             "artifact_title": row.artifact_title or f"Evidence Artifact {str(row.artifact_id)[:8]}"
         })
     return items
+
+
+from civix_api.dependencies import get_current_user_from_token, get_rls_session, get_db_session
+
+@global_router.get("/artifacts/{artifact_id}/content", summary="Get binary file content of an evidence artifact")
+async def get_artifact_content(
+    artifact_id: UUID,
+    session: AsyncSession = Depends(get_db_session),
+):
+    result = await session.execute(text("""
+        SELECT storage_uri, mime_type, original_filename
+        FROM civix.evidence_artifact
+        WHERE artifact_id = :aid
+    """), {"aid": artifact_id})
+    row = result.first()
+    if not row:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Artifact not found.")
+    
+    storage_uri = row.storage_uri
+    if not storage_uri:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No storage URI for artifact.")
+        
+    store_root = Path(r"c:\data\civix_demo\evidence_store")
+    target_path = store_root / storage_uri
+    if not target_path.exists():
+        if storage_uri.startswith("local://civix_evidence_store/"):
+            rel = storage_uri.removeprefix("local://civix_evidence_store/")
+            target_path = store_root / rel
+        else:
+            matches = list(store_root.glob(f"**/{storage_uri}"))
+            if matches:
+                target_path = matches[0]
+
+    if not target_path.exists():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"File not found on disk: {storage_uri}")
+
+    return FileResponse(
+        path=target_path,
+        media_type=row.mime_type or "application/octet-stream",
+        filename=row.original_filename or target_path.name
+    )
+

@@ -1,0 +1,3755 @@
+{
+  "account_holder": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "holder_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "holder_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "holder_role",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "ownership_percentage",
+        "type": "numeric",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "analysis_run": {
+    "count": 1,
+    "columns": [
+      {
+        "name": "run_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "model_name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "model_version",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "algorithm_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "algorithm_parameters",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "input_snapshot_hash",
+        "type": "bytea",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "input_snapshot_tx_time",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "started_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "finished_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "initiated_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "assertion": {
+    "count": 1,
+    "columns": [
+      {
+        "name": "assertion_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "subject_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "predicate",
+        "type": "predicate_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "object_entity_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "object_value",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "object_location_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "epistemic_status",
+        "type": "epistemic_status_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "ai_confidence",
+        "type": "numeric",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "asserted_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "source_analysis_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "valid_from",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "valid_to",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "authorized_case_ids",
+        "type": "ARRAY",
+        "nullable": false,
+        "default": "'{}'::uuid[]"
+      }
+    ]
+  },
+  "audit_event": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "audit_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "user_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "action",
+        "type": "audit_action_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "target_table",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "target_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "case_context_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "ip_address",
+        "type": "inet",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "timestamp",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "metadata",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "case_access": {
+    "count": 507,
+    "columns": [
+      {
+        "name": "access_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "user_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "permission_level",
+        "type": "case_permission_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "granted_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "granted_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "valid_until",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "is_revoked",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "revoked_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "case_entity_role": {
+    "count": 1127,
+    "columns": [
+      {
+        "name": "role_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "role",
+        "type": "case_entity_role_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "role_basis",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "assigned_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "valid_from",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "valid_to",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "case_link": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "link_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "source_case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "target_case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "linked_object_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "linked_object_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "share_scope",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "authorized_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "cctv_camera": {
+    "count": 25,
+    "columns": [
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "camera_code",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "display_name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "city",
+        "type": "text",
+        "nullable": false,
+        "default": "'Delhi NCR'::text"
+      },
+      {
+        "name": "region",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "latitude",
+        "type": "double precision",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "longitude",
+        "type": "double precision",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "geometry",
+        "type": "geometry",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "camera_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "status",
+        "type": "text",
+        "nullable": false,
+        "default": "'OFFLINE'::text"
+      },
+      {
+        "name": "access_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "last_health_check",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "cctv_detection": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "detection_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "frame_timestamp",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "bounding_box",
+        "type": "jsonb",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "confidence",
+        "type": "double precision",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "cctv_feed": {
+    "count": 25,
+    "columns": [
+      {
+        "name": "feed_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "feed_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "feed_url",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "embed_url",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "frame_rate",
+        "type": "integer",
+        "nullable": true,
+        "default": "15"
+      },
+      {
+        "name": "resolution_w",
+        "type": "integer",
+        "nullable": true,
+        "default": "1920"
+      },
+      {
+        "name": "resolution_h",
+        "type": "integer",
+        "nullable": true,
+        "default": "1080"
+      },
+      {
+        "name": "is_active",
+        "type": "boolean",
+        "nullable": false,
+        "default": "true"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "cctv_match_candidate": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "candidate_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "track_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "target_vehicle_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "signal_class",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "overall_signal",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "plate_match_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "plate_confidence",
+        "type": "double precision",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "make_match",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "model_match",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "color_match",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "body_match",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "visual_similarity_score",
+        "type": "double precision",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "explanation_notes",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "review_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'PENDING'::text"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "cctv_observation": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "observation_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "candidate_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "track_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "signal_class",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "reviewed_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "reviewed_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "investigator_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "cctv_plate_detection": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "plate_detection_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "track_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "detection_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "frame_timestamp",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "bounding_box",
+        "type": "jsonb",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "plate_crop_storage_uri",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "raw_ocr_text",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "normalized_plate",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "ocr_confidence",
+        "type": "double precision",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "confidence_category",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "detector_model",
+        "type": "text",
+        "nullable": false,
+        "default": "'OpenCVPlateDetector/v1.0'::text"
+      },
+      {
+        "name": "ocr_engine",
+        "type": "text",
+        "nullable": false,
+        "default": "'LocalStructuralOCR/v1.0'::text"
+      },
+      {
+        "name": "ocr_engine_version",
+        "type": "text",
+        "nullable": false,
+        "default": "'1.0.0'::text"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "cctv_search_job": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "requested_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "target_vehicle_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "camera_ids",
+        "type": "ARRAY",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "start_time",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "end_time",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "status",
+        "type": "text",
+        "nullable": false,
+        "default": "'QUEUED'::text"
+      },
+      {
+        "name": "progress_pct",
+        "type": "integer",
+        "nullable": false,
+        "default": "0"
+      },
+      {
+        "name": "frames_processed",
+        "type": "integer",
+        "nullable": false,
+        "default": "0"
+      },
+      {
+        "name": "error_message",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "cctv_source": {
+    "count": 1,
+    "columns": [
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "source_name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "operator_name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "website_url",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "source_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "verification_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'UNVERIFIED'::text"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "cctv_track": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "track_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "track_uuid",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "first_seen",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "last_seen",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "best_plate_number",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "best_plate_confidence",
+        "type": "double precision",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "detected_make",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "detected_model",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "detected_color",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "detected_body_type",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "crop_storage_uri",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "civix_user": {
+    "count": 8,
+    "columns": [
+      {
+        "name": "user_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "external_auth_id",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "username",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "display_name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "role",
+        "type": "civix_role_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "clearance_level",
+        "type": "clearance_enum",
+        "nullable": false,
+        "default": "'UNCLASSIFIED'::civix.clearance_enum"
+      },
+      {
+        "name": "is_active",
+        "type": "boolean",
+        "nullable": false,
+        "default": "true"
+      },
+      {
+        "name": "department",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "last_login_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "data_quality_issue": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "issue_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "affected_entity_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "affected_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "issue_type",
+        "type": "data_quality_issue_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "severity",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "detected_by",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "detection_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "detected_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "status",
+        "type": "text",
+        "nullable": false,
+        "default": "'OPEN'::text"
+      },
+      {
+        "name": "resolution_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "resolved_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "resolved_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "dataset": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "dataset_type",
+        "type": "dataset_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "version",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "is_production_isolated",
+        "type": "boolean",
+        "nullable": false,
+        "default": "true"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "device": {
+    "count": 7500,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "imei",
+        "type": "character varying",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "mac_address",
+        "type": "character varying",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "device_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "manufacturer",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "model",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "entity": {
+    "count": 59628,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "entity_type",
+        "type": "entity_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "visibility_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'ACTIVE'::text"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "created_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "event": {
+    "count": 29,
+    "columns": [
+      {
+        "name": "event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "event_type",
+        "type": "event_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "occurred_at",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "event_location": {
+    "count": 28,
+    "columns": [
+      {
+        "name": "event_location_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "location_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "location_predicate",
+        "type": "predicate_enum",
+        "nullable": false,
+        "default": "'LOCATED_AT'::civix.predicate_enum"
+      },
+      {
+        "name": "epistemic_status",
+        "type": "epistemic_status_enum",
+        "nullable": false,
+        "default": "'PROBABLE'::civix.epistemic_status_enum"
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "event_participant": {
+    "count": 2,
+    "columns": [
+      {
+        "name": "participant_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "participant_role",
+        "type": "participant_role_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "role_confidence",
+        "type": "numeric",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "evidence_artifact": {
+    "count": 1,
+    "columns": [
+      {
+        "name": "artifact_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "sha256_hash",
+        "type": "bytea",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "hash_algorithm",
+        "type": "hash_algorithm_enum",
+        "nullable": false,
+        "default": "'SHA256'::civix.hash_algorithm_enum"
+      },
+      {
+        "name": "file_size_bytes",
+        "type": "bigint",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "mime_type",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "original_filename",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "storage_uri",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "is_integrity_verified",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "acquired_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "media_metadata",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "parent_artifact_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "classification_level",
+        "type": "clearance_enum",
+        "nullable": false,
+        "default": "'UNCLASSIFIED'::civix.clearance_enum"
+      },
+      {
+        "name": "processing_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'PENDING'::text"
+      },
+      {
+        "name": "processing_error",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "processed_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "evidence_instance": {
+    "count": 1,
+    "columns": [
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "artifact_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "acquired_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "acquisition_method",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "acquisition_context",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "legal_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'ACTIVE'::text"
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "extraction": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "extraction_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "analysis_run_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "extraction_type",
+        "type": "extraction_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "extracted_value",
+        "type": "jsonb",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "ai_confidence",
+        "type": "numeric",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "is_superseded",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "superseded_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "financial_account": {
+    "count": 5000,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "masked_number",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "account_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "bank_name",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "ifsc_code",
+        "type": "character",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "currency",
+        "type": "character",
+        "nullable": false,
+        "default": "'INR'::bpchar"
+      }
+    ]
+  },
+  "fir": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "fir_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "fir_number",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "police_station",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "district",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "filed_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "filed_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "complainant_entity_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "sections_invoked",
+        "type": "ARRAY",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "forensic_report": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "report_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "report_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "lab_name",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "examiner_name",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "findings_summary",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "generation_run": {
+    "count": 1,
+    "columns": [
+      {
+        "name": "run_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "scenario_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "generator_version",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "started_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "finished_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "record_counts",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "hypothesis": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "hypothesis_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "hypothesis_text",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "status",
+        "type": "hypothesis_status_enum",
+        "nullable": false,
+        "default": "'ACTIVE'::civix.hypothesis_status_enum"
+      },
+      {
+        "name": "created_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "confirmed_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "hypothesis_support": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "support_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "hypothesis_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "assertion_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "stance",
+        "type": "support_stance_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "weight",
+        "type": "numeric",
+        "nullable": false,
+        "default": "1.0"
+      },
+      {
+        "name": "assigned_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "analysis_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "identity_candidate": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "candidate_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "source_identity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "proposed_person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "ai_confidence",
+        "type": "numeric",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "analysis_run_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "is_active",
+        "type": "boolean",
+        "nullable": false,
+        "default": "true"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "deterministic_signals",
+        "type": "jsonb",
+        "nullable": false,
+        "default": "'[]'::jsonb"
+      },
+      {
+        "name": "matching_rule_id",
+        "type": "text",
+        "nullable": false,
+        "default": "'LEGACY'::text"
+      },
+      {
+        "name": "supporting_evidence_ids",
+        "type": "ARRAY",
+        "nullable": false,
+        "default": "'{}'::uuid[]"
+      }
+    ]
+  },
+  "identity_merge_event": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "merge_event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "source_identity_a",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_identity_b",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "merged_into_person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "resolution_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "decided_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "occurred_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "reason",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "identity_resolution": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "resolution_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "source_identity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "candidate_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "resolved_person_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "status",
+        "type": "identity_resolution_status_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "decided_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "decision_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "superseded_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "identity_split_event": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "split_event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "original_resolution_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "split_source_identity_a",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "split_source_identity_b",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "new_person_b_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "decided_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "reason",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "occurred_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "investigation_task": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "task_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "lead_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "task_type",
+        "type": "task_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "assigned_to",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "status",
+        "type": "task_status_enum",
+        "nullable": false,
+        "default": "'PENDING'::civix.task_status_enum"
+      },
+      {
+        "name": "due_date",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "outcome_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "completed_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "investigative_case": {
+    "count": 255,
+    "columns": [
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "case_number",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "case_type",
+        "type": "case_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "status",
+        "type": "case_status_enum",
+        "nullable": false,
+        "default": "'OPEN'::civix.case_status_enum"
+      },
+      {
+        "name": "priority",
+        "type": "case_priority_enum",
+        "nullable": false,
+        "default": "'MEDIUM'::civix.case_priority_enum"
+      },
+      {
+        "name": "jurisdiction",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "investigating_unit",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "opened_at",
+        "type": "date",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "closed_at",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "lead_investigator_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "investigative_finding": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "finding_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "lead_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "finding_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "subject_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "object_entity_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "relationship_strength",
+        "type": "text",
+        "nullable": false,
+        "default": "'MODERATE'::text"
+      },
+      {
+        "name": "key_facts",
+        "type": "jsonb",
+        "nullable": false,
+        "default": "'[]'::jsonb"
+      },
+      {
+        "name": "evidence_ids",
+        "type": "ARRAY",
+        "nullable": false,
+        "default": "'{}'::uuid[]"
+      },
+      {
+        "name": "path_description",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "hop_count",
+        "type": "integer",
+        "nullable": false,
+        "default": "1"
+      },
+      {
+        "name": "matching_rule_id",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "date_range_start",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "date_range_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "suppressed",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "suppression_reason",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "investigative_lead": {
+    "count": 1,
+    "columns": [
+      {
+        "name": "lead_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "generated_by_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "generated_by_person",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "lead_text",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "explanation",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "priority",
+        "type": "lead_priority_enum",
+        "nullable": false,
+        "default": "'MEDIUM'::civix.lead_priority_enum"
+      },
+      {
+        "name": "status",
+        "type": "lead_status_enum",
+        "nullable": false,
+        "default": "'OPEN'::civix.lead_status_enum"
+      },
+      {
+        "name": "ai_confidence",
+        "type": "numeric",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "disposition_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "disposed_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "disposed_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "target_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "hypothesis_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "feature_vector_version",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "deterministic_findings",
+        "type": "jsonb",
+        "nullable": true,
+        "default": "'[]'::jsonb"
+      },
+      {
+        "name": "explanation_status",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "legal_restriction": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "restriction_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "target_entity_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "target_artifact_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "restriction_type",
+        "type": "legal_restriction_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "authority",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "court_order_reference",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "effective_range",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "scope",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "status",
+        "type": "text",
+        "nullable": false,
+        "default": "'ACTIVE'::text"
+      },
+      {
+        "name": "created_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "lifted_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "lifted_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "location": {
+    "count": 123,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "location_name",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "geometry",
+        "type": "geometry",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "location_type",
+        "type": "location_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "uncertainty_radius_meters",
+        "type": "double precision",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "altitude_meters",
+        "type": "double precision",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "azimuth_degrees",
+        "type": "double precision",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "beamwidth_degrees",
+        "type": "double precision",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "medical_report": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "report_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "examination_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "findings_summary",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "practitioner_name",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "examination_date",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "network": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "network_name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "network_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "notes",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "observation": {
+    "count": 1,
+    "columns": [
+      {
+        "name": "observation_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "observer_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "observed_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "observation_type",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "observation_text",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "structured_content",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "observed_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "organization": {
+    "count": 2000,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "legal_name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "org_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "registration_number",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "incorporation_date",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "jurisdiction",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "outbox": {
+    "count": 1288,
+    "columns": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "action",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "entity_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "payload",
+        "type": "jsonb",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "consumed_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "error_status",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "error_message",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "seq_no",
+        "type": "bigint",
+        "nullable": false,
+        "default": "nextval('civix.outbox_seq_no_seq'::regclass)"
+      },
+      {
+        "name": "retry_count",
+        "type": "integer",
+        "nullable": false,
+        "default": "0"
+      }
+    ]
+  },
+  "person": {
+    "count": 15000,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "display_name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "date_of_birth",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "gender",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "nationality",
+        "type": "character",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "is_deceased",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "deceased_at",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "notes",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "person_alias": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "alias_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "alias_value",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "alias_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "valid_from",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "valid_to",
+        "type": "date",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "person_device_use": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "use_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "usage_type",
+        "type": "text",
+        "nullable": false,
+        "default": "'PRIMARY'::text"
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "person_sim_ownership": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "ownership_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "sim_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "ownership_type",
+        "type": "text",
+        "nullable": false,
+        "default": "'REGISTERED'::text"
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "phone_number": {
+    "count": 15000,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "msisdn",
+        "type": "character varying",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "country_code",
+        "type": "character",
+        "nullable": false,
+        "default": "'IND'::bpchar"
+      },
+      {
+        "name": "operator",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "number_type",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "property": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "property_ref",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "property_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "area_sqm",
+        "type": "numeric",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "boundary_geometry",
+        "type": "geometry",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "provenance": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "provenance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "derived_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "derived_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "derivation_method",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "scenario": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "scenario_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "dataset_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "scenario_label",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "random_seed",
+        "type": "bigint",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "ground_truth",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "sim": {
+    "count": 15000,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "iccid",
+        "type": "character varying",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "imsi",
+        "type": "character varying",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "issuing_operator",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "sim_in_device": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "sim_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "sim_number_assignment": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "assignment_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "sim_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "phone_number_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "source": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "source_name",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "agency_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "reliability_score",
+        "type": "numeric",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "jurisdiction",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "is_identity_protected",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false"
+      },
+      {
+        "name": "source_handler_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      }
+    ]
+  },
+  "source_identity": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "raw_identifier",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "identifier_type",
+        "type": "source_identity_type_enum",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "observed_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "source_record": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()"
+      },
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "external_reference",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "record_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "raw_content_hash",
+        "type": "bytea",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "received_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()"
+      },
+      {
+        "name": "superseded_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  },
+  "vehicle": {
+    "count": 0,
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "registration_number",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "vin",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "make",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "model",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "color",
+        "type": "text",
+        "nullable": true,
+        "default": null
+      },
+      {
+        "name": "vehicle_type",
+        "type": "text",
+        "nullable": false,
+        "default": null
+      },
+      {
+        "name": "registration_year",
+        "type": "integer",
+        "nullable": true,
+        "default": null
+      }
+    ]
+  }
+}

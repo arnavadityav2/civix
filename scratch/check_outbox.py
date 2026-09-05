@@ -1,16 +1,11 @@
-import asyncio
 import asyncpg
+import asyncio
 
-async def main():
-    conn = await asyncpg.connect(
-        host="localhost",
-        port=5433,
-        user="postgres",
-        password="postgres",
-        database="civix_test"
-    )
-    rows = await conn.fetch("SELECT count(*) as total, count(*) FILTER (WHERE consumed_at IS NULL) as unconsumed FROM civix.outbox;")
-    print("Outbox stats:", dict(rows[0]))
-    await conn.close()
+async def run():
+    c = await asyncpg.connect('postgresql://postgres:postgres@localhost:5432/civix_demo')
+    rows = await c.fetch("SELECT entity_type, consumed_at IS NULL as not_consumed, count(*) FROM civix.outbox GROUP BY entity_type, consumed_at IS NULL")
+    for r in rows:
+        print(dict(r))
+    await c.close()
 
-asyncio.run(main())
+asyncio.run(run())

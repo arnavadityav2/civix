@@ -13,18 +13,18 @@ interface NCRInvestigationMapProps {
 
 const getMarkerColor = (status: string, priority: string): { bg: string; border: string; ring: string } => {
   if (priority === 'CRITICAL' || status === 'SUSPENDED') {
-    return { bg: '#dc2626', border: '#ffffff', ring: 'rgba(220, 38, 38, 0.3)' };
+    return { bg: '#ef4444', border: '#111318', ring: 'rgba(239, 68, 68, 0.4)' };
   }
   if (priority === 'HIGH') {
-    return { bg: '#ea580c', border: '#ffffff', ring: 'rgba(234, 88, 12, 0.3)' };
+    return { bg: '#f59e0b', border: '#111318', ring: 'rgba(245, 158, 11, 0.4)' };
   }
   if (priority === 'MEDIUM') {
-    return { bg: '#d97706', border: '#ffffff', ring: 'rgba(217, 119, 6, 0.3)' };
+    return { bg: '#d97706', border: '#111318', ring: 'rgba(217, 119, 6, 0.4)' };
   }
   if (priority === 'LOW') {
-    return { bg: '#16a34a', border: '#ffffff', ring: 'rgba(22, 163, 74, 0.3)' };
+    return { bg: '#10b981', border: '#111318', ring: 'rgba(16, 185, 129, 0.4)' };
   }
-  return { bg: '#475569', border: '#ffffff', ring: 'rgba(71, 85, 105, 0.3)' };
+  return { bg: '#3b82f6', border: '#111318', ring: 'rgba(59, 130, 246, 0.4)' };
 };
 
 const createCaseMarkerIcon = (feat: SpatialCaseFeature, isSelected: boolean) => {
@@ -38,12 +38,12 @@ const createCaseMarkerIcon = (feat: SpatialCaseFeature, isSelected: boolean) => 
       height: ${size}px;
       background-color: ${bg};
       border: 2px solid ${border};
-      border-radius: 50%;
-      box-shadow: ${isSelected ? `0 0 0 4px ${bg}44, 0 2px 6px rgba(0,0,0,0.3)` : '0 1px 4px rgba(0,0,0,0.25)'};
+      border-radius: 2px;
+      box-shadow: ${isSelected ? `0 0 0 4px ${bg}66, 0 2px 6px rgba(0,0,0,0.5)` : '0 1px 4px rgba(0,0,0,0.4)'};
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: #0b0c10;
       font-size: ${isSelected ? '11px' : '9px'};
       font-weight: bold;
       font-family: monospace;
@@ -64,6 +64,13 @@ const MapController: React.FC<{ cases: SpatialCaseFeature[]; selectedId: string 
   const map = useMap();
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [map]);
+
+  useEffect(() => {
     if (selectedId) {
       const selected = cases.find(c => c.properties.case_id === selectedId);
       if (selected && selected.geometry?.coordinates) {
@@ -75,6 +82,7 @@ const MapController: React.FC<{ cases: SpatialCaseFeature[]; selectedId: string 
 
   return null;
 };
+
 
 export const NCRInvestigationMap: React.FC<NCRInvestigationMapProps> = ({
   cases,
@@ -106,72 +114,72 @@ export const NCRInvestigationMap: React.FC<NCRInvestigationMapProps> = ({
   }, [cases]);
 
   return (
-    <div className="w-full h-full min-h-[460px] relative rounded overflow-hidden border border-slate-200 bg-slate-100 z-0">
+    <div className="w-full h-full min-h-[460px] relative rounded-sm overflow-hidden border border-civix-border bg-civix-bg z-0">
       {/* On-Map Dynamic Legend Overlay Card (Top Right) */}
-      <div className="absolute top-3 right-3 z-[1000] bg-white/95 backdrop-blur-xs border border-slate-200 rounded p-3 shadow-md w-48 text-xs font-sans">
-        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">
+      <div className="absolute top-3 right-3 z-[1000] bg-civix-surface-2/95 backdrop-blur-xs border border-civix-border rounded-sm p-3 shadow-md w-48 text-xs font-sans">
+        <h4 className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2 border-b border-civix-border/40 pb-1">
           CASE STATUS
         </h4>
         <div className="space-y-1.5 mb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-600 inline-block"></span>
-              <span className="text-slate-700 text-[11px]">Critical</span>
+              <span className="w-2.5 h-2.5 rounded-xs bg-civix-red-500 inline-block"></span>
+              <span className="text-civix-text-secondary text-[11px]">Critical</span>
             </div>
-            <span className="font-mono text-[11px] font-semibold text-slate-900">({statusCounts.critical})</span>
+            <span className="font-mono text-[11px] font-semibold text-civix-text-main">({statusCounts.critical})</span>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-orange-600 inline-block"></span>
-              <span className="text-slate-700 text-[11px]">High</span>
+              <span className="w-2.5 h-2.5 rounded-xs bg-civix-gold-500 inline-block"></span>
+              <span className="text-civix-text-secondary text-[11px]">High</span>
             </div>
-            <span className="font-mono text-[11px] font-semibold text-slate-900">({statusCounts.high})</span>
+            <span className="font-mono text-[11px] font-semibold text-civix-text-main">({statusCounts.high})</span>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-600 inline-block"></span>
-              <span className="text-slate-700 text-[11px]">Medium</span>
+              <span className="w-2.5 h-2.5 rounded-xs bg-civix-gold-600 inline-block"></span>
+              <span className="text-civix-text-secondary text-[11px]">Medium</span>
             </div>
-            <span className="font-mono text-[11px] font-semibold text-slate-900">({statusCounts.medium})</span>
+            <span className="font-mono text-[11px] font-semibold text-civix-text-main">({statusCounts.medium})</span>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block"></span>
-              <span className="text-slate-700 text-[11px]">Low</span>
+              <span className="w-2.5 h-2.5 rounded-xs bg-civix-green-500 inline-block"></span>
+              <span className="text-civix-text-secondary text-[11px]">Low</span>
             </div>
-            <span className="font-mono text-[11px] font-semibold text-slate-900">({statusCounts.low})</span>
+            <span className="font-mono text-[11px] font-semibold text-civix-text-main">({statusCounts.low})</span>
           </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-slate-600 inline-block"></span>
-              <span className="text-slate-700 text-[11px]">Closed</span>
+              <span className="w-2.5 h-2.5 rounded-xs bg-civix-text-muted inline-block"></span>
+              <span className="text-civix-text-secondary text-[11px]">Closed</span>
             </div>
-            <span className="font-mono text-[11px] font-semibold text-slate-900">({statusCounts.closed})</span>
+            <span className="font-mono text-[11px] font-semibold text-civix-text-main">({statusCounts.closed})</span>
           </div>
         </div>
 
-        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-100 pb-1">
+        <h4 className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2 border-b border-civix-border/40 pb-1">
           CASE TYPE
         </h4>
-        <div className="space-y-1 text-[11px] text-slate-600">
+        <div className="space-y-1 text-[11px] text-civix-text-secondary">
           <div className="flex items-center space-x-1.5">
-            <Scale className="w-3 h-3 text-slate-500" />
+            <Scale className="w-3 h-3 text-civix-text-muted" />
             <span>Financial</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <Shield className="w-3 h-3 text-slate-500" />
+            <Shield className="w-3 h-3 text-civix-text-muted" />
             <span>Criminal</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <AlertCircle className="w-3 h-3 text-slate-500" />
+            <AlertCircle className="w-3 h-3 text-civix-text-muted" />
             <span>Intelligence</span>
           </div>
           <div className="flex items-center space-x-1.5">
-            <Briefcase className="w-3 h-3 text-slate-500" />
+            <Briefcase className="w-3 h-3 text-civix-text-muted" />
             <span>Multi-Case</span>
           </div>
         </div>
@@ -184,8 +192,8 @@ export const NCRInvestigationMap: React.FC<NCRInvestigationMapProps> = ({
         scrollWheelZoom={true}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
         />
 
         <MapController cases={cases} selectedId={selectedCaseId} />
@@ -205,22 +213,22 @@ export const NCRInvestigationMap: React.FC<NCRInvestigationMapProps> = ({
               }}
             >
               <Popup className="civix-map-popup">
-                <div className="p-1 max-w-xs font-sans">
-                  <span className="text-[9px] font-mono font-bold text-slate-400 uppercase">{case_number}</span>
-                  <h3 className="font-bold text-slate-900 text-xs mt-0.5 leading-tight">{title}</h3>
+                <div className="p-1 max-w-xs font-sans text-civix-text-main">
+                  <span className="civix-id">{case_number}</span>
+                  <h3 className="font-bold text-civix-text-main text-xs mt-0.5 leading-tight">{title}</h3>
                   <div className="flex items-center space-x-1.5 mt-2">
-                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${
-                      priority === 'CRITICAL' ? 'bg-red-50 text-red-700 border border-red-200' :
-                      priority === 'HIGH' ? 'bg-orange-50 text-orange-700 border border-orange-200' :
-                      'bg-amber-50 text-amber-700 border border-amber-200'
+                    <span className={`px-1.5 py-0.5 rounded-sm text-[9px] font-bold uppercase border ${
+                      priority === 'CRITICAL' ? 'bg-civix-red-950 text-civix-red-400 border-civix-red-600/50' :
+                      priority === 'HIGH' ? 'bg-civix-gold-950 text-civix-gold-400 border-civix-gold-600/50' :
+                      'bg-civix-gold-950/60 text-civix-gold-400 border-civix-gold-600/40'
                     }`}>
                       {priority}
                     </span>
-                    <span className="text-[10px] text-slate-500 font-mono">{status}</span>
+                    <span className="text-[10px] text-civix-text-muted font-mono">{status}</span>
                   </div>
                   <button
                     onClick={() => onSelectCase(case_id)}
-                    className="mt-2.5 w-full bg-[#1a3a6c] hover:bg-[#132c54] text-white text-[11px] font-semibold py-1 px-2 rounded transition-colors"
+                    className="mt-2.5 w-full civix-btn-primary py-1 px-2 text-[11px] justify-center"
                   >
                     Inspect Case
                   </button>

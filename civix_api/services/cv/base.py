@@ -10,6 +10,8 @@ class CVDetection:
     bounding_box: Tuple[int, int, int, int] # (x_min, y_min, x_max, y_max)
     object_class: str
     confidence: float
+    normalized_bbox: Tuple[float, float, float, float] = None # (x1_pct, y1_pct, x2_pct, y2_pct)
+    track_id: str = None
 
 @dataclass
 class CVTrack:

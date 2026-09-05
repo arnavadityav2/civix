@@ -4,7 +4,7 @@ from neo4j import AsyncSession
 from neo4j.exceptions import ClientError, TransientError, ResultConsumedError
 from fastapi import HTTPException, status
 
-from ..models.graph import GraphNode, GraphRelationship, GraphResponse
+from ..models.graph import GraphNode, GraphRelationship, GraphResponse, GraphMetadata
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,19 @@ class Neo4jQueryService:
             record = await result.single()
 
             if not record:
-                return GraphResponse(nodes=[], relationships=[])
+                return GraphResponse(
+                    nodes=[], 
+                    relationships=[],
+                    metadata=GraphMetadata(
+                        requested_depth=depth,
+                        max_depth=5,
+                        node_limit=node_limit,
+                        relationship_limit=rel_limit,
+                        nodes_returned=0,
+                        relationships_returned=0,
+                        truncated=False
+                    )
+                )
 
             valid_nodes = record.get("valid_nodes", [])
             valid_rels = record.get("valid_rels", [])
@@ -125,7 +137,17 @@ class Neo4jQueryService:
                     properties=sanitize_properties(dict(r.items()))
                 ))
 
-            return GraphResponse(nodes=graph_nodes, relationships=graph_relationships)
+            meta = GraphMetadata(
+                requested_depth=depth,
+                max_depth=5,
+                node_limit=node_limit,
+                relationship_limit=rel_limit,
+                nodes_returned=len(graph_nodes),
+                relationships_returned=len(graph_relationships),
+                truncated=(len(graph_nodes) >= node_limit or len(graph_relationships) >= rel_limit)
+            )
+
+            return GraphResponse(nodes=graph_nodes, relationships=graph_relationships, metadata=meta)
 
         except TransientError as e:
             logger.error(f"Neo4j Transient Error: {str(e)}")

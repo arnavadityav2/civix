@@ -29,24 +29,24 @@ export const LeadReviewModal: React.FC<LeadReviewModalProps> = ({ lead, caseId, 
   });
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4">
-      <div className="bg-white border border-slate-300 rounded-lg shadow-xl max-w-xl w-full overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="bg-civix-surface border border-civix-border rounded-sm shadow-2xl max-w-xl w-full overflow-hidden">
         {/* Header */}
-        <div className="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <div className="civix-panel-header px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <HierarchyBadge tier="MODEL_SIGNAL" />
-            <h3 className="text-sm font-bold tracking-tight">Investigator Lead Review</h3>
+            <h3 className="civix-panel-title">Investigator Lead Review</h3>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white p-1 rounded">
+          <button onClick={onClose} className="text-civix-text-muted hover:text-civix-text-main p-1 rounded-sm">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
         <div className="p-6 space-y-4">
-          <div className="bg-slate-50 p-3.5 border border-slate-200 rounded">
-            <h4 className="text-xs font-bold text-slate-900 font-sans mb-1">{lead.lead_text}</h4>
-            <div className="flex items-center space-x-3 text-[11px] font-mono text-slate-600">
+          <div className="bg-civix-surface-2 p-3.5 border border-civix-border rounded-sm">
+            <h4 className="text-xs font-bold text-civix-text-main font-sans mb-1">{lead.lead_text}</h4>
+            <div className="flex items-center space-x-3 text-[11px] font-mono text-civix-text-secondary">
               <span>Behavioral Model Score: {lead.ai_confidence ? lead.ai_confidence.toFixed(3) : 'N/A'}</span>
               <span>•</span>
               <span>Priority: {lead.priority}</span>
@@ -56,53 +56,53 @@ export const LeadReviewModal: React.FC<LeadReviewModalProps> = ({ lead, caseId, 
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-civix-text-muted uppercase tracking-wider mb-2">
               Select Disposition Action
             </label>
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setSelectedStatus('CONFIRMED')}
-                className={`py-2 px-3 border rounded text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors ${
+                className={`py-2 px-3 border rounded-sm text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors ${
                   selectedStatus === 'CONFIRMED'
-                    ? 'bg-emerald-50 border-emerald-600 text-emerald-900 font-bold'
-                    : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+                    ? 'bg-civix-green-950 border-civix-green-600/50 text-civix-green-400 font-bold'
+                    : 'bg-civix-surface-2 border-civix-border text-civix-text-secondary hover:bg-civix-surface'
                 }`}
               >
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-700" />
+                <CheckCircle className="w-3.5 h-3.5 text-civix-green-400" />
                 <span>Confirm Lead</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setSelectedStatus('FALSE_POSITIVE')}
-                className={`py-2 px-3 border rounded text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors ${
+                className={`py-2 px-3 border rounded-sm text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors ${
                   selectedStatus === 'FALSE_POSITIVE'
-                    ? 'bg-red-50 border-red-600 text-red-900 font-bold'
-                    : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+                    ? 'bg-civix-red-950 border-civix-red-600/50 text-civix-red-400 font-bold'
+                    : 'bg-civix-surface-2 border-civix-border text-civix-text-secondary hover:bg-civix-surface'
                 }`}
               >
-                <XCircle className="w-3.5 h-3.5 text-red-700" />
+                <XCircle className="w-3.5 h-3.5 text-civix-red-400" />
                 <span>False Positive</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setSelectedStatus('CLOSED')}
-                className={`py-2 px-3 border rounded text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors ${
+                className={`py-2 px-3 border rounded-sm text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors ${
                   selectedStatus === 'CLOSED'
-                    ? 'bg-slate-200 border-slate-600 text-slate-900 font-bold'
-                    : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+                    ? 'bg-civix-surface-2 border-civix-border text-civix-text-main font-bold'
+                    : 'bg-civix-surface-2 border-civix-border text-civix-text-secondary hover:bg-civix-surface'
                 }`}
               >
-                <Clock className="w-3.5 h-3.5 text-slate-700" />
+                <Clock className="w-3.5 h-3.5 text-civix-text-muted" />
                 <span>Close Lead</span>
               </button>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-civix-text-muted uppercase tracking-wider mb-1">
               Investigator Rationale / Disposition Notes
             </label>
             <textarea
@@ -110,29 +110,29 @@ export const LeadReviewModal: React.FC<LeadReviewModalProps> = ({ lead, caseId, 
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Record investigative basis for this disposition action..."
-              className="w-full text-xs bg-slate-50 border border-slate-300 rounded p-2.5 text-slate-900 focus:outline-none focus:border-slate-800"
+              className="civix-input w-full p-2.5 text-xs"
             />
           </div>
 
           {mutation.isError && (
-            <div className="p-2.5 bg-red-50 border border-red-200 rounded text-xs text-red-800 font-mono">
+            <div className="p-2.5 bg-civix-red-950/40 border border-civix-red-600/40 rounded-sm text-xs text-civix-red-400 font-mono">
               Failed to submit disposition action. State machine violation or permission error.
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="bg-slate-50 border-t border-slate-200 px-6 py-3 flex items-center justify-end space-x-3">
+        <div className="bg-civix-surface-2 border-t border-civix-border px-6 py-3 flex items-center justify-end space-x-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-white border border-slate-300 rounded text-xs font-semibold text-slate-700 hover:bg-slate-100"
+            className="civix-btn-secondary"
           >
             Cancel
           </button>
           <button
             onClick={() => mutation.mutate()}
             disabled={mutation.isPending || !notes.trim()}
-            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-semibold flex items-center space-x-1.5 disabled:opacity-50"
+            className="civix-btn-primary"
           >
             {mutation.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             <span>Save Disposition</span>

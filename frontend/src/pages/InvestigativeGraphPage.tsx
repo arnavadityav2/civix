@@ -57,113 +57,131 @@ interface NodeTypeConfig {
 
 const NODE_TYPE_CONFIG: Record<string, NodeTypeConfig> = {
   Person: {
-    color: '#dbeafe',
-    borderColor: '#1d4ed8',
-    textColor: '#1e3a8a',
+    color: '#111318',
+    borderColor: '#3b82f6',
+    textColor: '#93c5fd',
     icon: User,
-    iconClass: 'text-blue-700',
-    badgeClass: 'bg-blue-50 border-blue-200 text-blue-800',
+    iconClass: 'text-civix-blue-400',
+    badgeClass: 'bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400',
     displayLabel: 'PERSON',
   },
   Organization: {
-    color: '#fef3c7',
+    color: '#111318',
     borderColor: '#d97706',
-    textColor: '#78350f',
+    textColor: '#fcd34d',
     icon: Building2,
-    iconClass: 'text-amber-700',
-    badgeClass: 'bg-amber-50 border-amber-200 text-amber-800',
+    iconClass: 'text-civix-gold-400',
+    badgeClass: 'bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400',
     displayLabel: 'ORGANIZATION',
   },
   Device: {
-    color: '#ede9fe',
-    borderColor: '#7c3aed',
-    textColor: '#4c1d95',
+    color: '#111318',
+    borderColor: '#2563eb',
+    textColor: '#93c5fd',
     icon: Smartphone,
-    iconClass: 'text-purple-700',
-    badgeClass: 'bg-purple-50 border-purple-200 text-purple-800',
+    iconClass: 'text-civix-blue-300',
+    badgeClass: 'bg-civix-blue-950 border-civix-blue-500/40 text-civix-blue-300',
     displayLabel: 'DEVICE',
   },
   PhoneNumber: {
-    color: '#d1fae5',
+    color: '#111318',
     borderColor: '#059669',
-    textColor: '#064e3b',
+    textColor: '#6ee7b7',
     icon: Phone,
-    iconClass: 'text-emerald-700',
-    badgeClass: 'bg-emerald-50 border-emerald-200 text-emerald-800',
+    iconClass: 'text-civix-green-400',
+    badgeClass: 'bg-civix-green-950 border-civix-green-600/50 text-civix-green-400',
     displayLabel: 'PHONE NUMBER',
   },
   Vehicle: {
-    color: '#fee2e2',
+    color: '#111318',
     borderColor: '#dc2626',
-    textColor: '#7f1d1d',
+    textColor: '#fca5a5',
     icon: Car,
-    iconClass: 'text-red-700',
-    badgeClass: 'bg-red-50 border-red-200 text-red-800',
+    iconClass: 'text-civix-red-400',
+    badgeClass: 'bg-civix-red-950 border-civix-red-600/50 text-civix-red-400',
     displayLabel: 'VEHICLE',
   },
   FinancialAccount: {
-    color: '#fef9c3',
+    color: '#111318',
     borderColor: '#ca8a04',
-    textColor: '#713f12',
+    textColor: '#fde047',
     icon: CreditCard,
-    iconClass: 'text-yellow-700',
-    badgeClass: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+    iconClass: 'text-civix-gold-400',
+    badgeClass: 'bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400',
     displayLabel: 'FINANCIAL ACCOUNT',
   },
   SourceIdentity: {
-    color: '#f1f5f9',
+    color: '#111318',
     borderColor: '#475569',
-    textColor: '#1e293b',
+    textColor: '#cbd5e1',
     icon: Fingerprint,
-    iconClass: 'text-slate-700',
-    badgeClass: 'bg-slate-100 border-slate-300 text-slate-800',
+    iconClass: 'text-civix-text-secondary',
+    badgeClass: 'bg-civix-surface-2 border-civix-border text-civix-text-secondary',
     displayLabel: 'SOURCE IDENTITY',
   },
   Case: {
-    color: '#e0f2fe',
-    borderColor: '#0369a1',
-    textColor: '#0c4a6e',
+    color: '#111318',
+    borderColor: '#0284c7',
+    textColor: '#7dd3fc',
     icon: Briefcase,
-    iconClass: 'text-sky-700',
-    badgeClass: 'bg-sky-50 border-sky-200 text-sky-800',
+    iconClass: 'text-civix-blue-400',
+    badgeClass: 'bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400',
     displayLabel: 'CASE',
   },
   Event: {
-    color: '#f0fdf4',
+    color: '#111318',
     borderColor: '#16a34a',
-    textColor: '#14532d',
+    textColor: '#86efac',
     icon: Clock,
-    iconClass: 'text-green-700',
-    badgeClass: 'bg-green-50 border-green-200 text-green-800',
+    iconClass: 'text-civix-green-400',
+    badgeClass: 'bg-civix-green-950 border-civix-green-600/50 text-civix-green-400',
     displayLabel: 'EVENT',
   },
   Assertion: {
-    color: '#faf5ff',
-    borderColor: '#9333ea',
-    textColor: '#581c87',
+    color: '#111318',
+    borderColor: '#3b82f6',
+    textColor: '#93c5fd',
     icon: Shield,
-    iconClass: 'text-purple-700',
-    badgeClass: 'bg-purple-50 border-purple-200 text-purple-800',
+    iconClass: 'text-civix-blue-400',
+    badgeClass: 'bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400',
     displayLabel: 'ASSERTION',
   },
   Location: {
-    color: '#ecfdf5',
+    color: '#111318',
     borderColor: '#059669',
-    textColor: '#064e3b',
+    textColor: '#6ee7b7',
     icon: MapPin,
-    iconClass: 'text-emerald-700',
-    badgeClass: 'bg-emerald-50 border-emerald-200 text-emerald-800',
+    iconClass: 'text-civix-green-400',
+    badgeClass: 'bg-civix-green-950 border-civix-green-600/50 text-civix-green-400',
     displayLabel: 'LOCATION',
+  },
+  Evidence: {
+    color: '#111318',
+    borderColor: '#8b5cf6',
+    textColor: '#c4b5fd',
+    icon: FileText,
+    iconClass: 'text-civix-purple-400',
+    badgeClass: 'bg-civix-purple-950 border-civix-purple-600/50 text-civix-purple-400',
+    displayLabel: 'EVIDENCE',
+  },
+  Lead: {
+    color: '#111318',
+    borderColor: '#ec4899',
+    textColor: '#f9a8d4',
+    icon: Shield,
+    iconClass: 'text-civix-pink-400',
+    badgeClass: 'bg-civix-pink-950 border-civix-pink-600/50 text-civix-pink-400',
+    displayLabel: 'LEAD',
   },
 };
 
 const FALLBACK_NODE_CONFIG: NodeTypeConfig = {
-  color: '#f8fafc',
-  borderColor: '#94a3b8',
-  textColor: '#334155',
+  color: '#111318',
+  borderColor: '#64748b',
+  textColor: '#cbd5e1',
   icon: GitFork,
-  iconClass: 'text-slate-500',
-  badgeClass: 'bg-slate-50 border-slate-200 text-slate-700',
+  iconClass: 'text-civix-text-muted',
+  badgeClass: 'bg-civix-surface-2 border-civix-border text-civix-text-secondary',
   displayLabel: 'ENTITY',
 };
 
@@ -185,6 +203,7 @@ function getPrimaryLabel(labels: string[]): string {
   const priority = [
     'Person', 'Organization', 'Device', 'PhoneNumber',
     'Vehicle', 'FinancialAccount', 'Location',
+    'Evidence', 'Lead',
     'SourceIdentity', 'Assertion', 'Event', 'Case', 'FIR',
   ];
   for (const p of priority) {
@@ -205,8 +224,6 @@ function isDomainEntity(node: GraphNode): boolean {
 
 /**
  * Strip synthetic data artifact suffix from values like `RJ14-CB-2847_b058a8f4`.
- * The `_<8hex>` suffix is added during data generation to ensure uniqueness.
- * It is never meaningful to investigators and should be hidden in the display layer.
  */
 function cleanSyntheticSuffix(value: string): string {
   return value.replace(/_[0-9a-f]{8}$/i, '');
@@ -257,8 +274,6 @@ function formatPredicate(predicate: string): string {
 }
 
 // ── Presentation Graph Builder ────────────────────────────────────────────────
-// This is the core semantic transform. It converts the raw Neo4j topology
-// into an investigator-facing presentation graph.
 
 interface PresentationEdge {
   id: string;
@@ -322,26 +337,21 @@ function buildPresentationGraph(
   }
 
   // ASSERTS edges: Entity→Assertion or Assertion→Entity
-  // Pattern: Entity -[:ASSERTS]-> Assertion -[:ASSERTS]-> Entity
-  // Collapse to: Entity -[predicate]-> Entity
   const assertsRels = relationships.filter((r) => r.type === 'ASSERTS');
   const assertionId2AssertionNode = new Map<string, GraphNode>(
     assertionNodes.map((a) => [a.id, a])
   );
-  // Build: assertionId → { subjects: string[], objects: string[] }
   const assertionConnections = new Map<string, { subjects: string[]; objects: string[] }>();
   for (const r of assertsRels) {
     const srcLabel = getPrimaryLabel(nodeMap.get(r.start_node)?.labels ?? []);
     const tgtLabel = getPrimaryLabel(nodeMap.get(r.end_node)?.labels ?? []);
 
-    // Entity→Assertion
     if (srcLabel !== 'Assertion' && tgtLabel === 'Assertion') {
       if (!assertionConnections.has(r.end_node)) {
         assertionConnections.set(r.end_node, { subjects: [], objects: [] });
       }
       assertionConnections.get(r.end_node)!.subjects.push(r.start_node);
     }
-    // Assertion→Entity
     if (srcLabel === 'Assertion' && tgtLabel !== 'Assertion') {
       if (!assertionConnections.has(r.start_node)) {
         assertionConnections.set(r.start_node, { subjects: [], objects: [] });
@@ -350,7 +360,6 @@ function buildPresentationGraph(
     }
   }
 
-  // Use Assertion node properties when ASSERTS edges are missing (direct from properties)
   for (const assertionNode of assertionNodes) {
     const p = assertionNode.properties;
     const predicate = p.predicate as string | undefined;
@@ -361,7 +370,6 @@ function buildPresentationGraph(
 
     if (!predicate || !subjectId || !objectId) continue;
 
-    // Check if both entities exist in our domain nodes
     const subjectNode = nodeMap.get(subjectId);
     const objectNode = nodeMap.get(objectId);
     if (!subjectNode || !objectNode) continue;
@@ -383,7 +391,6 @@ function buildPresentationGraph(
     });
   }
 
-  // Also try the ASSERTS edge pattern (for entities that appear as subjects/objects via edges)
   for (const [assertNodeId, { subjects, objects }] of assertionConnections) {
     const assertionNode = assertionId2AssertionNode.get(assertNodeId);
     const p = assertionNode?.properties ?? {};
@@ -400,7 +407,6 @@ function buildPresentationGraph(
         if (!isDomainEntity(subjectNode) || !isDomainEntity(objectNode)) continue;
 
         const edgeId = `asserts_${assertNodeId}_${subjectId}_${objectId}`;
-        // Skip if already added via property-based approach
         const alreadyAdded = investigativeEdges.some(
           (e) => e.source === subjectId && e.target === objectId && e.assertionNode?.id === assertNodeId
         );
@@ -424,10 +430,7 @@ function buildPresentationGraph(
   }
 
   // PARTICIPATED_AS edges: derive co-participation investigative links
-  // When multiple domain entities share an Event via PARTICIPATED_AS, they are operationally connected.
-  // The relationship direction in this graph is Event->Entity (start=Event, end=Entity).
   const participatedRels = relationships.filter((r) => r.type === 'PARTICIPATED_AS');
-
   const eventParticipants = new Map<string, string[]>();
   const eventNodesById = new Map<string, GraphNode>(eventNodes.map((e) => [e.id, e]));
   const domainNodeIds = new Set<string>(domainNodes.map((n) => n.id));
@@ -446,7 +449,6 @@ function buildPresentationGraph(
       eventId = r.end_node;
       entityId = r.start_node;
     } else if (domainNodeIds.has(r.start_node) && domainNodeIds.has(r.end_node)) {
-      // Direct domain-to-domain PARTICIPATED_AS
       investigativeEdges.push({
         id: r.id,
         source: r.start_node,
@@ -463,7 +465,6 @@ function buildPresentationGraph(
     eventParticipants.get(eventId)!.push(entityId);
   }
 
-  // Create co-participation edges between entity pairs sharing an event
   const addedCoPairs = new Set<string>();
   for (const [eventId, participants] of eventParticipants) {
     if (participants.length < 2) continue;
@@ -508,7 +509,6 @@ function buildPresentationGraph(
     });
   }
 
-
   return {
     domainNodes,
     caseNodes,
@@ -529,7 +529,6 @@ function buildCytoscapeElements(
   const elements: ElementDefinition[] = [];
 
   if (viewMode === 'investigative') {
-    // Only domain nodes with at least one edge, OR all domain nodes at depth 1
     const edgesToRender = pg.investigativeEdges.length > 0 ? pg.investigativeEdges : pg.caseContextEdges;
 
     if (pg.investigativeEdges.length === 0 && pg.caseNodes.length > 0) {
@@ -594,7 +593,6 @@ function buildCytoscapeElements(
       });
     }
   } else if (viewMode === 'case_context') {
-    // Domain nodes + Case node
     const caseNodeId = pg.caseNodes[0]?.id;
     if (caseNodeId) {
       const caseNode = pg.caseNodes[0];
@@ -651,12 +649,10 @@ function buildCytoscapeElements(
       });
     }
   } else {
-    // PROVENANCE — full raw graph
     for (const node of allNodes) {
       const cfg = getNodeConfig(node.labels);
       const primary = getPrimaryLabel(node.labels);
       const name = deriveDisplayName(node);
-      // Show predicate for Assertion nodes
       const label = primary === 'Assertion'
         ? (node.properties.predicate ? `${node.properties.predicate}` : name)
         : name;
@@ -681,7 +677,6 @@ function buildCytoscapeElements(
   return elements;
 }
 
-// Separate function for provenance mode that needs raw rels
 function buildProvenanceElements(
   nodes: GraphNode[],
   relationships: GraphRelationship[]
@@ -744,10 +739,10 @@ const CY_STYLE: cytoscape.StylesheetStyle[] = [
       'border-color': 'data(borderColor)',
       'border-width': 2,
       'label': 'data(label)',
-      'font-family': 'Inter, system-ui, sans-serif',
+      'font-family': 'IBM Plex Mono, monospace',
       'font-size': 10,
       'font-weight': '600',
-      'color': 'data(textColor)',
+      'color': '#f3f4f6',
       'text-valign': 'bottom',
       'text-halign': 'center',
       'text-margin-y': 5,
@@ -793,33 +788,33 @@ const CY_STYLE: cytoscape.StylesheetStyle[] = [
     selector: 'node:selected',
     style: {
       'border-width': 3,
-      'border-color': '#1e40af',
-      'background-color': '#bfdbfe',
+      'border-color': '#ffb703',
+      'background-color': '#1e293b',
     } as any,
   },
   {
     selector: 'node.highlighted',
     style: {
       'border-width': 3,
-      'border-color': '#d97706',
-      'background-color': '#fef3c7',
+      'border-color': '#f59e0b',
+      'background-color': '#1e293b',
     } as any,
   },
   {
     selector: 'edge',
     style: {
       'width': 1.5,
-      'line-color': '#94a3b8',
-      'target-arrow-color': '#94a3b8',
+      'line-color': '#3b82f6',
+      'target-arrow-color': '#3b82f6',
       'target-arrow-shape': 'triangle',
       'curve-style': 'bezier',
       'label': 'data(label)',
-      'font-family': 'Inter, system-ui, sans-serif',
+      'font-family': 'IBM Plex Mono, monospace',
       'font-size': 9,
       'font-weight': '600',
-      'color': '#475569',
+      'color': '#94a3b8',
       'text-rotation': 'autorotate',
-      'text-background-color': '#ffffff',
+      'text-background-color': '#111318',
       'text-background-opacity': 0.9,
       'text-background-padding': '2px',
       'text-max-width': '120px',
@@ -831,19 +826,19 @@ const CY_STYLE: cytoscape.StylesheetStyle[] = [
   {
     selector: 'edge[edgeClass = "investigative"]',
     style: {
-      'line-color': '#1d4ed8',
-      'target-arrow-color': '#1d4ed8',
+      'line-color': '#3b82f6',
+      'target-arrow-color': '#3b82f6',
       'width': 2,
-      'color': '#1e40af',
+      'color': '#93c5fd',
     } as any,
   },
   {
     selector: 'edge[edgeClass = "case_context"]',
     style: {
-      'line-color': '#bae6fd',
-      'target-arrow-color': '#bae6fd',
+      'line-color': '#64748b',
+      'target-arrow-color': '#64748b',
       'width': 1,
-      'color': '#0369a1',
+      'color': '#94a3b8',
       'line-style': 'dashed',
       'line-dash-pattern': [4, 4],
     } as any,
@@ -855,15 +850,15 @@ const CY_STYLE: cytoscape.StylesheetStyle[] = [
       'line-dash-pattern': [6, 3],
       'line-color': '#f59e0b',
       'target-arrow-color': '#f59e0b',
-      'color': '#d97706',
+      'color': '#fcd34d',
     } as any,
   },
   {
     selector: 'edge:selected',
     style: {
       'width': 3,
-      'line-color': '#1e40af',
-      'target-arrow-color': '#1e40af',
+      'line-color': '#ffb703',
+      'target-arrow-color': '#ffb703',
     } as any,
   },
 ];
@@ -878,14 +873,14 @@ type SelectedItem =
 const EpistemicBadge: React.FC<{ status?: string }> = ({ status }) => {
   if (!status) return null;
   const cls = status === 'CONFIRMED'
-    ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+    ? 'bg-civix-green-950 border-civix-green-600/50 text-civix-green-400'
     : status === 'POSSIBLE'
-      ? 'bg-amber-50 border-amber-200 text-amber-800'
+      ? 'bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400'
       : status === 'SUSPECTED'
-        ? 'bg-orange-50 border-orange-200 text-orange-800'
-        : 'bg-slate-50 border-slate-200 text-slate-700';
+        ? 'bg-civix-red-950 border-civix-red-600/50 text-civix-red-400'
+        : 'bg-civix-surface-2 border-civix-border text-civix-text-secondary';
   return (
-    <span className={`inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${cls}`}>
+    <span className={`inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm border ${cls}`}>
       {status}
     </span>
   );
@@ -924,23 +919,23 @@ const NodeInspector: React.FC<NodeInspectorProps> = ({
   if (p.org_type) identifiers.push({ label: 'Organisation Type', value: String(p.org_type) });
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-civix-surface text-civix-text-main">
       {/* Header */}
-      <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-start justify-between flex-shrink-0">
+      <div className="px-4 py-3 bg-civix-surface-2 border-b border-civix-border flex items-start justify-between flex-shrink-0">
         <div className="flex items-start space-x-2 min-w-0">
-          <div className={`w-7 h-7 rounded border flex items-center justify-center flex-shrink-0 mt-0.5 ${cfg.badgeClass}`}>
+          <div className={`w-7 h-7 rounded-sm border flex items-center justify-center flex-shrink-0 mt-0.5 ${cfg.badgeClass}`}>
             <Icon className={`w-3.5 h-3.5 ${cfg.iconClass}`} />
           </div>
           <div className="min-w-0">
-            <p className={`text-[10px] font-bold uppercase tracking-widest mb-0.5 ${cfg.iconClass}`}>
+            <p className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${cfg.iconClass}`}>
               {cfg.displayLabel}
             </p>
-            <p className="text-sm font-bold text-slate-900 leading-tight break-words">
+            <p className="text-sm font-bold text-civix-text-main leading-tight break-words">
               {displayName}
             </p>
           </div>
         </div>
-        <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-700 rounded transition-colors flex-shrink-0">
+        <button onClick={onClose} className="p-1 text-civix-text-muted hover:text-civix-text-main rounded-sm transition-colors flex-shrink-0">
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -951,12 +946,12 @@ const NodeInspector: React.FC<NodeInspectorProps> = ({
         {/* Case Role — if available */}
         {p.role && (
           <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Case Role</p>
-            <span className="inline-flex items-center text-[10px] font-mono font-bold px-2 py-0.5 rounded border bg-red-50 border-red-200 text-red-800">
+            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2">Case Role</p>
+            <span className="inline-flex items-center text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-red-950 border-civix-red-600/50 text-civix-red-400">
               {String(p.role)}
             </span>
             {p.role_basis && (
-              <p className="text-[10px] text-slate-500 mt-1">{String(p.role_basis)}</p>
+              <p className="text-[10px] text-civix-text-muted mt-1">{String(p.role_basis)}</p>
             )}
           </div>
         )}
@@ -964,34 +959,34 @@ const NodeInspector: React.FC<NodeInspectorProps> = ({
         {/* Identifiers */}
         {identifiers.length > 0 && (
           <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Identifiers</p>
+            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2">Identifiers</p>
             <div className="space-y-2">
               {identifiers.map(({ label, value }) => (
                 <div key={label}>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{label}</p>
-                  <p className="text-xs font-mono text-slate-800 mt-0.5 break-all">{value}</p>
+                  <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider">{label}</p>
+                  <p className="text-xs font-mono text-civix-text-main mt-0.5 break-all">{value}</p>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Internal Reference — collapsed, not primary */}
+        {/* Internal Reference */}
         {entityId && (
           <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Internal Reference</p>
-            <p className="text-[9px] font-mono text-slate-400 break-all">{entityId}</p>
+            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-1">Internal Reference</p>
+            <p className="text-[9px] font-mono text-civix-text-muted break-all">{entityId}</p>
           </div>
         )}
 
-        {/* C2 Identity Resolution note — only for person/org/source */}
+        {/* C2 Identity Resolution note */}
         {node.labels.some(l => ['Person', 'Organization', 'SourceIdentity'].includes(l)) && (
-          <div className="bg-amber-50 border border-amber-200 rounded p-2.5 space-y-1">
+          <div className="bg-civix-gold-950/40 border border-civix-gold-600/40 rounded-sm p-2.5 space-y-1">
             <div className="flex items-center space-x-1.5">
-              <Info className="w-3 h-3 text-amber-600 flex-shrink-0" />
-              <p className="text-[9px] font-bold text-amber-800 uppercase tracking-wide">C2 Identity Resolution</p>
+              <Info className="w-3 h-3 text-civix-gold-500 flex-shrink-0" />
+              <p className="text-[9px] font-bold text-civix-gold-400 uppercase tracking-wider">C2 Identity Resolution</p>
             </div>
-            <p className="text-[9px] text-amber-700 leading-relaxed">
+            <p className="text-[9px] text-civix-text-secondary leading-relaxed">
               Identity candidate relationships are shown as dashed amber edges. They are not confirmed resolutions.
             </p>
           </div>
@@ -999,17 +994,17 @@ const NodeInspector: React.FC<NodeInspectorProps> = ({
       </div>
 
       {/* Footer Actions */}
-      <div className="px-4 py-3 border-t border-slate-100 flex-shrink-0 space-y-2">
+      <div className="px-4 py-3 border-t border-civix-border flex-shrink-0 space-y-2">
         {entityId && !['Case', 'FIR', 'Assertion', 'Event'].includes(primaryLabel) && (
           <button
             onClick={() => onOpenDossier(entityId)}
-            className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-slate-800 bg-slate-50 border border-slate-200 rounded hover:bg-white hover:border-slate-300 transition-colors group"
+            className="w-full civix-btn-secondary justify-between text-xs py-2"
           >
             <div className="flex items-center space-x-2">
-              <FileText className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600" />
+              <FileText className="w-3.5 h-3.5 text-civix-blue-400" />
               <span>Open Entity Dossier</span>
             </div>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700" />
+            <ChevronRight className="w-3.5 h-3.5 text-civix-text-muted" />
           </button>
         )}
       </div>
@@ -1031,20 +1026,20 @@ const EdgeInspector: React.FC<EdgeInspectorProps> = ({ edge, sourceNode, targetN
   const isCaseContext = edge.edgeClass === 'case_context';
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-civix-surface text-civix-text-main">
       {/* Header */}
-      <div className={`px-4 py-3 border-b border-slate-200 flex items-start justify-between flex-shrink-0 ${
-        isCandidate ? 'bg-amber-50' : isCaseContext ? 'bg-sky-50' : 'bg-blue-50'
+      <div className={`px-4 py-3 border-b border-civix-border flex items-start justify-between flex-shrink-0 ${
+        isCandidate ? 'bg-civix-gold-950/60' : isCaseContext ? 'bg-civix-surface-2' : 'bg-civix-blue-950/60'
       }`}>
         <div>
-          <p className={`text-[10px] font-bold uppercase tracking-widest mb-0.5 ${
-            isCandidate ? 'text-amber-600' : isCaseContext ? 'text-sky-600' : 'text-blue-600'
+          <p className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${
+            isCandidate ? 'text-civix-gold-400' : isCaseContext ? 'text-civix-text-secondary' : 'text-civix-blue-400'
           }`}>
             {isCandidate ? 'IDENTITY CANDIDATE' : isCaseContext ? 'CASE CONTEXT' : 'INVESTIGATIVE RELATIONSHIP'}
           </p>
-          <p className="text-sm font-bold text-slate-900 leading-tight">{edge.predicate}</p>
+          <p className="text-sm font-bold text-civix-text-main leading-tight">{edge.predicate}</p>
         </div>
-        <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-700 rounded transition-colors">
+        <button onClick={onClose} className="p-1 text-civix-text-muted hover:text-civix-text-main rounded-sm transition-colors">
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -1054,12 +1049,12 @@ const EdgeInspector: React.FC<EdgeInspectorProps> = ({ edge, sourceNode, targetN
 
         {/* Candidate Warning */}
         {isCandidate && (
-          <div className="bg-amber-50 border border-amber-200 rounded p-2.5">
+          <div className="bg-civix-gold-950/40 border border-civix-gold-600/40 rounded-sm p-2.5">
             <div className="flex items-center space-x-1.5">
-              <Info className="w-3 h-3 text-amber-600 flex-shrink-0" />
-              <p className="text-[9px] font-bold text-amber-800 uppercase tracking-wide">C2 Identity Candidate — Not Confirmed</p>
+              <Info className="w-3 h-3 text-civix-gold-500 flex-shrink-0" />
+              <p className="text-[9px] font-bold text-civix-gold-400 uppercase tracking-wider">C2 Identity Candidate — Not Confirmed</p>
             </div>
-            <p className="text-[9px] text-amber-700 mt-1 leading-relaxed">
+            <p className="text-[9px] text-civix-text-secondary mt-1 leading-relaxed">
               This is a deterministic identity candidate link. It has <strong>NOT</strong> been confirmed as a SAME_AS resolution. Do not treat it as a confirmed identity merge.
             </p>
           </div>
@@ -1067,12 +1062,12 @@ const EdgeInspector: React.FC<EdgeInspectorProps> = ({ edge, sourceNode, targetN
 
         {/* Case Context note */}
         {isCaseContext && (
-          <div className="bg-sky-50 border border-sky-200 rounded p-2.5">
+          <div className="bg-civix-surface-2 border border-civix-border rounded-sm p-2.5">
             <div className="flex items-center space-x-1.5">
-              <Info className="w-3 h-3 text-sky-600 flex-shrink-0" />
-              <p className="text-[9px] font-bold text-sky-800 uppercase tracking-wide">Case Role — Not an Investigative Link</p>
+              <Info className="w-3 h-3 text-civix-blue-400 flex-shrink-0" />
+              <p className="text-[9px] font-bold text-civix-text-secondary uppercase tracking-wider">Case Role — Not an Investigative Link</p>
             </div>
-            <p className="text-[9px] text-sky-700 mt-1 leading-relaxed">
+            <p className="text-[9px] text-civix-text-muted mt-1 leading-relaxed">
               This entity is assigned to this case with the role shown. Shared case membership does not imply a direct investigative association between entities.
             </p>
           </div>
@@ -1080,37 +1075,37 @@ const EdgeInspector: React.FC<EdgeInspectorProps> = ({ edge, sourceNode, targetN
 
         {/* Source → Target */}
         <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Relationship</p>
+          <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2">Relationship</p>
           <div className="space-y-1">
-            <div className="bg-slate-50 border border-slate-200 rounded p-2">
-              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Source</p>
-              <p className="text-xs font-semibold text-slate-800">
+            <div className="bg-civix-surface-2 border border-civix-border rounded-sm p-2">
+              <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mb-0.5">Source</p>
+              <p className="text-xs font-semibold text-civix-text-main">
                 {sourceNode ? deriveDisplayName(sourceNode) : edge.source.slice(0, 12) + '…'}
               </p>
               {sourceNode && (
-                <p className="text-[9px] text-slate-500 font-mono mt-0.5">
+                <p className="text-[9px] text-civix-text-muted font-mono mt-0.5">
                   {getPrimaryLabel(sourceNode.labels)}
                 </p>
               )}
             </div>
             <div className="flex justify-center">
-              <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded border ${
+              <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border ${
                 isCandidate
-                  ? 'bg-amber-50 border-amber-200 text-amber-700'
+                  ? 'bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400'
                   : isCaseContext
-                    ? 'bg-sky-50 border-sky-200 text-sky-700'
-                    : 'bg-blue-50 border-blue-200 text-blue-700'
+                    ? 'bg-civix-surface-2 border-civix-border text-civix-text-secondary'
+                    : 'bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400'
               }`}>
                 {edge.rawPredicate}
               </span>
             </div>
-            <div className="bg-slate-50 border border-slate-200 rounded p-2">
-              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Target</p>
-              <p className="text-xs font-semibold text-slate-800">
+            <div className="bg-civix-surface-2 border border-civix-border rounded-sm p-2">
+              <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mb-0.5">Target</p>
+              <p className="text-xs font-semibold text-civix-text-main">
                 {targetNode ? deriveDisplayName(targetNode) : edge.target.slice(0, 12) + '…'}
               </p>
               {targetNode && (
-                <p className="text-[9px] text-slate-500 font-mono mt-0.5">
+                <p className="text-[9px] text-civix-text-muted font-mono mt-0.5">
                   {getPrimaryLabel(targetNode.labels)}
                 </p>
               )}
@@ -1121,7 +1116,7 @@ const EdgeInspector: React.FC<EdgeInspectorProps> = ({ edge, sourceNode, targetN
         {/* Epistemic Status */}
         {edge.epistemicStatus && (
           <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Epistemic Status</p>
+            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-1">Epistemic Status</p>
             <EpistemicBadge status={edge.epistemicStatus} />
           </div>
         )}
@@ -1129,37 +1124,37 @@ const EdgeInspector: React.FC<EdgeInspectorProps> = ({ edge, sourceNode, targetN
         {/* Assertion Provenance */}
         {edge.assertionId && (
           <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Supporting Assertion</p>
-            <div className="bg-purple-50 border border-purple-200 rounded p-2 space-y-1">
-              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Assertion ID</p>
-              <p className="text-[9px] font-mono text-slate-700 break-all">{edge.assertionId}</p>
+            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2">Supporting Assertion</p>
+            <div className="bg-civix-blue-950/40 border border-civix-blue-600/40 rounded-sm p-2 space-y-1">
+              <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider">Assertion ID</p>
+              <p className="text-[9px] font-mono text-civix-text-secondary break-all">{edge.assertionId}</p>
               {ap.predicate && (
                 <>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1">Predicate</p>
-                  <p className="text-[9px] font-mono text-purple-800 font-bold">{ap.predicate}</p>
+                  <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mt-1">Predicate</p>
+                  <p className="text-[9px] font-mono text-civix-blue-400 font-bold">{ap.predicate}</p>
                 </>
               )}
             </div>
           </div>
         )}
 
-        {/* Event Provenance (for co-participation edges) */}
+        {/* Event Provenance */}
         {edge.rawPredicate === 'PARTICIPATED_AS' && edge.assertionNode && (
           <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Shared Event</p>
-            <div className="bg-green-50 border border-green-200 rounded p-2 space-y-1">
+            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2">Shared Event</p>
+            <div className="bg-civix-green-950/40 border border-civix-green-600/40 rounded-sm p-2 space-y-1">
               {edge.assertionNode.properties?.description && (
-                <p className="text-[10px] text-green-900 leading-relaxed">
+                <p className="text-[10px] text-civix-green-400 leading-relaxed">
                   {String(edge.assertionNode.properties.description)}
                 </p>
               )}
               {edge.assertionNode.properties?.event_type && (
-                <p className="text-[9px] font-mono font-bold text-green-700 mt-1">
+                <p className="text-[9px] font-mono font-bold text-civix-green-400 mt-1">
                   {String(edge.assertionNode.properties.event_type)}
                 </p>
               )}
               {edge.assertionNode.properties?.occurred_at_lower && (
-                <p className="text-[9px] text-green-600 mt-0.5">
+                <p className="text-[9px] text-civix-text-muted mt-0.5">
                   {new Date(String(edge.assertionNode.properties.occurred_at_lower)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}
                 </p>
               )}
@@ -1169,7 +1164,7 @@ const EdgeInspector: React.FC<EdgeInspectorProps> = ({ edge, sourceNode, targetN
 
         {/* No provenance note */}
         {!edge.assertionId && !isCaseContext && edge.rawPredicate !== 'PARTICIPATED_AS' && (
-          <div className="flex items-start space-x-2 text-xs text-slate-400">
+          <div className="flex items-start space-x-2 text-xs text-civix-text-muted">
             <Info className="w-3 h-3 mt-0.5 flex-shrink-0" />
             <span>No assertion provenance available for this relationship in the current graph depth.</span>
           </div>
@@ -1190,41 +1185,41 @@ const RawEdgeInspector: React.FC<{
     .filter(([k, v]) => !HIDDEN_PROPS.has(k) && v != null && v !== '');
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-start justify-between flex-shrink-0">
+    <div className="flex flex-col h-full bg-civix-surface text-civix-text-main">
+      <div className="px-4 py-3 bg-civix-surface-2 border-b border-civix-border flex items-start justify-between flex-shrink-0">
         <div>
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">RELATIONSHIP (PROVENANCE)</p>
-          <p className="text-sm font-bold font-mono text-slate-900">{rel.type}</p>
+          <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-0.5">RELATIONSHIP (PROVENANCE)</p>
+          <p className="text-sm font-bold font-mono text-civix-text-main">{rel.type}</p>
         </div>
-        <button onClick={onClose} className="p-1 text-slate-400 hover:text-slate-700 rounded transition-colors">
+        <button onClick={onClose} className="p-1 text-civix-text-muted hover:text-civix-text-main rounded-sm transition-colors">
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
         <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Connected Nodes</p>
+          <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2">Connected Nodes</p>
           <div className="space-y-1">
-            <div className="bg-slate-50 border border-slate-200 rounded p-2">
-              <p className="text-[9px] font-bold text-slate-400 uppercase">Source</p>
-              <p className="text-xs font-semibold text-slate-800">{sourceNode ? deriveDisplayName(sourceNode) : rel.start_node.slice(0, 12) + '…'}</p>
+            <div className="bg-civix-surface-2 border border-civix-border rounded-sm p-2">
+              <p className="text-[9px] font-bold text-civix-text-muted uppercase">Source</p>
+              <p className="text-xs font-semibold text-civix-text-main">{sourceNode ? deriveDisplayName(sourceNode) : rel.start_node.slice(0, 12) + '…'}</p>
             </div>
             <div className="flex justify-center">
-              <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded border bg-slate-50 border-slate-200 text-slate-700">{rel.type}</span>
+              <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-surface border-civix-border text-civix-text-secondary">{rel.type}</span>
             </div>
-            <div className="bg-slate-50 border border-slate-200 rounded p-2">
-              <p className="text-[9px] font-bold text-slate-400 uppercase">Target</p>
-              <p className="text-xs font-semibold text-slate-800">{targetNode ? deriveDisplayName(targetNode) : rel.end_node.slice(0, 12) + '…'}</p>
+            <div className="bg-civix-surface-2 border border-civix-border rounded-sm p-2">
+              <p className="text-[9px] font-bold text-civix-text-muted uppercase">Target</p>
+              <p className="text-xs font-semibold text-civix-text-main">{targetNode ? deriveDisplayName(targetNode) : rel.end_node.slice(0, 12) + '…'}</p>
             </div>
           </div>
         </div>
         {propEntries.length > 0 && (
           <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Properties</p>
+            <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider mb-2">Properties</p>
             <div className="space-y-1.5">
               {propEntries.map(([key, value]) => (
                 <div key={key}>
-                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{key}</p>
-                  <p className="text-[10px] font-mono text-slate-700 break-all mt-0.5">{String(value)}</p>
+                  <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider">{key}</p>
+                  <p className="text-[10px] font-mono text-civix-text-secondary break-all mt-0.5">{String(value)}</p>
                 </div>
               ))}
             </div>
@@ -1241,7 +1236,8 @@ const GraphStatsBar: React.FC<{
   viewMode: ViewMode;
   rawNodes: number;
   rawRels: number;
-}> = ({ pg, viewMode, rawNodes, rawRels }) => {
+  metadata?: any;
+}> = ({ pg, viewMode, rawNodes, rawRels, metadata }) => {
   const visibleNodes = viewMode === 'investigative'
     ? pg.domainNodes.length
     : viewMode === 'case_context'
@@ -1254,18 +1250,24 @@ const GraphStatsBar: React.FC<{
       : rawRels;
 
   return (
-    <div className="bg-white border border-t-0 border-slate-200 rounded-b px-4 py-1.5 flex items-center justify-between flex-shrink-0">
-      <div className="flex items-center space-x-4 text-[10px] font-mono text-slate-500">
-        <span><span className="font-bold text-slate-700">{visibleNodes}</span> entities</span>
-        <span><span className="font-bold text-slate-700">{visibleEdges}</span> relationships</span>
+    <div className="bg-civix-surface border border-t-0 border-civix-border rounded-b-sm px-4 py-1.5 flex items-center justify-between flex-shrink-0">
+      <div className="flex items-center space-x-4 text-[10px] font-mono text-civix-text-muted">
+        <span><span className="font-bold text-civix-text-main">{visibleNodes}</span> entities</span>
+        <span><span className="font-bold text-civix-text-main">{visibleEdges}</span> relationships</span>
         {viewMode !== 'provenance' && (
           <span>
-            raw graph: <span className="font-bold text-slate-600">{rawNodes}n / {rawRels}r</span>
+            raw graph: <span className="font-bold text-civix-text-secondary">{rawNodes}n / {rawRels}r</span>
           </span>
         )}
       </div>
-      <div className="text-[9px] font-mono text-slate-400">
-        ACL-enforced · bounded traversal · Neo4j
+      <div className="flex items-center space-x-3 text-[9px] font-mono text-civix-text-muted">
+        {metadata?.truncated && (
+          <span className="flex items-center text-civix-gold-400 font-bold bg-civix-gold-900/30 px-1.5 py-0.5 rounded-xs border border-civix-gold-500/30">
+            <AlertTriangle className="w-3 h-3 mr-1" />
+            TRUNCATED (LIMIT REACHED)
+          </span>
+        )}
+        <span>ACL-enforced · bounded traversal · Neo4j</span>
       </div>
     </div>
   );
@@ -1280,35 +1282,37 @@ const GraphLegend: React.FC<{ viewMode: ViewMode }> = ({ viewMode }) => {
     { label: 'Phone', cfg: NODE_TYPE_CONFIG.PhoneNumber },
     { label: 'Device', cfg: NODE_TYPE_CONFIG.Device },
     { label: 'Account', cfg: NODE_TYPE_CONFIG.FinancialAccount },
+    { label: 'Evidence', cfg: NODE_TYPE_CONFIG.Evidence },
+    { label: 'Lead', cfg: NODE_TYPE_CONFIG.Lead },
   ];
 
   return (
-    <div className="absolute bottom-3 left-3 bg-white/95 border border-slate-200 rounded shadow-sm p-2 z-10 max-w-[200px]">
-      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Entity Types</p>
+    <div className="absolute bottom-3 left-3 bg-civix-surface/95 border border-civix-border rounded-sm shadow-sm p-2 z-10 max-w-[200px]">
+      <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mb-1.5">Entity Types</p>
       <div className="grid grid-cols-2 gap-x-3 gap-y-1">
         {investigativeItems.map(({ label, cfg }) => (
           <div key={label} className="flex items-center space-x-1.5">
-            <div className="w-3.5 h-3.5 rounded-sm border flex-shrink-0" style={{ backgroundColor: cfg.color, borderColor: cfg.borderColor }} />
-            <span className="text-[9px] text-slate-600 font-medium">{label}</span>
+            <div className="w-3.5 h-3.5 rounded-xs border flex-shrink-0" style={{ backgroundColor: cfg.color, borderColor: cfg.borderColor }} />
+            <span className="text-[9px] text-civix-text-secondary font-medium">{label}</span>
           </div>
         ))}
       </div>
-      <div className="mt-2 pt-2 border-t border-slate-100 space-y-1">
+      <div className="mt-2 pt-2 border-t border-civix-border/40 space-y-1">
         {viewMode === 'investigative' && (
           <div className="flex items-center space-x-1.5">
-            <div className="w-8 h-0 border-t-2 border-blue-600 flex-shrink-0" />
-            <span className="text-[9px] text-blue-600">Evidence-backed</span>
+            <div className="w-8 h-0 border-t-2 border-civix-blue-500 flex-shrink-0" />
+            <span className="text-[9px] text-civix-blue-400">Evidence-backed</span>
           </div>
         )}
         {viewMode === 'case_context' && (
           <div className="flex items-center space-x-1.5">
-            <div className="w-8 h-0 border-t border-dashed border-sky-400 flex-shrink-0" />
-            <span className="text-[9px] text-sky-600">Case role</span>
+            <div className="w-8 h-0 border-t border-dashed border-civix-text-muted flex-shrink-0" />
+            <span className="text-[9px] text-civix-text-secondary">Case role</span>
           </div>
         )}
         <div className="flex items-center space-x-1.5">
-          <div className="w-8 h-0 border-t-2 border-dashed border-amber-500 flex-shrink-0" />
-          <span className="text-[9px] text-amber-600">Candidate (C2)</span>
+          <div className="w-8 h-0 border-t-2 border-dashed border-civix-gold-500 flex-shrink-0" />
+          <span className="text-[9px] text-civix-gold-400">Candidate (C2)</span>
         </div>
       </div>
     </div>
@@ -1320,12 +1324,17 @@ const DEFAULT_DEPTH = 1;
 const DEFAULT_NODE_LIMIT = 200;
 const DEFAULT_REL_LIMIT = 500;
 
-// ── Main InvestigativeGraphPage ───────────────────────────────────────────────
-export const InvestigativeGraphPage: React.FC = () => {
-  const { caseId } = useParams<{ caseId: string }>();
+interface InvestigativeGraphPageProps {
+  caseIdProp?: string;
+  embedded?: boolean;
+}
+
+export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({ caseIdProp, embedded = false }) => {
+  const { caseId: paramCaseId } = useParams<{ caseId: string }>();
+  const caseId = caseIdProp || paramCaseId;
   const navigate = useNavigate();
 
-  const [depth, setDepth] = useState<1 | 2>(DEFAULT_DEPTH as 1);
+  const [depth, setDepth] = useState<number>(DEFAULT_DEPTH);
   const [viewMode, setViewMode] = useState<ViewMode>('investigative');
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -1451,7 +1460,6 @@ export const InvestigativeGraphPage: React.FC = () => {
       const pe: PresentationEdge | undefined = edge.data('presentationEdge');
 
       if (viewMode === 'provenance') {
-        // Find raw relationship
         const relId = edge.id();
         const rawRel = graphData?.relationships.find((r) => r.id === relId);
         if (rawRel) {
@@ -1516,45 +1524,46 @@ export const InvestigativeGraphPage: React.FC = () => {
   const hasGraph = graphData && graphData.nodes.length > 0;
   const isEmptyGraph = graphData && graphData.nodes.length === 0;
 
-
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-full min-h-0 space-y-4">
+    <div className="flex flex-col h-full min-h-0 space-y-4 max-w-7xl mx-auto pb-12">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-3 border-b border-slate-200 gap-3 flex-shrink-0">
+      <div className="flex flex-col md:flex-row md:items-center justify-between pb-3 border-b border-civix-border gap-3 flex-shrink-0">
         <div>
-          <div className="flex items-center space-x-2 mb-1.5">
-            <button
-              onClick={() => navigate(caseId ? `/cases/${caseId}` : '/cases')}
-              className="flex items-center space-x-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Case</span>
-            </button>
-            <span className="text-slate-300">/</span>
-            <span className="text-xs text-slate-500">Investigative Graph</span>
-          </div>
+          {!embedded && (
+            <div className="flex items-center space-x-2 mb-1.5">
+              <button
+                onClick={() => navigate(caseId ? `/cases/${caseId}` : '/cases')}
+                className="flex items-center space-x-1.5 text-xs font-semibold text-civix-text-muted hover:text-civix-text-main transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Case</span>
+              </button>
+              <span className="text-civix-border">/</span>
+              <span className="text-xs text-civix-text-main font-bold">Investigative Graph</span>
+            </div>
+          )}
           <div className="flex items-center space-x-3">
-            <GitFork className="w-5 h-5 text-slate-600" />
-            <h1 className="text-xl font-extrabold text-slate-900 tracking-tight uppercase">
+            <GitFork className="w-5 h-5 text-civix-gold" />
+            <h1 className="text-xl font-extrabold text-civix-text-main tracking-tight uppercase">
               Investigative Graph
             </h1>
             {caseData && (
-              <span className="text-[11px] font-mono font-bold bg-slate-900 text-white px-2.5 py-0.5 rounded">
+              <span className="civix-id">
                 {caseData.case_number}
               </span>
             )}
-            {caseLoading && <Loader2 className="w-4 h-4 animate-spin text-amber-600" />}
+            {caseLoading && <Loader2 className="w-4 h-4 animate-spin text-civix-gold" />}
           </div>
           {caseData && (
-            <p className="text-xs text-slate-600 mt-0.5 font-medium">{caseData.title}</p>
+            <p className="text-xs text-civix-text-muted mt-0.5 font-medium">{caseData.title}</p>
           )}
         </div>
 
         {/* Controls */}
         <div className="flex items-center gap-2 flex-wrap">
           {/* View Mode */}
-          <div className="flex items-center border border-slate-300 rounded overflow-hidden bg-white shadow-2xs">
+          <div className="flex items-center border border-civix-border rounded-sm overflow-hidden bg-civix-surface shadow-2xs">
             {([
               { mode: 'investigative' as ViewMode, label: 'INVESTIGATIVE', icon: Eye },
               { mode: 'case_context' as ViewMode, label: 'CASE CONTEXT', icon: Layers },
@@ -1564,10 +1573,10 @@ export const InvestigativeGraphPage: React.FC = () => {
                 key={mode}
                 id={`view-${mode}`}
                 onClick={() => { setViewMode(mode); setSelectedItem(null); }}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 text-[10px] font-bold transition-colors border-r border-slate-300 last:border-r-0 ${
+                className={`flex items-center space-x-1.5 px-3 py-1.5 text-[10px] font-bold transition-colors border-r border-civix-border last:border-r-0 ${
                   viewMode === mode
-                    ? 'bg-slate-900 text-white'
-                    : 'text-slate-700 hover:bg-slate-50'
+                    ? 'bg-civix-blue-600 text-white'
+                    : 'text-civix-text-secondary hover:bg-civix-surface-2'
                 }`}
               >
                 <Icon className="w-3 h-3" />
@@ -1577,46 +1586,39 @@ export const InvestigativeGraphPage: React.FC = () => {
           </div>
 
           {/* Depth control */}
-          <div className="flex items-center border border-slate-300 rounded overflow-hidden bg-white shadow-2xs">
-            <button
-              id="depth-1-btn"
-              onClick={() => { setDepth(1); setSelectedItem(null); }}
-              className={`px-3 py-1.5 text-xs font-bold transition-colors ${depth === 1 ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-50'}`}
-            >
-              1 HOP
-            </button>
-            <button
-              id="depth-2-btn"
-              onClick={() => { setDepth(2); setSelectedItem(null); }}
-              className={`px-3 py-1.5 text-xs font-bold border-l border-slate-300 transition-colors ${depth === 2 ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-50'}`}
-            >
-              2 HOPS
-            </button>
+          <div className="flex items-center border border-civix-border rounded-sm overflow-hidden bg-civix-surface shadow-2xs">
+            {[1, 2, 3, 4, 5].map((d) => (
+              <button
+                key={d}
+                id={`depth-${d}-btn`}
+                onClick={() => { setDepth(d); setSelectedItem(null); }}
+                className={`px-3 py-1.5 text-xs font-bold transition-colors ${d > 1 ? 'border-l border-civix-border' : ''} ${depth === d ? 'bg-civix-blue-600 text-white' : 'text-civix-text-secondary hover:bg-civix-surface-2'}`}
+              >
+                {d} HOP{d > 1 ? 'S' : ''}
+              </button>
+            ))}
           </div>
 
           {/* Fit / Reset / Refresh / Zoom */}
-          <button id="graph-fit-btn" onClick={handleFit} disabled={!hasGraph}
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors disabled:opacity-40 shadow-2xs">
+          <button id="graph-fit-btn" onClick={handleFit} disabled={!hasGraph} className="civix-btn-secondary py-1 text-xs">
             <Maximize2 className="w-3.5 h-3.5" />
             <span>Fit</span>
           </button>
-          <button id="graph-reset-btn" onClick={handleReset} disabled={!hasGraph}
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors disabled:opacity-40 shadow-2xs">
+          <button id="graph-reset-btn" onClick={handleReset} disabled={!hasGraph} className="civix-btn-secondary py-1 text-xs">
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset</span>
           </button>
-          <button id="graph-refresh-btn" onClick={() => refetchGraph()} disabled={graphFetching}
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors disabled:opacity-40 shadow-2xs">
-            <RefreshCw className={`w-3.5 h-3.5 ${graphFetching ? 'animate-spin text-amber-600' : ''}`} />
+          <button id="graph-refresh-btn" onClick={() => refetchGraph()} disabled={graphFetching} className="civix-btn-secondary py-1 text-xs">
+            <RefreshCw className={`w-3.5 h-3.5 ${graphFetching ? 'animate-spin text-civix-gold' : ''}`} />
             <span>Refresh</span>
           </button>
-          <div className="flex items-center border border-slate-300 rounded overflow-hidden bg-white shadow-2xs">
+          <div className="flex items-center border border-civix-border rounded-sm overflow-hidden bg-civix-surface shadow-2xs">
             <button id="graph-zoom-in" onClick={handleZoomIn} disabled={!hasGraph}
-              className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-40">
+              className="px-2.5 py-1.5 text-civix-text-secondary hover:bg-civix-surface-2 transition-colors disabled:opacity-40">
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <button id="graph-zoom-out" onClick={handleZoomOut} disabled={!hasGraph}
-              className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-50 border-l border-slate-300 transition-colors disabled:opacity-40">
+              className="px-2.5 py-1.5 text-civix-text-secondary hover:bg-civix-surface-2 border-l border-civix-border transition-colors disabled:opacity-40">
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -1625,9 +1627,9 @@ export const InvestigativeGraphPage: React.FC = () => {
 
       {/* View Mode info banner */}
       {viewMode === 'investigative' && presentationGraph && depth === 1 && presentationGraph.investigativeEdges.length === 0 && presentationGraph.domainNodes.length > 0 && (
-        <div className="flex items-start space-x-2 bg-blue-50 border border-blue-200 rounded px-3 py-2 text-xs flex-shrink-0">
-          <Info className="w-3.5 h-3.5 text-blue-600 flex-shrink-0 mt-0.5" />
-          <span className="text-blue-800">
+        <div className="flex items-start space-x-2 bg-civix-blue-950/60 border border-civix-blue-600/40 rounded-sm px-3 py-2 text-xs flex-shrink-0">
+          <Info className="w-3.5 h-3.5 text-civix-blue-400 flex-shrink-0 mt-0.5" />
+          <span className="text-civix-text-main">
             <strong>Investigative view at 1-hop:</strong> {presentationGraph.domainNodes.length} entities are assigned to this case. Switch to <strong>2 HOPS</strong> to load evidence-backed relationship edges (REGISTERED_TO, DRIVER_OF, OWNS, etc.), or switch to <strong>CASE CONTEXT</strong> to see case membership structure.
           </span>
         </div>
@@ -1637,17 +1639,22 @@ export const InvestigativeGraphPage: React.FC = () => {
       <div className="flex gap-4 flex-1 min-h-0" style={{ height: 'calc(100vh - 300px)', minHeight: '480px' }}>
         {/* Graph Canvas */}
         <div className="flex flex-col flex-1 min-w-0 min-h-0">
-          <div className="flex-1 relative bg-white border border-slate-200 rounded-t shadow-sm overflow-hidden min-h-0">
+          <div className="flex-1 relative bg-civix-bg border border-civix-border rounded-t-sm overflow-hidden min-h-0">
 
             {/* Loading overlay */}
             {isLoading && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-20 space-y-3">
-                <Loader2 className="w-8 h-8 animate-spin text-amber-600" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-civix-bg/90 z-20 space-y-3">
+                <Loader2 className="w-8 h-8 animate-spin text-civix-gold" />
                 <div className="text-center">
-                  <p className="text-sm font-bold text-slate-900 uppercase tracking-wide">Loading Graph</p>
-                  <p className="text-xs text-slate-500 font-mono mt-0.5">
+                  <p className="text-sm font-bold text-civix-text-main uppercase tracking-wider">Loading Graph</p>
+                  <p className="text-xs text-civix-text-muted font-mono mt-0.5">
                     Bounded traversal · depth {depth} · ACL enforced
                   </p>
+                  {depth > 2 && (
+                    <p className="text-[10px] text-civix-gold-400 mt-2 font-mono">
+                      Deep traversals may take longer to compute.
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -1655,20 +1662,18 @@ export const InvestigativeGraphPage: React.FC = () => {
             {/* Error */}
             {!isLoading && hasError && (
               <div className="absolute inset-0 flex flex-col items-center justify-center z-20 space-y-4">
-                <AlertTriangle className="w-10 h-10 text-red-400" />
+                <AlertTriangle className="w-10 h-10 text-civix-red" />
                 <div className="text-center">
-                  <p className="text-sm font-bold text-slate-900 uppercase tracking-wide">Graph Unavailable</p>
-                  <p className="text-xs text-slate-500 mt-1 max-w-sm">
+                  <p className="text-sm font-bold text-civix-text-main uppercase tracking-wider">Graph Unavailable</p>
+                  <p className="text-xs text-civix-text-muted mt-1 max-w-sm">
                     {graphError instanceof Error ? graphError.message : 'Unable to retrieve the case graph.'}
                   </p>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <button onClick={() => refetchGraph()}
-                    className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-white bg-slate-900 rounded hover:bg-slate-800 transition-colors">
+                  <button onClick={() => refetchGraph()} className="civix-btn-primary">
                     <RefreshCw className="w-3.5 h-3.5" /><span>Retry</span>
                   </button>
-                  <button onClick={() => navigate('/cases')}
-                    className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-300 rounded hover:bg-slate-200 transition-colors">
+                  <button onClick={() => navigate('/cases')} className="civix-btn-secondary">
                     <ArrowLeft className="w-3.5 h-3.5" /><span>Return to Cases</span>
                   </button>
                 </div>
@@ -1678,23 +1683,21 @@ export const InvestigativeGraphPage: React.FC = () => {
             {/* Empty graph */}
             {!isLoading && !hasError && isEmptyGraph && (
               <div className="absolute inset-0 flex flex-col items-center justify-center z-20 space-y-4">
-                <GitFork className="w-12 h-12 text-slate-200" />
+                <GitFork className="w-12 h-12 text-civix-text-muted opacity-50" />
                 <div className="text-center">
-                  <p className="text-sm font-bold text-slate-700 uppercase tracking-wide">No Graph Data</p>
-                  <p className="text-xs text-slate-400 mt-1 max-w-sm">
+                  <p className="text-sm font-bold text-civix-text-main uppercase tracking-wider">No Graph Data</p>
+                  <p className="text-xs text-civix-text-muted mt-1 max-w-sm">
                     No relationships are projected for this case at depth {depth}.
                     Entities may not yet be linked to the case, or the Neo4j projection is pending.
                   </p>
                 </div>
                 <div className="flex items-center space-x-3">
                   {depth === 1 && (
-                    <button onClick={() => setDepth(2)}
-                      className="px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors">
+                    <button onClick={() => setDepth(2)} className="civix-btn-secondary">
                       Try 2 HOPS
                     </button>
                   )}
-                  <button onClick={() => navigate('/cases')}
-                    className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-300 rounded hover:bg-slate-200 transition-colors">
+                  <button onClick={() => navigate('/cases')} className="civix-btn-secondary">
                     <ArrowLeft className="w-3.5 h-3.5" /><span>Return to Cases</span>
                   </button>
                 </div>
@@ -1702,7 +1705,7 @@ export const InvestigativeGraphPage: React.FC = () => {
             )}
 
             {/* Cytoscape canvas */}
-            <div ref={cyContainerRef} className="w-full h-full" style={{ visibility: hasGraph ? 'visible' : 'hidden' }} />
+            <div ref={cyContainerRef} className="w-full h-full civix-graph-canvas" style={{ visibility: hasGraph ? 'visible' : 'hidden' }} />
 
             {/* Graph Legend */}
             {hasGraph && <GraphLegend viewMode={viewMode} />}
@@ -1711,18 +1714,18 @@ export const InvestigativeGraphPage: React.FC = () => {
             {hasGraph && (
               <div className="absolute top-3 right-3 z-10">
                 <div className="relative">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400" />
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-civix-text-muted" />
                   <input
                     id="graph-search-input"
                     type="text"
                     placeholder="Highlight entities..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-48 pl-7 pr-3 py-1.5 text-xs border border-slate-300 rounded bg-white shadow-sm focus:outline-none focus:ring-1 focus:ring-slate-900 placeholder-slate-400"
+                    className="civix-input w-48 pl-7 pr-3 py-1.5 text-xs"
                   />
                   {searchTerm && (
                     <button onClick={() => setSearchTerm('')}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-civix-text-muted hover:text-civix-text-main">
                       <X className="w-3 h-3" />
                     </button>
                   )}
@@ -1733,10 +1736,10 @@ export const InvestigativeGraphPage: React.FC = () => {
             {/* View mode badge */}
             {hasGraph && (
               <div className="absolute top-3 left-3 z-10">
-                <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded border ${
-                  viewMode === 'investigative' ? 'bg-blue-50 border-blue-200 text-blue-700' :
-                  viewMode === 'case_context' ? 'bg-sky-50 border-sky-200 text-sky-700' :
-                  'bg-purple-50 border-purple-200 text-purple-700'
+                <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border uppercase ${
+                  viewMode === 'investigative' ? 'bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400' :
+                  viewMode === 'case_context' ? 'bg-civix-surface-2 border-civix-border text-civix-text-secondary' :
+                  'bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400'
                 }`}>
                   {viewMode === 'investigative' ? 'INVESTIGATIVE VIEW' :
                    viewMode === 'case_context' ? 'CASE CONTEXT VIEW' : 'PROVENANCE VIEW'}
@@ -1752,12 +1755,13 @@ export const InvestigativeGraphPage: React.FC = () => {
               viewMode={viewMode}
               rawNodes={graphData.nodes.length}
               rawRels={graphData.relationships.length}
+              metadata={graphData.metadata}
             />
           )}
         </div>
 
         {/* Inspector Panel */}
-        <div className="w-72 flex-shrink-0 bg-white border border-slate-200 rounded shadow-sm overflow-hidden flex flex-col">
+        <div className="w-72 flex-shrink-0 civix-panel rounded-sm overflow-hidden flex flex-col">
           {selectedItem ? (
             selectedItem.kind === 'node' ? (
               <NodeInspector
@@ -1785,17 +1789,17 @@ export const InvestigativeGraphPage: React.FC = () => {
           ) : (
             <div className="p-4 flex flex-col h-full">
               <div>
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide mb-1">Inspector</h3>
-                <p className="text-[10px] text-slate-400 mb-4">Click a node or relationship to inspect it.</p>
+                <h3 className="civix-panel-title mb-1">Inspector</h3>
+                <p className="text-[10px] text-civix-text-muted mb-4">Click a node or relationship to inspect it.</p>
               </div>
 
               {/* View mode help */}
               <div className="space-y-3">
-                <div className={`rounded p-2.5 border ${viewMode === 'investigative' ? 'bg-blue-50 border-blue-200' : viewMode === 'case_context' ? 'bg-sky-50 border-sky-200' : 'bg-purple-50 border-purple-200'}`}>
-                  <p className={`text-[9px] font-bold uppercase tracking-wide mb-1 ${viewMode === 'investigative' ? 'text-blue-700' : viewMode === 'case_context' ? 'text-sky-700' : 'text-purple-700'}`}>
+                <div className="bg-civix-surface-2 rounded-sm p-2.5 border border-civix-border space-y-1">
+                  <p className="text-[9px] font-bold uppercase tracking-wider text-civix-gold-400">
                     {viewMode === 'investigative' ? 'INVESTIGATIVE VIEW' : viewMode === 'case_context' ? 'CASE CONTEXT VIEW' : 'PROVENANCE VIEW'}
                   </p>
-                  <p className="text-[9px] text-slate-600 leading-relaxed">
+                  <p className="text-[9px] text-civix-text-secondary leading-relaxed font-sans">
                     {viewMode === 'investigative'
                       ? 'Shows only domain entities (Persons, Orgs, Vehicles, etc.) connected by evidence-backed predicates (REGISTERED_TO, DRIVER_OF, OWNS, etc.). Case infrastructure and internal nodes are hidden.'
                       : viewMode === 'case_context'
@@ -1805,27 +1809,27 @@ export const InvestigativeGraphPage: React.FC = () => {
                 </div>
 
                 {presentationGraph && (
-                  <div className="border border-slate-200 rounded p-2.5 space-y-2">
-                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Graph Summary</p>
+                  <div className="border border-civix-border rounded-sm p-2.5 space-y-2">
+                    <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider">Graph Summary</p>
                     <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                      <div className="bg-slate-50 rounded p-1.5 text-center">
-                        <p className="font-bold text-slate-800">{presentationGraph.domainNodes.length}</p>
-                        <p className="text-slate-500 text-[8px]">Entities</p>
+                      <div className="bg-civix-surface-2 rounded-sm p-1.5 text-center border border-civix-border">
+                        <p className="font-bold text-civix-text-main">{presentationGraph.domainNodes.length}</p>
+                        <p className="text-civix-text-muted text-[8px]">Entities</p>
                       </div>
-                      <div className="bg-blue-50 rounded p-1.5 text-center">
-                        <p className="font-bold text-blue-800">{presentationGraph.investigativeEdges.length}</p>
-                        <p className="text-blue-600 text-[8px]">Inv. Links</p>
+                      <div className="bg-civix-blue-950/60 rounded-sm p-1.5 text-center border border-civix-blue-600/40">
+                        <p className="font-bold text-civix-blue-400">{presentationGraph.investigativeEdges.length}</p>
+                        <p className="text-civix-blue-300 text-[8px]">Inv. Links</p>
                       </div>
-                      <div className="bg-amber-50 rounded p-1.5 text-center">
-                        <p className="font-bold text-amber-800">{presentationGraph.assertionNodes.length}</p>
-                        <p className="text-amber-600 text-[8px]">Assertions</p>
+                      <div className="bg-civix-gold-950/60 rounded-sm p-1.5 text-center border border-civix-gold-600/40">
+                        <p className="font-bold text-civix-gold-400">{presentationGraph.assertionNodes.length}</p>
+                        <p className="text-civix-gold-400 text-[8px]">Assertions</p>
                       </div>
-                      <div className="bg-green-50 rounded p-1.5 text-center">
-                        <p className="font-bold text-green-800">{presentationGraph.eventNodes.length}</p>
-                        <p className="text-green-600 text-[8px]">Events</p>
+                      <div className="bg-civix-green-950/60 rounded-sm p-1.5 text-center border border-civix-green-600/40">
+                        <p className="font-bold text-civix-green-400">{presentationGraph.eventNodes.length}</p>
+                        <p className="text-civix-green-400 text-[8px]">Events</p>
                       </div>
                     </div>
-                    <p className="text-[9px] text-slate-400 leading-relaxed">
+                    <p className="text-[9px] text-civix-text-muted leading-relaxed">
                       Switch to <strong>PROVENANCE</strong> view to inspect {presentationGraph.assertionNodes.length} raw assertion nodes and {presentationGraph.eventNodes.length} event nodes.
                     </p>
                   </div>

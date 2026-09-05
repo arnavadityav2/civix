@@ -11,12 +11,12 @@ export const DirectionAWorkstation: React.FC = () => {
   return (
     <div className="space-y-4">
       {/* Top Notification Banner / Workstation Control Header */}
-      <div className="bg-slate-900 text-white px-4 py-2 rounded flex flex-wrap items-center justify-between text-xs font-mono shadow-sm">
+      <div className="civix-panel bg-civix-surface-2 px-4 py-2 flex flex-wrap items-center justify-between text-xs font-mono">
         <div className="flex items-center space-x-3">
-          <span className="bg-amber-600 text-white px-2 py-0.5 rounded font-bold">MODE: HIGH DENSITY WORKSTATION</span>
-          <span className="text-slate-300">Target: Rapid Case Scanning & Lead Disposition</span>
+          <span className="bg-civix-gold-500 text-civix-bg px-2 py-0.5 rounded-sm font-bold">MODE: HIGH DENSITY WORKSTATION</span>
+          <span className="text-civix-text-secondary">Target: Rapid Case Scanning & Lead Disposition</span>
         </div>
-        <div className="flex items-center space-x-4 text-slate-400">
+        <div className="flex items-center space-x-4 text-civix-text-muted">
           <span>Active Case Filter: ALL</span>
           <span>RLS Context: ACTIVE</span>
         </div>
@@ -38,12 +38,12 @@ export const DirectionAWorkstation: React.FC = () => {
           <ActiveInvestigationsWidget />
         </div>
         <div className="lg:col-span-6">
-          <div className="bg-white border border-slate-200 rounded p-4 shadow-sm h-full flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
-              <h3 className="text-sm font-semibold text-slate-900 tracking-tight">
+          <div className="civix-panel p-4 h-full flex flex-col justify-between">
+            <div className="civix-panel-header">
+              <h3 className="civix-panel-title">
                 RELATIONSHIP INTELLIGENCE CANVAS
               </h3>
-              <span className="text-[10px] font-mono text-slate-500 uppercase">Interactive Network</span>
+              <span className="text-[10px] font-mono text-civix-text-muted uppercase">Interactive Network</span>
             </div>
             <StructuredGraphView />
           </div>

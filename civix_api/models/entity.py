@@ -20,6 +20,7 @@ class PersonData(BaseModel):
     is_deceased: bool
     deceased_at: Optional[date] = None
     notes: Optional[str] = None
+    avatar_url: Optional[str] = None
 
 class DeviceData(BaseModel):
     model_config = ConfigDict(from_attributes=True)

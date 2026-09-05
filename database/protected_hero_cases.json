@@ -1,0 +1,84 @@
+{
+  "protected_hero_cases_count": 13,
+  "last_verified_at": "2026-09-05T01:55:00Z",
+  "protected_cases": [
+    {
+      "case_id": "1346a86d-267a-a635-9d62-e34c76ecd24f",
+      "case_number": "CIV-2012-001",
+      "title": "Dwarka Sector 23 Cash Van Robbery",
+      "case_type": "CRIMINAL"
+    },
+    {
+      "case_id": "5f763ffd-2baf-e71c-d58e-e4452fb29b9c",
+      "case_number": "CIV-2018-036",
+      "title": "Nizamuddin Gold Bar Theft",
+      "case_type": "CRIMINAL"
+    },
+    {
+      "case_id": "93ef3637-c83c-15f2-ffd2-dac8c1cf836a",
+      "case_number": "CIV-2021-003",
+      "title": "NH-48 Dacoity with Truck Heist",
+      "case_type": "CRIMINAL"
+    },
+    {
+      "case_id": "295b5a65-185e-8012-1c52-62659a346162",
+      "case_number": "CIV-2021-027",
+      "title": "KYC Phishing Ring — Shahdara",
+      "case_type": "CRIMINAL"
+    },
+    {
+      "case_id": "36fc5955-24b1-6eda-4c7e-22e14a21330b",
+      "case_number": "CIV-2023-032",
+      "title": "Digital Arrest Call Center — Rohini",
+      "case_type": "CRIMINAL"
+    },
+    {
+      "case_id": "46b0a28e-f3bb-0a31-da68-d79ec87306d8",
+      "case_number": "CIV-2023-044",
+      "title": "Gurugram Benami Land Fraud",
+      "case_type": "FINANCIAL"
+    },
+    {
+      "case_id": "980b70e5-465d-6aeb-a4fe-1c2ddfdb922d",
+      "case_number": "CIV-2024-010",
+      "title": "Arham Bullion GST Fraud & SAR Intelligence",
+      "case_type": "FINANCIAL"
+    },
+    {
+      "case_id": "3b1fc2ad-efdb-bbd6-cc68-9696dee38912",
+      "case_number": "CIV-2024-038",
+      "title": "IGI Cargo Smuggling & Interpol Overlap",
+      "case_type": "CRIMINAL"
+    },
+    {
+      "case_id": "feecb812-7258-c9e9-d653-878bab1057a1",
+      "case_number": "CIV-2024-051",
+      "title": "Ghost Vendor PWD Procurement Fraud",
+      "case_type": "FINANCIAL"
+    },
+    {
+      "case_id": "e0846c1a-a5e2-b253-7a6e-cc42af8f1031",
+      "case_number": "CIV-2025-022",
+      "title": "Gold Bar Concealment — Okhla Warehouse",
+      "case_type": "CRIMINAL"
+    },
+    {
+      "case_id": "bb1a67a5-525b-48f8-f793-d60c23c514ca",
+      "case_number": "CIV-2026-009",
+      "title": "Najafgarh Robbery & Suresh Valmiki Arrest",
+      "case_type": "CRIMINAL"
+    },
+    {
+      "case_id": "12e0fbb8-e44f-fb9b-6ab3-134655c8f345",
+      "case_number": "CIV-2026-019",
+      "title": "Plate Cloning Ring — Spatial Paradox",
+      "case_type": "CRIMINAL"
+    },
+    {
+      "case_id": "f1742012-0074-4000-8000-000000000074",
+      "case_number": "FIR-74/2012/SW",
+      "title": "FIR No. 74/2012 - Dwarka Sec 23 (Village Bharthal Incident)",
+      "case_type": "CRIMINAL"
+    }
+  ]
+}

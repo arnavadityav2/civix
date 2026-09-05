@@ -1,0 +1,1090 @@
+{
+  "CCTV_FOOTAGE": [
+    {
+      "manifest_id": "21fa33a5-0e8a-4824-1a42-1995fa3d38dc",
+      "evidence_id": "EVD-001-002",
+      "title": "CAM-01 Still \u2014 Grey Tracksuit (07:43:12)",
+      "prompt": "Grainy 2012 CCTV still, street corner, person in grey tracksuit, face obscured by helmet visor, timestamp 07:43:12 overlay."
+    },
+    {
+      "manifest_id": "d08dc444-816d-fb51-cd5c-55dac7976882",
+      "evidence_id": "EVD-001-017",
+      "title": "CAM-04 Najafgarh \u2014 Two Motorcycles 06:10",
+      "prompt": "Night CCTV footage, two motorcycles at Najafgarh Bus Terminal, dim streetlight, 06:10 timestamp."
+    },
+    {
+      "manifest_id": "d7fc214c-b8ff-0e49-d7ff-b9ca0480b9dd",
+      "evidence_id": "EVD-003-002",
+      "title": "CAM-02 \u2014 Bolero HR-06UH-3818 Parked",
+      "prompt": "Night highway CCTV, dark Mahindra Bolero parked on shoulder, timestamp 21:47, NH-48 marker."
+    },
+    {
+      "manifest_id": "7eb04be6-14d8-3376-adb1-44a9dfc6331f",
+      "evidence_id": "EVD-010-011",
+      "title": "GST SAR \u2014 Evidence Item 11",
+      "prompt": "CIVIX 2.0 evidence item 11 for GST SAR case. Detailed forensic/intelligence document in Indian police format, professional quality, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "486e2034-8a26-67bf-3142-a766ea1800d6",
+      "evidence_id": "EVD-019-011",
+      "title": "Plate Cloning \u2014 Evidence Item 11",
+      "prompt": "CIVIX 2.0 evidence item 11 for Plate Cloning case. Detailed forensic/intelligence document in Indian police format, professional quality, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "12dd843d-b49c-d283-eded-2e1bb1c12b68",
+      "evidence_id": "EVD-022-011",
+      "title": "Okhla Gold \u2014 Evidence Item 11",
+      "prompt": "CIVIX 2.0 evidence item 11 for Okhla Gold case. Detailed forensic/intelligence document in Indian police format, professional quality, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "9f4754b4-832d-81ae-8be3-fcf81a8d29dc",
+      "evidence_id": "EVD-027-011",
+      "title": "KYC Phishing \u2014 Evidence Item 11",
+      "prompt": "CIVIX 2.0 evidence item 11 for KYC Phishing case. Detailed forensic/intelligence document in Indian police format, professional quality, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "fccaad55-a3d8-9e09-e967-31281976aa49",
+      "evidence_id": "EVD-032-011",
+      "title": "Digital Arrest \u2014 Evidence Item 11",
+      "prompt": "CIVIX 2.0 evidence item 11 for Digital Arrest case. Detailed forensic/intelligence document in Indian police format, professional quality, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "095cce89-2e38-b35f-6c5c-f9a8c647b62b",
+      "evidence_id": "EVD-036-011",
+      "title": "Nizamuddin Gold \u2014 Evidence Item 11",
+      "prompt": "CIVIX 2.0 evidence item 11 for Nizamuddin Gold case. Detailed forensic/intelligence document in Indian police format, professional quality, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "b8dc74e7-d86d-06d1-cc1c-bbbce43c81ca",
+      "evidence_id": "EVD-038-011",
+      "title": "IGI Cargo \u2014 Evidence Item 11",
+      "prompt": "CIVIX 2.0 evidence item 11 for IGI Cargo case. Detailed forensic/intelligence document in Indian police format, professional quality, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "92686039-a837-e80d-31f9-eaf6d8c9bf99",
+      "evidence_id": "EVD-044-011",
+      "title": "Benami Land \u2014 Evidence Item 11",
+      "prompt": "CIVIX 2.0 evidence item 11 for Benami Land case. Detailed forensic/intelligence document in Indian police format, professional quality, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "8195ea7f-db23-cddb-5007-0fcedb41869d",
+      "evidence_id": "EVD-051-011",
+      "title": "Ghost Vendor \u2014 Evidence Item 11",
+      "prompt": "CIVIX 2.0 evidence item 11 for Ghost Vendor case. Detailed forensic/intelligence document in Indian police format, professional quality, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "e67489e3-8d7b-2e8f-93a7-8f5492841cb5",
+      "evidence_id": "VIS-001-002",
+      "title": "CIVIX-001 \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "0e06d497-aafc-a087-66be-b02716feaef2",
+      "evidence_id": "VIS-001-007",
+      "title": "CIVIX-001 \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "5ab2d6da-1167-839a-fc1d-933fd2df03d6",
+      "evidence_id": "VIS-001-012",
+      "title": "CIVIX-001 \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "c69cc00a-b602-41ca-806b-5fac2a2cddda",
+      "evidence_id": "VIS-003-002",
+      "title": "CIVIX-003 \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "d7016c33-99fb-b8ba-fa04-ad0e2a6438cc",
+      "evidence_id": "VIS-003-007",
+      "title": "CIVIX-003 \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "79093749-0bd7-b593-16aa-710e949117a4",
+      "evidence_id": "VIS-003-012",
+      "title": "CIVIX-003 \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "8be5ea6e-7884-6ef5-ac18-7b3820671197",
+      "evidence_id": "VIS-009-002",
+      "title": "CIVIX-009 \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "7e6e18fa-d0be-32c7-b27a-0658df5a6d39",
+      "evidence_id": "VIS-009-007",
+      "title": "CIVIX-009 \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "5d4229f3-8c4a-2499-ba21-6387ad2b8a76",
+      "evidence_id": "VIS-009-012",
+      "title": "CIVIX-009 \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "712b28cf-2a22-10e6-255c-4172e40268cf",
+      "evidence_id": "VIS-010-002",
+      "title": "GST SAR \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "f09f6240-2ca6-2016-cc1f-bd19a53a2cae",
+      "evidence_id": "VIS-010-007",
+      "title": "GST SAR \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "5fcdcb35-dcf6-5f1a-eb93-19c5c3b900dd",
+      "evidence_id": "VIS-010-012",
+      "title": "GST SAR \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "4545e84a-ba62-2892-6910-fffbc556463c",
+      "evidence_id": "VIS-019-002",
+      "title": "Plate Cloning \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "4fcc473b-81bb-75cc-8901-4e60150992bf",
+      "evidence_id": "VIS-019-007",
+      "title": "Plate Cloning \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "89be352a-36c3-f4f0-7ad2-10ea846baef5",
+      "evidence_id": "VIS-019-012",
+      "title": "Plate Cloning \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "b417fb8a-df89-fc75-c550-15d3e7a70466",
+      "evidence_id": "VIS-022-002",
+      "title": "Okhla Gold \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "9539e784-2085-e28b-bd4d-8b7a6981d513",
+      "evidence_id": "VIS-022-007",
+      "title": "Okhla Gold \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "26c72c54-9825-5eea-dcd2-2ea975e3bff6",
+      "evidence_id": "VIS-022-012",
+      "title": "Okhla Gold \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "8c54ce06-937c-6ca5-5fcc-4ca78a9033b3",
+      "evidence_id": "VIS-027-002",
+      "title": "KYC Phishing \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "5a8dab09-6e85-1003-a841-f5a4bd69a424",
+      "evidence_id": "VIS-027-007",
+      "title": "KYC Phishing \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "bf548774-4487-e620-2cf3-636db1ddaa61",
+      "evidence_id": "VIS-027-012",
+      "title": "KYC Phishing \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "de979616-01d6-253d-4195-118c35f9c46e",
+      "evidence_id": "VIS-032-002",
+      "title": "Digital Arrest \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "9e78ac74-0cfd-efc2-83d0-ae7c70a5b44e",
+      "evidence_id": "VIS-032-007",
+      "title": "Digital Arrest \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "deccd984-803b-f88c-d9e8-826f2f32be42",
+      "evidence_id": "VIS-032-012",
+      "title": "Digital Arrest \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "598a8f7e-dd8f-dc5a-4be4-3c254ab8277b",
+      "evidence_id": "VIS-036-002",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "d59c7536-edc0-5e85-10da-f9917ea09941",
+      "evidence_id": "VIS-036-007",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "85382a6f-1342-0889-c0e5-0a9843aa4068",
+      "evidence_id": "VIS-036-012",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "fe49e93f-4dc2-a01f-a560-4f0b0539d419",
+      "evidence_id": "VIS-038-002",
+      "title": "IGI Cargo \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "04cb6b77-a4f9-6a07-4c5d-a3c7ff507b1d",
+      "evidence_id": "VIS-038-007",
+      "title": "IGI Cargo \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "6e64dbb4-96ff-38c5-112f-54813942940c",
+      "evidence_id": "VIS-038-012",
+      "title": "IGI Cargo \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "f85a215f-ba78-7bb7-c358-51565311ef01",
+      "evidence_id": "VIS-044-002",
+      "title": "Benami Land \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "8f256ce7-527f-7ea0-6253-b6976d1ad34f",
+      "evidence_id": "VIS-044-007",
+      "title": "Benami Land \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "b18358ef-d6bd-0ed7-7aca-ae7ae5e6f3d4",
+      "evidence_id": "VIS-044-012",
+      "title": "Benami Land \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "94428400-993c-7062-cb7a-15df84df07c2",
+      "evidence_id": "VIS-051-002",
+      "title": "Ghost Vendor \u2014 Visual Artifact 02",
+      "prompt": "CIVIX 2.0 visual evidence artifact 2 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "f12ffb93-0ec7-2b51-e27d-fc35eb0b3e3e",
+      "evidence_id": "VIS-051-007",
+      "title": "Ghost Vendor \u2014 Visual Artifact 07",
+      "prompt": "CIVIX 2.0 visual evidence artifact 7 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "371e9ebe-b099-2a2d-9a1b-b9db363e8352",
+      "evidence_id": "VIS-051-012",
+      "title": "Ghost Vendor \u2014 Visual Artifact 12",
+      "prompt": "CIVIX 2.0 visual evidence artifact 12 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    }
+  ],
+  "SKETCH": [
+    {
+      "manifest_id": "93b7658a-ccb9-8c94-a6e0-4dfbf1d4f1eb",
+      "evidence_id": "VIS-001-003",
+      "title": "CIVIX-001 \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "2e943656-0037-9f01-4f7a-2e5d86742d72",
+      "evidence_id": "VIS-001-009",
+      "title": "CIVIX-001 \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "755ba4cb-2c0c-83f7-80eb-9864c430fc2d",
+      "evidence_id": "VIS-003-003",
+      "title": "CIVIX-003 \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "3868d702-f534-0279-d0c7-f702c5da6a1c",
+      "evidence_id": "VIS-003-009",
+      "title": "CIVIX-003 \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "1710daeb-482f-291c-2ee7-fe1262d977dc",
+      "evidence_id": "VIS-009-003",
+      "title": "CIVIX-009 \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "6142aedc-fddb-91a4-7c37-a279fa7f312a",
+      "evidence_id": "VIS-009-009",
+      "title": "CIVIX-009 \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "eb68b11e-4f31-a908-124c-1df98228020f",
+      "evidence_id": "VIS-010-003",
+      "title": "GST SAR \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "c155da51-8127-99ce-c3e8-ce8498deb11e",
+      "evidence_id": "VIS-010-009",
+      "title": "GST SAR \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "01f2cd3d-0e76-1471-cb94-aacc38d1f43a",
+      "evidence_id": "VIS-019-003",
+      "title": "Plate Cloning \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "1a995504-bb23-a7b2-0c4c-c9e454053fd4",
+      "evidence_id": "VIS-019-009",
+      "title": "Plate Cloning \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "10a9c438-416d-e764-2cac-c1a262373442",
+      "evidence_id": "VIS-022-003",
+      "title": "Okhla Gold \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "c0a06b32-d6f0-0a86-ed92-6a7f889bf041",
+      "evidence_id": "VIS-022-009",
+      "title": "Okhla Gold \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "af66516a-4c51-a28a-0243-63ce403f703d",
+      "evidence_id": "VIS-027-003",
+      "title": "KYC Phishing \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "404d0a01-0edd-67a8-1ab5-32acd886792f",
+      "evidence_id": "VIS-027-009",
+      "title": "KYC Phishing \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "bbbdf489-ca76-4c95-5063-24bc8e2a37ac",
+      "evidence_id": "VIS-032-003",
+      "title": "Digital Arrest \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "a1940a0b-ca23-c0c3-4b61-1372e939f4bc",
+      "evidence_id": "VIS-032-009",
+      "title": "Digital Arrest \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "f82d196f-3679-3da0-4c3a-c2ec945956bc",
+      "evidence_id": "VIS-036-003",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "05800340-8874-bc7d-8fbc-73e2973fba99",
+      "evidence_id": "VIS-036-009",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "f38f73f0-8c51-8d5d-4931-a8fa4d4ea810",
+      "evidence_id": "VIS-038-003",
+      "title": "IGI Cargo \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "ec09b918-da49-d331-5121-69669f4057b1",
+      "evidence_id": "VIS-038-009",
+      "title": "IGI Cargo \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "93665a0c-c1c1-d0cd-4534-8a23d5a1c2ab",
+      "evidence_id": "VIS-044-003",
+      "title": "Benami Land \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "43ebe48c-341d-cacc-a97c-913660441d33",
+      "evidence_id": "VIS-044-009",
+      "title": "Benami Land \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "299218d7-085c-9fc7-2c7a-8fb7dca9e124",
+      "evidence_id": "VIS-051-003",
+      "title": "Ghost Vendor \u2014 Visual Artifact 03",
+      "prompt": "CIVIX 2.0 visual evidence artifact 3 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "11d30405-b8b8-b3d1-8844-fa35fe59aeb0",
+      "evidence_id": "VIS-051-009",
+      "title": "Ghost Vendor \u2014 Visual Artifact 09",
+      "prompt": "CIVIX 2.0 visual evidence artifact 9 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    }
+  ],
+  "PHYSICAL_EVIDENCE": [
+    {
+      "manifest_id": "4655da04-0ac5-8723-3244-af2d4ce27a6a",
+      "evidence_id": "VIS-001-004",
+      "title": "CIVIX-001 \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "9524beb1-d9ae-4624-ee84-fe2845f5dffb",
+      "evidence_id": "VIS-001-010",
+      "title": "CIVIX-001 \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "917aef15-4821-7c01-f972-0a2bce856209",
+      "evidence_id": "VIS-001-014",
+      "title": "CIVIX-001 \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "95d13452-6899-16cf-cc8a-08408fb54d7e",
+      "evidence_id": "VIS-003-004",
+      "title": "CIVIX-003 \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "a67dc8f4-a910-8dfa-aadf-8c52bd6a35e4",
+      "evidence_id": "VIS-003-010",
+      "title": "CIVIX-003 \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "7243e46d-de6e-c3e3-a38f-338e10cd9479",
+      "evidence_id": "VIS-003-014",
+      "title": "CIVIX-003 \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "4e3b7bd0-8c53-12fc-fb56-eb9375941009",
+      "evidence_id": "VIS-009-004",
+      "title": "CIVIX-009 \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "e32cb1fd-0937-8fa9-8654-1def55aaf38a",
+      "evidence_id": "VIS-009-010",
+      "title": "CIVIX-009 \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "1a7943bf-5936-fd55-3020-b485b5fe8820",
+      "evidence_id": "VIS-009-014",
+      "title": "CIVIX-009 \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "a4cbe66d-dfb0-a4a2-241c-762c277162f5",
+      "evidence_id": "VIS-010-004",
+      "title": "GST SAR \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "50e688a0-51f8-e24c-d5c2-41a3770d12c9",
+      "evidence_id": "VIS-010-010",
+      "title": "GST SAR \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "fc4c1369-18b5-0e49-de97-cb333d81676b",
+      "evidence_id": "VIS-010-014",
+      "title": "GST SAR \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "3de04d42-6e4a-6704-ffca-c8d73bd043f5",
+      "evidence_id": "VIS-019-004",
+      "title": "Plate Cloning \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "19d4052e-3478-89e1-73ff-b0df3e2ed29e",
+      "evidence_id": "VIS-019-010",
+      "title": "Plate Cloning \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "442b0ccd-3e22-5e52-3137-6f7475ea3222",
+      "evidence_id": "VIS-019-014",
+      "title": "Plate Cloning \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "46eeec08-91c6-b62d-99ca-43901def238d",
+      "evidence_id": "VIS-022-004",
+      "title": "Okhla Gold \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "a031152d-8127-de6d-2e55-1d62f65bb2a0",
+      "evidence_id": "VIS-022-010",
+      "title": "Okhla Gold \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "ab423541-70e8-14c5-2fd8-4ae1113514ba",
+      "evidence_id": "VIS-022-014",
+      "title": "Okhla Gold \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "00720640-6434-8934-cdc6-893a1ded4220",
+      "evidence_id": "VIS-027-004",
+      "title": "KYC Phishing \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "ea2cd41d-72cf-0e9c-3911-6eb4cac35341",
+      "evidence_id": "VIS-027-010",
+      "title": "KYC Phishing \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "be72ba9b-285d-3f1b-882c-946826ef34b3",
+      "evidence_id": "VIS-027-014",
+      "title": "KYC Phishing \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "e09f1dd1-60b7-f81a-1418-1b901de10aa0",
+      "evidence_id": "VIS-032-004",
+      "title": "Digital Arrest \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "29c5e219-dda7-01d3-0c92-4e0cd0fd93db",
+      "evidence_id": "VIS-032-010",
+      "title": "Digital Arrest \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "44d699a6-3681-4aa0-5f8d-264252e35f21",
+      "evidence_id": "VIS-032-014",
+      "title": "Digital Arrest \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "61925fc0-6661-39b6-84dc-005dfea1e1c8",
+      "evidence_id": "VIS-036-004",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "96706256-3594-3985-2ba4-383813fdb69b",
+      "evidence_id": "VIS-036-010",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "0a023d75-7828-eb64-6aed-3986da076537",
+      "evidence_id": "VIS-036-014",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "b1a2ed02-7529-07c6-20f5-d37db5a5cf8f",
+      "evidence_id": "VIS-038-004",
+      "title": "IGI Cargo \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "f8ebf2f9-ac3e-62ec-5a71-4a4eeffe1095",
+      "evidence_id": "VIS-038-010",
+      "title": "IGI Cargo \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "b0e5ad2e-f9f6-c74f-3701-cd1ab350843a",
+      "evidence_id": "VIS-038-014",
+      "title": "IGI Cargo \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "351eecdb-b1c6-e4f0-9046-258c7ae65c47",
+      "evidence_id": "VIS-044-004",
+      "title": "Benami Land \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "ed77135d-74c5-1de5-ec3b-1240d4286d3c",
+      "evidence_id": "VIS-044-010",
+      "title": "Benami Land \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "3d6db4a7-6851-f254-7248-568152bdc372",
+      "evidence_id": "VIS-044-014",
+      "title": "Benami Land \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "bf1f6344-024d-568d-d8ce-77191348edcf",
+      "evidence_id": "VIS-051-004",
+      "title": "Ghost Vendor \u2014 Visual Artifact 04",
+      "prompt": "CIVIX 2.0 visual evidence artifact 4 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "9ae7f9b4-16e1-fd60-71e3-e9c2fe5669da",
+      "evidence_id": "VIS-051-010",
+      "title": "Ghost Vendor \u2014 Visual Artifact 10",
+      "prompt": "CIVIX 2.0 visual evidence artifact 10 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "f812c6b6-0f4a-65ad-f335-22f1850135e7",
+      "evidence_id": "VIS-051-014",
+      "title": "Ghost Vendor \u2014 Visual Artifact 14",
+      "prompt": "CIVIX 2.0 visual evidence artifact 14 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    }
+  ],
+  "PHOTOGRAPH": [
+    {
+      "manifest_id": "39f3c335-100d-3100-86a1-f133fbc8e2a3",
+      "evidence_id": "VIS-001-001",
+      "title": "CIVIX-001 \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "a819e59e-794a-5d1c-a8a9-7896e4d371a4",
+      "evidence_id": "VIS-001-005",
+      "title": "CIVIX-001 \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "af098270-c8ef-ff24-a115-9271144dbac3",
+      "evidence_id": "VIS-001-006",
+      "title": "CIVIX-001 \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "193ddb0b-5b86-4415-ef3f-c035bcb4f7b8",
+      "evidence_id": "VIS-001-008",
+      "title": "CIVIX-001 \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "f08112c5-d772-4f40-fb93-dc0d08a701c6",
+      "evidence_id": "VIS-001-011",
+      "title": "CIVIX-001 \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "a8d0d458-99ac-dbc5-7a97-5d6bf1bc3a85",
+      "evidence_id": "VIS-001-013",
+      "title": "CIVIX-001 \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for CIVIX-001. Cinematic realism."
+    },
+    {
+      "manifest_id": "76a46137-5b3f-f090-b4fe-0055360e97b0",
+      "evidence_id": "VIS-003-001",
+      "title": "CIVIX-003 \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "66967ac4-2463-2f9e-ef8c-df1f7bf4447b",
+      "evidence_id": "VIS-003-005",
+      "title": "CIVIX-003 \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "b885f7ba-c98b-d84a-913f-f3ea68b5942d",
+      "evidence_id": "VIS-003-006",
+      "title": "CIVIX-003 \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "246c7e6d-5857-b82d-3534-16f49746957d",
+      "evidence_id": "VIS-003-008",
+      "title": "CIVIX-003 \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "f28a7834-8507-0a1e-1bc2-7ed28df1d357",
+      "evidence_id": "VIS-003-011",
+      "title": "CIVIX-003 \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "3b58337d-2419-16ce-5568-39eb20cff908",
+      "evidence_id": "VIS-003-013",
+      "title": "CIVIX-003 \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for CIVIX-003. Cinematic realism."
+    },
+    {
+      "manifest_id": "acfa967a-9174-fc37-5c82-cb0bc8e829e4",
+      "evidence_id": "VIS-009-001",
+      "title": "CIVIX-009 \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "1d2a19c9-af51-0d03-3cac-1ff75b8f43ca",
+      "evidence_id": "VIS-009-005",
+      "title": "CIVIX-009 \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "30c30a45-ccfa-9855-e6df-e8ad06420f2b",
+      "evidence_id": "VIS-009-006",
+      "title": "CIVIX-009 \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "dfe9472f-5d7a-66c2-41c4-e0527ba31e7f",
+      "evidence_id": "VIS-009-008",
+      "title": "CIVIX-009 \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "6530563e-b3b9-57bb-e02b-f646f144ae15",
+      "evidence_id": "VIS-009-011",
+      "title": "CIVIX-009 \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "825c8899-384c-539b-f534-029d627bce98",
+      "evidence_id": "VIS-009-013",
+      "title": "CIVIX-009 \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for CIVIX-009. Cinematic realism."
+    },
+    {
+      "manifest_id": "657fc462-11a2-024a-2ed7-b8b97c6ac892",
+      "evidence_id": "VIS-010-001",
+      "title": "GST SAR \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "57cafd07-5137-f677-4db3-cac64f1feae4",
+      "evidence_id": "VIS-010-005",
+      "title": "GST SAR \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "4596fc96-18b9-307a-d603-d1f693db0acc",
+      "evidence_id": "VIS-010-006",
+      "title": "GST SAR \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "f4fbe869-c01a-6020-3b3f-4a383ed1e575",
+      "evidence_id": "VIS-010-008",
+      "title": "GST SAR \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "b2112753-fb83-b71e-39ff-cb6b88b4940c",
+      "evidence_id": "VIS-010-011",
+      "title": "GST SAR \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "e8c8db7f-ca3a-0cd8-5641-66396a0d798a",
+      "evidence_id": "VIS-010-013",
+      "title": "GST SAR \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for GST SAR case. Cinematic realism, professional crime scene photography, relevant to CIVIX-010."
+    },
+    {
+      "manifest_id": "6757b7ac-fd43-fc4e-ff55-5ceb03c2604d",
+      "evidence_id": "VIS-019-001",
+      "title": "Plate Cloning \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "e0cd359e-8def-9090-08f5-64f3d35c9d23",
+      "evidence_id": "VIS-019-005",
+      "title": "Plate Cloning \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "5196842e-8ed1-c1ef-4b4c-e45c31917c8d",
+      "evidence_id": "VIS-019-006",
+      "title": "Plate Cloning \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "b2a8b516-c38f-67be-9352-c5ffc3c431b2",
+      "evidence_id": "VIS-019-008",
+      "title": "Plate Cloning \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "4b1fa2e7-5e6c-9374-9ea0-b561b8374c2f",
+      "evidence_id": "VIS-019-011",
+      "title": "Plate Cloning \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "2bc1a423-37c6-d0a5-8752-e2770336a8ae",
+      "evidence_id": "VIS-019-013",
+      "title": "Plate Cloning \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for Plate Cloning case. Cinematic realism, professional crime scene photography, relevant to CIVIX-019."
+    },
+    {
+      "manifest_id": "57c4700f-2c5c-3218-1f6e-353e10d573ac",
+      "evidence_id": "VIS-022-001",
+      "title": "Okhla Gold \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "e31385ce-d258-0431-cdd0-47f3f82dfa52",
+      "evidence_id": "VIS-022-005",
+      "title": "Okhla Gold \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "9b863576-b63d-1d98-c366-006d46dc4bf9",
+      "evidence_id": "VIS-022-006",
+      "title": "Okhla Gold \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "cb3d94fd-ee16-3e7b-a080-2c399d57781a",
+      "evidence_id": "VIS-022-008",
+      "title": "Okhla Gold \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "c441aee4-0f76-284e-4027-c0473dbfc2b9",
+      "evidence_id": "VIS-022-011",
+      "title": "Okhla Gold \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "6e933598-498d-fbe6-0b1f-87f2e9fdea0b",
+      "evidence_id": "VIS-022-013",
+      "title": "Okhla Gold \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for Okhla Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-022."
+    },
+    {
+      "manifest_id": "944ed065-6b29-6023-824f-7e29444f56ea",
+      "evidence_id": "VIS-027-001",
+      "title": "KYC Phishing \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "72eb50b8-c221-b81a-cfd3-292bcc889d1e",
+      "evidence_id": "VIS-027-005",
+      "title": "KYC Phishing \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "4993d9b8-9627-1c38-69f7-8ddcdfddcd4f",
+      "evidence_id": "VIS-027-006",
+      "title": "KYC Phishing \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "fd9b1598-e502-1241-2b3e-69168e488292",
+      "evidence_id": "VIS-027-008",
+      "title": "KYC Phishing \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "b2e4a18f-d857-598f-4bb4-4abd4b4afe53",
+      "evidence_id": "VIS-027-011",
+      "title": "KYC Phishing \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "c195827b-1ddd-5535-e457-5d9c11b1503e",
+      "evidence_id": "VIS-027-013",
+      "title": "KYC Phishing \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for KYC Phishing case. Cinematic realism, professional crime scene photography, relevant to CIVIX-027."
+    },
+    {
+      "manifest_id": "0b3d656d-e4c5-a547-f983-4d1a693b092d",
+      "evidence_id": "VIS-032-001",
+      "title": "Digital Arrest \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "5cf39e89-2542-a4a6-9dcc-79554fde0a72",
+      "evidence_id": "VIS-032-005",
+      "title": "Digital Arrest \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "c24b94c8-0440-ef27-73fa-ff859dc07112",
+      "evidence_id": "VIS-032-006",
+      "title": "Digital Arrest \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "6b76b83e-9f30-d8fa-cf7f-0583c141270f",
+      "evidence_id": "VIS-032-008",
+      "title": "Digital Arrest \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "4be3c63c-8cec-5914-821d-1e07d3e5b756",
+      "evidence_id": "VIS-032-011",
+      "title": "Digital Arrest \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "8622b23b-d9d1-7a29-99b6-6d3ff5e9ce52",
+      "evidence_id": "VIS-032-013",
+      "title": "Digital Arrest \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for Digital Arrest case. Cinematic realism, professional crime scene photography, relevant to CIVIX-032."
+    },
+    {
+      "manifest_id": "168e9614-48c9-9e40-02a2-04b0d3ff00a4",
+      "evidence_id": "VIS-036-001",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "048287d8-7d5b-a0ed-978f-275a659db9a4",
+      "evidence_id": "VIS-036-005",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "5c51544c-0d3e-3e75-3f81-5224facee84e",
+      "evidence_id": "VIS-036-006",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "59b69683-c1c7-7041-0dca-ad975c57a035",
+      "evidence_id": "VIS-036-008",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "ca929ef3-1db3-c1aa-4d99-6597c461ebf3",
+      "evidence_id": "VIS-036-011",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "92c1799c-44c5-ab57-a03a-69b2500155c7",
+      "evidence_id": "VIS-036-013",
+      "title": "Nizamuddin Gold \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for Nizamuddin Gold case. Cinematic realism, professional crime scene photography, relevant to CIVIX-036."
+    },
+    {
+      "manifest_id": "14ba9d1c-ac78-7e39-3383-b2d15676f528",
+      "evidence_id": "VIS-038-001",
+      "title": "IGI Cargo \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "a34b8506-9e63-4822-d75b-d72cd9161f85",
+      "evidence_id": "VIS-038-005",
+      "title": "IGI Cargo \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "24f7c085-f09c-a551-2efd-a4f8d692d720",
+      "evidence_id": "VIS-038-006",
+      "title": "IGI Cargo \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "14a48c55-4f4e-6865-45dd-ffd9dd183606",
+      "evidence_id": "VIS-038-008",
+      "title": "IGI Cargo \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "60b80ef8-c0ed-ad5b-1c7e-43a54acd802f",
+      "evidence_id": "VIS-038-011",
+      "title": "IGI Cargo \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "686a6ee9-1857-49f3-782e-4517727dceef",
+      "evidence_id": "VIS-038-013",
+      "title": "IGI Cargo \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for IGI Cargo case. Cinematic realism, professional crime scene photography, relevant to CIVIX-038."
+    },
+    {
+      "manifest_id": "98fbc789-6308-fdd9-df78-1e7da9151526",
+      "evidence_id": "VIS-044-001",
+      "title": "Benami Land \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "d82c7eaf-df6a-4255-0fd2-52c9a73c96c9",
+      "evidence_id": "VIS-044-005",
+      "title": "Benami Land \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "945958a1-41f8-66be-9ad0-2d50c66b6825",
+      "evidence_id": "VIS-044-006",
+      "title": "Benami Land \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "a9dcaa2c-4121-e1bb-45d1-bc23bc637ec7",
+      "evidence_id": "VIS-044-008",
+      "title": "Benami Land \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "aa165e33-0cda-6ec7-4668-a6e7e7c8c528",
+      "evidence_id": "VIS-044-011",
+      "title": "Benami Land \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "c73ad737-3f66-b41d-7433-c47f5742d61f",
+      "evidence_id": "VIS-044-013",
+      "title": "Benami Land \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for Benami Land case. Cinematic realism, professional crime scene photography, relevant to CIVIX-044."
+    },
+    {
+      "manifest_id": "f9ebd7ee-1c77-c2de-5976-e2471ff3454d",
+      "evidence_id": "VIS-051-001",
+      "title": "Ghost Vendor \u2014 Visual Artifact 01",
+      "prompt": "CIVIX 2.0 visual evidence artifact 1 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "f63f7196-00c9-bb81-54d7-3a191700bd28",
+      "evidence_id": "VIS-051-005",
+      "title": "Ghost Vendor \u2014 Visual Artifact 05",
+      "prompt": "CIVIX 2.0 visual evidence artifact 5 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "ec584785-9d6a-5c11-4bc0-e303b4d65117",
+      "evidence_id": "VIS-051-006",
+      "title": "Ghost Vendor \u2014 Visual Artifact 06",
+      "prompt": "CIVIX 2.0 visual evidence artifact 6 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "6435d190-d3ba-afb5-192e-368414eaad0d",
+      "evidence_id": "VIS-051-008",
+      "title": "Ghost Vendor \u2014 Visual Artifact 08",
+      "prompt": "CIVIX 2.0 visual evidence artifact 8 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "6a190d52-cf8f-069f-9e1a-c8d5b987b52b",
+      "evidence_id": "VIS-051-011",
+      "title": "Ghost Vendor \u2014 Visual Artifact 11",
+      "prompt": "CIVIX 2.0 visual evidence artifact 11 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    },
+    {
+      "manifest_id": "938d50b0-5501-a660-98e4-36bf431ce0fb",
+      "evidence_id": "VIS-051-013",
+      "title": "Ghost Vendor \u2014 Visual Artifact 13",
+      "prompt": "CIVIX 2.0 visual evidence artifact 13 for Ghost Vendor case. Cinematic realism, professional crime scene photography, relevant to CIVIX-051."
+    }
+  ]
+}

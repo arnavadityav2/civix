@@ -6,7 +6,17 @@ interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
   headerAction?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  /** accent: 'blue' (default) | 'red' (critical) | 'gold' (priority) | 'green' (confirmed) */
+  accent?: 'blue' | 'red' | 'gold' | 'green' | 'none';
 }
+
+const accentBorder: Record<string, string> = {
+  blue:  'border-l-civix-blue',
+  red:   'border-l-civix-red',
+  gold:  'border-l-civix-gold',
+  green: 'border-l-civix-green',
+  none:  '',
+};
 
 export const Panel: React.FC<PanelProps> = ({
   title,
@@ -14,18 +24,25 @@ export const Panel: React.FC<PanelProps> = ({
   headerAction,
   children,
   className = '',
+  accent = 'none',
   ...props
 }) => {
+  const leftAccent = accent !== 'none' ? `border-l-2 ${accentBorder[accent]}` : '';
+
   return (
     <div
-      className={`bg-white border border-slate-200 rounded shadow-sm overflow-hidden ${className}`}
+      className={`civix-panel ${leftAccent} ${className}`}
       {...props}
     >
       {(title || headerAction) && (
-        <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div className="civix-panel-header">
           <div>
-            {title && <h3 className="text-sm font-semibold text-slate-900 tracking-tight">{title}</h3>}
-            {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+            {title && (
+              <h3 className="civix-panel-title">{title}</h3>
+            )}
+            {subtitle && (
+              <p className="civix-panel-subtitle">{subtitle}</p>
+            )}
           </div>
           {headerAction && <div>{headerAction}</div>}
         </div>

@@ -4,7 +4,6 @@ import { graphApi } from '../../api/graph';
 import { useCaseSelection } from '../../context/CaseSelectionContext';
 import type { GraphNode, GraphRelationship } from '../../types/api';
 import { User, Car, Building2, UserCheck, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react';
-
 import { casesApi } from '../../api/cases';
 
 export const StructuredGraphView: React.FC = () => {
@@ -23,22 +22,23 @@ export const StructuredGraphView: React.FC = () => {
     enabled: !!activeCaseId,
   });
 
+  // Entity icons — dark-appropriate colors
   const getIcon = (type: string) => {
     switch (type.toUpperCase()) {
       case 'VEHICLE':
-        return <Car className="w-4 h-4 text-red-600" />;
+        return <Car className="w-4 h-4 text-civix-red-light" />;
       case 'ORGANIZATION':
-        return <Building2 className="w-4 h-4 text-amber-600" />;
+        return <Building2 className="w-4 h-4 text-civix-gold" />;
       case 'PERSON':
-        return <UserCheck className="w-4 h-4 text-blue-600" />;
+        return <UserCheck className="w-4 h-4 text-civix-blue-light" />;
       default:
-        return <ShieldCheck className="w-4 h-4 text-slate-600" />;
+        return <ShieldCheck className="w-4 h-4 text-civix-text-secondary" />;
     }
   };
 
   if (!activeCaseId) {
     return (
-      <div className="py-12 text-center text-xs text-slate-500 font-mono">
+      <div className="py-10 text-center text-xs text-civix-text-muted font-mono">
         Select an active case to view relationship intelligence.
       </div>
     );
@@ -46,8 +46,8 @@ export const StructuredGraphView: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="py-12 flex items-center justify-center text-slate-400 space-x-2 text-xs font-mono">
-        <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
+      <div className="py-10 flex items-center justify-center text-civix-text-muted space-x-2 text-xs font-mono">
+        <Loader2 className="w-4 h-4 animate-spin text-civix-blue-light" />
         <span>Loading case relationship canvas...</span>
       </div>
     );
@@ -55,26 +55,23 @@ export const StructuredGraphView: React.FC = () => {
 
   if (error || !graphData || !graphData.nodes || graphData.nodes.length === 0) {
     return (
-      <div className="py-12 text-center text-xs text-slate-500 font-mono space-y-1.5">
-        <div className="font-semibold text-slate-600">No graph relationships projected for this case yet.</div>
-        <div className="text-[11px] text-slate-400 font-sans">
+      <div className="py-10 text-center text-xs text-civix-text-muted font-mono space-y-1.5">
+        <div className="font-semibold text-civix-text-secondary">No graph relationships projected for this case yet.</div>
+        <div className="text-[11px] text-civix-text-muted font-sans">
           Link entities to this case or execute C3 analysis to populate graph relationships.
         </div>
       </div>
     );
   }
 
-  // Derive primary subject (Case node or first Person node)
+  // Derive primary subject
   const caseNode = graphData.nodes.find((n: GraphNode) => n.labels?.includes('Case'));
   const primarySubjectNode = caseNode || graphData.nodes.find((n: GraphNode) => n.labels?.includes('PERSON')) || graphData.nodes[0];
   const primarySubjectName = primarySubjectNode
     ? (primarySubjectNode.properties?.title || primarySubjectNode.properties?.display_name || primarySubjectNode.properties?.name || primarySubjectNode.id)
     : 'Selected Case';
 
-
-  // Map relationships
   const relationships = (graphData.relationships || []).map((rel: GraphRelationship) => {
-    // Find target node (the node that is not the primary subject)
     const targetNode = graphData.nodes.find((n: GraphNode) => n.id === (rel.start_node === primarySubjectNode?.id ? rel.end_node : rel.start_node))
       || graphData.nodes.find((n: GraphNode) => n.id === rel.end_node);
 
@@ -93,47 +90,47 @@ export const StructuredGraphView: React.FC = () => {
   });
 
   return (
-    <div className="bg-slate-50 border border-slate-200 rounded p-4">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-        {/* Left: Primary Subject Node */}
-        <div className="bg-white border-2 border-slate-900 rounded p-4 shadow-sm flex flex-col items-center justify-center min-w-[140px] text-center">
-          <div className="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center mb-2 shadow-2xs">
-            <User className="w-5 h-5" />
+    <div className="bg-civix-bg border border-civix-border rounded-sm p-3">
+      <div className="flex flex-col gap-3">
+        {/* Primary Subject Node */}
+        <div className="flex items-center space-x-3 pb-3 border-b border-civix-border-subtle">
+          <div className="w-8 h-8 rounded-sm bg-civix-blue text-white flex items-center justify-center flex-shrink-0">
+            <User className="w-4 h-4" />
           </div>
-          <span className="text-xs font-bold text-slate-900 font-sans">{primarySubjectName}</span>
-          <span className="text-[10px] font-mono font-semibold text-slate-500 uppercase tracking-wider mt-0.5">
-            Target Subject
-          </span>
+          <div>
+            <div className="text-xs font-bold text-civix-text-primary font-sans">{primarySubjectName}</div>
+            <div className="text-[9px] font-mono text-civix-text-muted uppercase tracking-widest mt-0.5">
+              Primary Subject
+            </div>
+          </div>
         </div>
 
-        {/* Center: Relationship Edges & Target Cards */}
-        <div className="flex-1 space-y-2.5 w-full">
+        {/* Relationships */}
+        <div className="space-y-1.5">
           {relationships.length === 0 ? (
-            <div className="text-center py-6 text-xs text-slate-500 font-mono">
+            <div className="text-center py-4 text-xs text-civix-text-muted font-mono">
               Subject identified with 0 connected edges.
             </div>
           ) : (
             relationships.map((rel, index: number) => (
               <div
                 key={index}
-                className="flex items-center justify-between bg-white border border-slate-200 rounded px-3 py-2 text-xs shadow-2xs hover:border-slate-300 transition-colors"
+                className="flex items-center justify-between bg-civix-surface-2 border border-civix-border rounded-sm px-3 py-2 text-xs hover:border-civix-border-strong hover:bg-civix-surface-3 transition-colors"
               >
-                {/* Relation Type Badge */}
                 <div className="flex items-center space-x-2">
-                  <span className="text-[10px] font-mono font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-300">
+                  <span className="text-[9px] font-mono font-bold bg-civix-surface-3 text-civix-blue-light px-2 py-0.5 rounded-sm border border-civix-border-strong uppercase tracking-wider">
                     {rel.relationType}
                   </span>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                  <ArrowRight className="w-3 h-3 text-civix-text-muted" />
                 </div>
 
-                {/* Target Entity Card */}
-                <div className="flex items-center space-x-2.5 text-right">
-                  <div className="p-1.5 bg-slate-100 rounded border border-slate-200">
+                <div className="flex items-center space-x-2 text-right">
+                  <div className="p-1 bg-civix-surface-3 rounded-sm border border-civix-border">
                     {getIcon(rel.targetType)}
                   </div>
                   <div>
-                    <div className="font-bold text-slate-900 leading-tight">{rel.targetName}</div>
-                    <div className="text-[10px] font-mono text-slate-500">{rel.provenance}</div>
+                    <div className="font-bold text-civix-text-primary text-xs leading-tight">{rel.targetName}</div>
+                    <div className="text-[9px] font-mono text-civix-text-muted">{rel.provenance}</div>
                   </div>
                 </div>
               </div>

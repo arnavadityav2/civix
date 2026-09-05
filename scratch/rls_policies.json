@@ -1,0 +1,189 @@
+[
+  {
+    "table": "event_location",
+    "policy_name": "policy_event_location_write",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "INSERT",
+    "qual": null,
+    "with_check": "((case_id = ANY (civix.get_accessible_case_ids())) OR civix.current_user_is_admin())"
+  },
+  {
+    "table": "event_location",
+    "policy_name": "policy_event_location_select",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((case_id = ANY (civix.get_accessible_case_ids())) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "evidence_instance",
+    "policy_name": "policy_evidence_instance_select",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((case_id = ANY (civix.get_accessible_case_ids())) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "investigative_case",
+    "policy_name": "policy_case_write",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "INSERT",
+    "qual": null,
+    "with_check": "(EXISTS ( SELECT 1\n   FROM civix.civix_user\n  WHERE ((civix_user.user_id = (current_setting('app.current_user_id'::text, true))::uuid) AND (civix_user.role = ANY (ARRAY['INVESTIGATOR'::civix.civix_role_enum, 'SUPERVISOR'::civix.civix_role_enum, 'ADMIN'::civix.civix_role_enum])) AND (civix_user.is_active = true))))"
+  },
+  {
+    "table": "investigative_case",
+    "policy_name": "policy_case_access",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((case_id = ANY (civix.get_accessible_case_ids())) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "case_entity_role",
+    "policy_name": "policy_case_entity_role_select",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((case_id = ANY (civix.get_accessible_case_ids())) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "fir",
+    "policy_name": "policy_fir_select",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((case_id = ANY (civix.get_accessible_case_ids())) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "assertion",
+    "policy_name": "policy_assertion_select",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((authorized_case_ids && civix.get_accessible_case_ids()) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "investigative_lead",
+    "policy_name": "policy_lead_select",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((case_id = ANY (civix.get_accessible_case_ids())) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "hypothesis",
+    "policy_name": "policy_hypothesis_select",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((case_id = ANY (civix.get_accessible_case_ids())) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "hypothesis_support",
+    "policy_name": "policy_hyp_support_select",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((EXISTS ( SELECT 1\n   FROM civix.hypothesis h\n  WHERE ((h.hypothesis_id = hypothesis_support.hypothesis_id) AND (h.case_id = ANY (civix.get_accessible_case_ids()))))) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "investigation_task",
+    "policy_name": "policy_task_select",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "SELECT",
+    "qual": "((case_id = ANY (civix.get_accessible_case_ids())) OR civix.current_user_is_admin())",
+    "with_check": null
+  },
+  {
+    "table": "cctv_plate_detection",
+    "policy_name": "cctv_plate_detection_rls",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "ALL",
+    "qual": "(EXISTS ( SELECT 1\n   FROM (civix.cctv_search_job j\n     JOIN civix.case_access ca ON ((ca.case_id = j.case_id)))\n  WHERE ((j.job_id = cctv_plate_detection.job_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+    "with_check": null
+  },
+  {
+    "table": "cctv_search_job",
+    "policy_name": "cctv_search_job_rls",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "ALL",
+    "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access ca\n  WHERE ((ca.case_id = cctv_search_job.case_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+    "with_check": null
+  },
+  {
+    "table": "cctv_detection",
+    "policy_name": "cctv_detection_rls",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "ALL",
+    "qual": "(EXISTS ( SELECT 1\n   FROM (civix.cctv_search_job j\n     JOIN civix.case_access ca ON ((ca.case_id = j.case_id)))\n  WHERE ((j.job_id = cctv_detection.job_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+    "with_check": null
+  },
+  {
+    "table": "cctv_match_candidate",
+    "policy_name": "cctv_match_candidate_rls",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "ALL",
+    "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access ca\n  WHERE ((ca.case_id = cctv_match_candidate.case_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+    "with_check": null
+  },
+  {
+    "table": "cctv_observation",
+    "policy_name": "cctv_observation_rls",
+    "permissive": "PERMISSIVE",
+    "roles": [
+      "public"
+    ],
+    "cmd": "ALL",
+    "qual": "(EXISTS ( SELECT 1\n   FROM civix.case_access ca\n  WHERE ((ca.case_id = cctv_observation.case_id) AND (ca.user_id = (current_setting('civix.current_user_id'::text, true))::uuid) AND (ca.is_revoked = false))))",
+    "with_check": null
+  }
+]

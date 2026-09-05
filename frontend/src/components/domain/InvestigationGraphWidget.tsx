@@ -20,19 +20,23 @@ import type { GraphNode, GraphRelationship } from '../../types/api';
 // ── Types ─────────────────────────────────────────────────────────────────────
 const INFRASTRUCTURE_LABELS = new Set(['Assertion', 'Event', 'Case', 'FIR', 'SourceIdentity']);
 
+// Dark institutional node colors — NO PURPLE
+// Device was #7c3aed (purple) — now uses blue (technical/analytical context)
 const NODE_COLORS: Record<string, { bg: string; border: string }> = {
-  Person:           { bg: '#dbeafe', border: '#1d4ed8' },
-  Organization:     { bg: '#fef3c7', border: '#d97706' },
-  Vehicle:          { bg: '#fee2e2', border: '#dc2626' },
-  PhoneNumber:      { bg: '#d1fae5', border: '#059669' },
-  Device:           { bg: '#ede9fe', border: '#7c3aed' },
-  FinancialAccount: { bg: '#fef9c3', border: '#ca8a04' },
-  Location:         { bg: '#ecfdf5', border: '#059669' },
+  Person:           { bg: '#0d2a4a', border: '#2d7dd2' },  // Blue — investigative subject
+  Organization:     { bg: '#1e1600', border: '#c8a84b' },  // Gold — entity/institution
+  Vehicle:          { bg: '#2d0a0a', border: '#c0392b' },  // Red — high attention
+  PhoneNumber:      { bg: '#001a0d', border: '#1e8449' },  // Green — verified contact
+  Device:           { bg: '#0d2a4a', border: '#2d7dd2' },  // Blue — technical
+  FinancialAccount: { bg: '#1e1600', border: '#c8a84b' },  // Gold — financial entity
+  Location:         { bg: '#001a0d', border: '#1e8449' },  // Green — geographic
+  Evidence:         { bg: '#2a163d', border: '#8b5cf6' },  // Purple — evidence
+  Lead:             { bg: '#3d162a', border: '#ec4899' },  // Pink — lead
 };
-const FALLBACK_COLOR = { bg: '#f1f5f9', border: '#94a3b8' };
+const FALLBACK_COLOR = { bg: '#141c2e', border: '#2a3d62' };
 
 function getPrimaryLabel(labels: string[]): string {
-  const priority = ['Person', 'Organization', 'Vehicle', 'PhoneNumber', 'Device', 'FinancialAccount', 'Location', 'SourceIdentity', 'Assertion', 'Event', 'Case', 'FIR'];
+  const priority = ['Person', 'Organization', 'Vehicle', 'PhoneNumber', 'Device', 'FinancialAccount', 'Location', 'Evidence', 'Lead', 'SourceIdentity', 'Assertion', 'Event', 'Case', 'FIR'];
   for (const p of priority) {
     if (labels.includes(p)) return p;
   }
@@ -123,49 +127,55 @@ export const InvestigationGraphWidget: React.FC = () => {
           style: {
             'background-color': 'data(bgColor)',
             'border-color': 'data(borderColor)',
-            'border-width': 1.5,
+            'border-width': 2,
             'label': 'data(label)',
-            'color': '#1e293b',
+            // Light label text — legible on dark node backgrounds
+            'color': '#e8edf5',
             'font-size': '9px',
-            'font-family': 'Inter, sans-serif',
+            'font-family': '"IBM Plex Mono", Consolas, monospace',
             'font-weight': '600',
             'text-wrap': 'ellipsis',
             'text-max-width': '80px',
             'text-valign': 'bottom',
-            'text-margin-y': 3,
-            'width': '28px',
-            'height': '28px',
+            'text-margin-y': 4,
+            'width': '30px',
+            'height': '30px',
           } as any,
         },
         {
           selector: 'edge',
           style: {
-            'width': 1.2,
-            'line-color': '#1d4ed8',
-            'target-arrow-color': '#1d4ed8',
+            'width': 1.5,
+            // Blue = normal analytical relationship
+            'line-color': '#2d7dd2',
+            'target-arrow-color': '#2d7dd2',
             'target-arrow-shape': 'triangle',
             'curve-style': 'bezier',
             'label': 'data(label)',
             'font-size': '7px',
-            'font-family': 'Inter, sans-serif',
+            'font-family': '"IBM Plex Mono", Consolas, monospace',
             'font-weight': '600',
-            'color': '#1e40af',
-            'text-background-color': '#ffffff',
-            'text-background-opacity': 0.85,
-            'text-background-padding': '1px',
+            'color': '#4a9ee8',
+            // Dark background for edge labels — not white
+            'text-background-color': '#0f1623',
+            'text-background-opacity': 0.9,
+            'text-background-padding': '2px',
             'text-rotation': 'autorotate',
             'text-max-width': '80px',
             'text-wrap': 'ellipsis',
           } as any,
         },
         {
+          // Gold/dashed = candidate / ML-inferred relationship (not confirmed)
           selector: 'edge[edgeType = "candidate"]',
           style: {
-            'line-color': '#f59e0b',
-            'target-arrow-color': '#f59e0b',
+            'line-color': '#c8a84b',
+            'target-arrow-color': '#c8a84b',
             'line-style': 'dashed',
-            'line-dash-pattern': [4, 3],
-            'color': '#d97706',
+            'line-dash-pattern': [5, 3],
+            'color': '#e8c860',
+            'text-background-color': '#0f1623',
+            'text-background-opacity': 0.9,
           } as any,
         },
       ],
@@ -209,7 +219,7 @@ export const InvestigationGraphWidget: React.FC = () => {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => refetch()}
-            className="p-1 text-slate-500 hover:text-slate-900 rounded hover:bg-slate-200 transition-colors"
+            className="p-1 text-civix-text-muted hover:text-civix-text-primary rounded hover:bg-civix-surface-3 transition-colors"
             title="Refresh graph"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -217,7 +227,7 @@ export const InvestigationGraphWidget: React.FC = () => {
           {selectedCaseId && (
             <button
               onClick={() => navigate(`/cases/${selectedCaseId}/graph`)}
-              className="flex items-center space-x-1 text-xs font-semibold text-blue-700 hover:text-blue-900 transition-colors"
+              className="flex items-center space-x-1 text-xs font-semibold text-civix-blue-light hover:text-civix-text-primary transition-colors font-mono"
               title="Open full graph workstation"
             >
               <ExternalLink className="w-3.5 h-3.5" />
@@ -229,38 +239,40 @@ export const InvestigationGraphWidget: React.FC = () => {
       className="h-full flex flex-col"
     >
       {!selectedCaseId ? (
-        <div className="py-12 text-center text-xs text-slate-500 font-mono">
+        <div className="py-12 text-center text-xs text-civix-text-muted font-mono">
           Select an active case to view the investigative entity network.
         </div>
       ) : isLoading ? (
-        <div className="py-12 flex items-center justify-center text-slate-400 space-x-2 text-xs font-mono">
-          <Loader2 className="w-4 h-4 animate-spin text-amber-600" />
+        <div className="py-12 flex items-center justify-center text-civix-text-muted space-x-2 text-xs font-mono">
+          <Loader2 className="w-4 h-4 animate-spin text-civix-blue-light" />
           <span>Loading entity graph…</span>
         </div>
       ) : error || !graphData || graphData.nodes.length === 0 ? (
-        <div className="py-12 text-center text-xs text-slate-500 font-mono space-y-2">
+        <div className="py-12 text-center text-xs text-civix-text-muted font-mono space-y-2">
           <div>No investigative graph projected for this case.</div>
-          <div className="text-[11px] text-slate-400 font-sans">
+          <div className="text-[11px] text-civix-text-muted font-sans">
             Open the full graph workstation to diagnose or link entities.
           </div>
         </div>
       ) : domainNodeCount === 0 ? (
-        <div className="py-12 text-center text-xs text-slate-500 font-mono space-y-2">
+        <div className="py-12 text-center text-xs text-civix-text-muted font-mono space-y-2">
           <div>No domain entities returned at 2-hop depth.</div>
-          <div className="text-[11px] text-slate-400">All nodes are infrastructure (Case/Assertion/Event).</div>
+          <div className="text-[11px] text-civix-text-muted">All nodes are infrastructure (Case/Assertion/Event).</div>
         </div>
       ) : (
         <div className="relative flex flex-col">
-          <div className="relative w-full h-[280px] bg-slate-50 border border-slate-200 rounded overflow-hidden">
-            <div ref={containerRef} className="w-full h-full" />
-            <div className="absolute bottom-2 right-2 bg-white/90 border border-slate-200 px-2 py-1 rounded text-[9px] font-mono text-slate-600 shadow-2xs">
+          <div className="relative w-full h-[280px] bg-civix-bg border border-civix-border rounded-sm overflow-hidden">
+            <div ref={containerRef} className="w-full h-full civix-graph-canvas" />
+            {/* Entity / link counter — dark surface */}
+            <div className="absolute bottom-2 right-2 bg-civix-surface-2/95 border border-civix-border px-2 py-1 rounded-sm text-[9px] font-mono text-civix-text-muted">
               {domainNodeCount} entities · {invEdgeCount} inv. links
             </div>
-            <div className="absolute top-2 left-2 text-[9px] font-mono font-bold bg-blue-50 border border-blue-200 text-blue-700 px-1.5 py-0.5 rounded">
+            {/* Graph type label — blue institutional badge */}
+            <div className="absolute top-2 left-2 text-[9px] font-mono font-bold bg-civix-blue-subtle border border-civix-blue-muted text-civix-blue-light px-1.5 py-0.5 rounded-sm uppercase tracking-widest">
               INVESTIGATIVE
             </div>
           </div>
-          <p className="text-[9px] font-mono text-slate-400 mt-1.5 text-center">
+          <p className="text-[9px] font-mono text-civix-text-muted mt-1.5 text-center">
             Case membership (HAS_ROLE) suppressed · Assertion nodes collapsed to edge labels
           </p>
         </div>

@@ -25,10 +25,10 @@ export const SpatialEventFilters: React.FC<SpatialEventFiltersProps> = ({
   const isFiltered = eventTypeFilter !== 'ALL' || epistemicFilter !== 'ALL';
 
   return (
-    <div className="bg-white border border-slate-200 rounded p-3 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs font-sans">
+    <div className="civix-panel p-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex items-center space-x-1.5 text-slate-500 font-bold uppercase text-[10px] tracking-wider mr-1">
-          <Filter className="w-3.5 h-3.5 text-slate-400" />
+        <div className="flex items-center space-x-1.5 text-civix-text-muted font-bold uppercase text-[10px] tracking-wider mr-1">
+          <Filter className="w-3.5 h-3.5 text-civix-blue-400" />
           <span>Filters:</span>
         </div>
 
@@ -36,7 +36,7 @@ export const SpatialEventFilters: React.FC<SpatialEventFiltersProps> = ({
         <select
           value={eventTypeFilter}
           onChange={(e) => onSetEventTypeFilter(e.target.value)}
-          className="bg-white border border-slate-300 text-slate-800 text-xs font-semibold rounded px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-[#1a3a6c] shadow-2xs cursor-pointer"
+          className="civix-input py-1 px-2.5 text-xs font-semibold"
         >
           <option value="ALL">All Event Types</option>
           {availableEventTypes.map(t => (
@@ -48,7 +48,7 @@ export const SpatialEventFilters: React.FC<SpatialEventFiltersProps> = ({
         <select
           value={epistemicFilter}
           onChange={(e) => onSetEpistemicFilter(e.target.value)}
-          className="bg-white border border-slate-300 text-slate-800 text-xs font-semibold rounded px-2.5 py-1 focus:outline-none focus:ring-1 focus:ring-[#1a3a6c] shadow-2xs cursor-pointer"
+          className="civix-input py-1 px-2.5 text-xs font-semibold"
         >
           <option value="ALL">All Epistemic Statuses</option>
           <option value="CONFIRMED">CONFIRMED</option>
@@ -61,17 +61,17 @@ export const SpatialEventFilters: React.FC<SpatialEventFiltersProps> = ({
         {isFiltered && (
           <button
             onClick={onClearFilters}
-            className="inline-flex items-center space-x-1 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded text-[11px] font-semibold transition-colors cursor-pointer"
+            className="civix-btn-secondary py-1 text-[11px]"
           >
-            <RotateCcw className="w-3 h-3 text-slate-500" />
+            <RotateCcw className="w-3 h-3 text-civix-text-muted" />
             <span>Clear Filters</span>
           </button>
         )}
       </div>
 
       {/* Dynamic Count Indicator */}
-      <div className="font-mono text-xs text-slate-600">
-        Showing <span className="font-bold text-slate-900">{filteredCount}</span> of <span className="font-bold text-slate-900">{totalCount}</span> spatial events
+      <div className="font-mono text-xs text-civix-text-muted">
+        Showing <span className="font-bold text-civix-text-main">{filteredCount}</span> of <span className="font-bold text-civix-text-main">{totalCount}</span> spatial events
       </div>
     </div>
   );

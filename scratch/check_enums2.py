@@ -1,41 +1,28 @@
-import psycopg
-conn = psycopg.connect("postgresql://postgres:postgres@localhost:5433/civix_test")
-cur = conn.cursor()
+#!/usr/bin/env python3
+"""Get all enum values with schema-qualified names."""
+import asyncio, sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if hasattr(sys.stdout, 'reconfigure'): sys.stdout.reconfigure(encoding='utf-8')
+from sqlalchemy import text
+from civix_api.database import engine
 
-# Get participant_role column type
-cur.execute("""
-    SELECT column_name, udt_name, is_nullable
-    FROM information_schema.columns
-    WHERE table_schema='civix' AND table_name='event_participant'
-""")
-print("event_participant columns:")
-for r in cur.fetchall():
-    print(f"  {r[0]:30s} udt={r[1]}, nullable={r[2]}")
+ENUM_NAMES = [
+    'civix.entity_type_enum',
+    'civix.lead_priority_enum',
+    'civix.lead_status_enum',
+    'civix.location_type_enum',
+    'civix.predicate_enum',
+    'civix.epistemic_status_enum',
+]
 
-# Get all civix custom types
-cur.execute("""
-    SELECT typname, typtype FROM pg_type 
-    WHERE typnamespace = (SELECT oid FROM pg_namespace WHERE nspname='civix')
-    AND typtype = 'e'
-    ORDER BY typname
-""")
-print("\nAll civix enum types:")
-for r in cur.fetchall():
-    print(f"  {r[0]}")
-    cur2 = conn.cursor()
-    cur2.execute(f"SELECT unnest(enum_range(NULL::civix.{r[0]}))::text ORDER BY 1")
-    vals = [x[0] for x in cur2.fetchall()]
-    print(f"    {vals}")
+async def main():
+    for enum_name in ENUM_NAMES:
+        try:
+            async with engine.connect() as conn:
+                r = await conn.execute(text(f"SELECT unnest(enum_range(NULL::{enum_name}))::text as val;"))
+                vals = [row[0] for row in r.fetchall()]
+                print(f'{enum_name}: {vals}')
+        except Exception as e:
+            print(f'{enum_name}: ERROR - {e}')
 
-# Check source_identity
-cur.execute("""
-    SELECT column_name, udt_name, is_nullable
-    FROM information_schema.columns
-    WHERE table_schema='civix' AND table_name='source_identity'
-    ORDER BY ordinal_position
-""")
-print("\nsource_identity columns (with udt):")
-for r in cur.fetchall():
-    print(f"  {r[0]:30s} udt={r[1]}, nullable={r[2]}")
-
-conn.close()
+asyncio.run(main())

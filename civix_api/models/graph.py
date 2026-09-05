@@ -13,6 +13,16 @@ class GraphRelationship(BaseModel):
     end_node: str = Field(..., description="Identifier of the end node")
     properties: Dict[str, Any] = Field(default_factory=dict, description="Key-value properties of the relationship")
 
+class GraphMetadata(BaseModel):
+    requested_depth: int = Field(..., description="The depth requested by the client")
+    max_depth: int = Field(5, description="Maximum allowed depth")
+    node_limit: int = Field(..., description="Node limit applied")
+    relationship_limit: int = Field(..., description="Relationship limit applied")
+    nodes_returned: int = Field(..., description="Number of nodes returned")
+    relationships_returned: int = Field(..., description="Number of relationships returned")
+    truncated: bool = Field(False, description="Whether the graph was truncated due to limits")
+
 class GraphResponse(BaseModel):
     nodes: List[GraphNode] = Field(default_factory=list)
     relationships: List[GraphRelationship] = Field(default_factory=list)
+    metadata: GraphMetadata = Field(..., description="Graph traversal metadata")

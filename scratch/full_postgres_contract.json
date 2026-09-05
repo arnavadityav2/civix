@@ -1,0 +1,6164 @@
+{
+  "account_holder": {
+    "columns": [
+      {
+        "name": "holder_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "holder_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "holder_role",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "ownership_percentage",
+        "type": "numeric",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "holder_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "account_id",
+        "foreign_table": "financial_account",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "holder_entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "analysis_run": {
+    "columns": [
+      {
+        "name": "run_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "model_name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "model_version",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "algorithm_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "algorithm_parameters",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "input_snapshot_hash",
+        "type": "bytea",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "input_snapshot_tx_time",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "started_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "finished_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "initiated_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "run_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "generation_run_id",
+        "foreign_table": "generation_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "initiated_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "assertion": {
+    "columns": [
+      {
+        "name": "assertion_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "subject_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "predicate",
+        "type": "predicate_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "object_entity_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "object_value",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "object_location_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "epistemic_status",
+        "type": "epistemic_status_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "ai_confidence",
+        "type": "numeric",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "asserted_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_analysis_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "valid_from",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "valid_to",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "authorized_case_ids",
+        "type": "ARRAY",
+        "nullable": false,
+        "default": "'{}'::uuid[]",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "assertion_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "asserted_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "generation_run_id",
+        "foreign_table": "generation_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "object_entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "object_location_id",
+        "foreign_table": "location",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_analysis_run_id",
+        "foreign_table": "analysis_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "subject_entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_assertion_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      },
+      {
+        "name": "trg_assertion_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      }
+    ]
+  },
+  "audit_event": {
+    "columns": [
+      {
+        "name": "audit_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "user_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "action",
+        "type": "audit_action_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "target_table",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "target_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "case_context_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "ip_address",
+        "type": "inet",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "timestamp",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "metadata",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "audit_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "case_context_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "user_id",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_audit_append_only",
+        "timing": "BEFORE",
+        "event": "DELETE",
+        "statement": "EXECUTE FUNCTION civix.trg_audit_event_append_only()"
+      },
+      {
+        "name": "trg_audit_append_only",
+        "timing": "BEFORE",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_audit_event_append_only()"
+      }
+    ]
+  },
+  "case_access": {
+    "columns": [
+      {
+        "name": "access_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "user_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "permission_level",
+        "type": "case_permission_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "granted_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "granted_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "valid_until",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "is_revoked",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "revoked_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "access_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "granted_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "revoked_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "user_id",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "case_entity_role": {
+    "columns": [
+      {
+        "name": "role_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "role",
+        "type": "case_entity_role_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "role_basis",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "assigned_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "valid_from",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "valid_to",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "role_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "assigned_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_case_entity_role_bitemporal",
+        "timing": "BEFORE",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_case_entity_role_bitemporal()"
+      },
+      {
+        "name": "trg_case_entity_role_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_case_entity_role_outbox()"
+      },
+      {
+        "name": "trg_case_entity_role_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_case_entity_role_outbox()"
+      }
+    ]
+  },
+  "case_link": {
+    "columns": [
+      {
+        "name": "link_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "source_case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "target_case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "linked_object_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "linked_object_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "share_scope",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "authorized_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "link_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "authorized_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "target_case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "cctv_camera": {
+    "columns": [
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "camera_code",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "display_name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "city",
+        "type": "text",
+        "nullable": false,
+        "default": "'Delhi NCR'::text",
+        "generated": false
+      },
+      {
+        "name": "region",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "latitude",
+        "type": "double precision",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "longitude",
+        "type": "double precision",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "geometry",
+        "type": "geometry",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "camera_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "status",
+        "type": "text",
+        "nullable": false,
+        "default": "'OFFLINE'::text",
+        "generated": false
+      },
+      {
+        "name": "access_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "last_health_check",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "camera_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "source_id",
+        "foreign_table": "cctv_source",
+        "foreign_column": "source_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      }
+    ],
+    "unique_constraints": [
+      "camera_code"
+    ],
+    "triggers": []
+  },
+  "cctv_detection": {
+    "columns": [
+      {
+        "name": "detection_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "frame_timestamp",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "bounding_box",
+        "type": "jsonb",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "confidence",
+        "type": "double precision",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "detection_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "camera_id",
+        "foreign_table": "cctv_camera",
+        "foreign_column": "camera_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "job_id",
+        "foreign_table": "cctv_search_job",
+        "foreign_column": "job_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "cctv_feed": {
+    "columns": [
+      {
+        "name": "feed_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "feed_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "feed_url",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "embed_url",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "frame_rate",
+        "type": "integer",
+        "nullable": true,
+        "default": "15",
+        "generated": false
+      },
+      {
+        "name": "resolution_w",
+        "type": "integer",
+        "nullable": true,
+        "default": "1920",
+        "generated": false
+      },
+      {
+        "name": "resolution_h",
+        "type": "integer",
+        "nullable": true,
+        "default": "1080",
+        "generated": false
+      },
+      {
+        "name": "is_active",
+        "type": "boolean",
+        "nullable": false,
+        "default": "true",
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "feed_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "camera_id",
+        "foreign_table": "cctv_camera",
+        "foreign_column": "camera_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "cctv_match_candidate": {
+    "columns": [
+      {
+        "name": "candidate_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "track_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "target_vehicle_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "signal_class",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "overall_signal",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "plate_match_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "plate_confidence",
+        "type": "double precision",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "make_match",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "model_match",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "color_match",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "body_match",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "visual_similarity_score",
+        "type": "double precision",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "explanation_notes",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "review_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'PENDING'::text",
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "candidate_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "job_id",
+        "foreign_table": "cctv_search_job",
+        "foreign_column": "job_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      },
+      {
+        "column": "target_vehicle_id",
+        "foreign_table": "vehicle",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "track_id",
+        "foreign_table": "cctv_track",
+        "foreign_column": "track_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "cctv_observation": {
+    "columns": [
+      {
+        "name": "observation_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "candidate_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "track_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "signal_class",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "reviewed_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "reviewed_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "investigator_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "observation_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "camera_id",
+        "foreign_table": "cctv_camera",
+        "foreign_column": "camera_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "candidate_id",
+        "foreign_table": "cctv_match_candidate",
+        "foreign_column": "candidate_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "instance_id",
+        "foreign_table": "evidence_instance",
+        "foreign_column": "instance_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "reviewed_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "track_id",
+        "foreign_table": "cctv_track",
+        "foreign_column": "track_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "cctv_plate_detection": {
+    "columns": [
+      {
+        "name": "plate_detection_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "track_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "detection_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "frame_timestamp",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "bounding_box",
+        "type": "jsonb",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "plate_crop_storage_uri",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "raw_ocr_text",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "normalized_plate",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "ocr_confidence",
+        "type": "double precision",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "confidence_category",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "detector_model",
+        "type": "text",
+        "nullable": false,
+        "default": "'OpenCVPlateDetector/v1.0'::text",
+        "generated": false
+      },
+      {
+        "name": "ocr_engine",
+        "type": "text",
+        "nullable": false,
+        "default": "'LocalStructuralOCR/v1.0'::text",
+        "generated": false
+      },
+      {
+        "name": "ocr_engine_version",
+        "type": "text",
+        "nullable": false,
+        "default": "'1.0.0'::text",
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "plate_detection_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "camera_id",
+        "foreign_table": "cctv_camera",
+        "foreign_column": "camera_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "detection_id",
+        "foreign_table": "cctv_detection",
+        "foreign_column": "detection_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      },
+      {
+        "column": "job_id",
+        "foreign_table": "cctv_search_job",
+        "foreign_column": "job_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      },
+      {
+        "column": "track_id",
+        "foreign_table": "cctv_track",
+        "foreign_column": "track_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      }
+    ],
+    "unique_constraints": [
+      "job_id",
+      "track_id",
+      "raw_ocr_text"
+    ],
+    "triggers": []
+  },
+  "cctv_search_job": {
+    "columns": [
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "requested_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "target_vehicle_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "camera_ids",
+        "type": "ARRAY",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "start_time",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "end_time",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "status",
+        "type": "text",
+        "nullable": false,
+        "default": "'QUEUED'::text",
+        "generated": false
+      },
+      {
+        "name": "progress_pct",
+        "type": "integer",
+        "nullable": false,
+        "default": "0",
+        "generated": false
+      },
+      {
+        "name": "frames_processed",
+        "type": "integer",
+        "nullable": false,
+        "default": "0",
+        "generated": false
+      },
+      {
+        "name": "error_message",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "job_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      },
+      {
+        "column": "requested_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "target_vehicle_id",
+        "foreign_table": "vehicle",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "cctv_source": {
+    "columns": [
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "source_name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "operator_name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "website_url",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "verification_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'UNVERIFIED'::text",
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "source_id"
+    ],
+    "foreign_keys": [],
+    "unique_constraints": [
+      "source_name"
+    ],
+    "triggers": []
+  },
+  "cctv_track": {
+    "columns": [
+      {
+        "name": "track_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "camera_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "track_uuid",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "first_seen",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "last_seen",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "best_plate_number",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "best_plate_confidence",
+        "type": "double precision",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "detected_make",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "detected_model",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "detected_color",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "detected_body_type",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "crop_storage_uri",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "track_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "camera_id",
+        "foreign_table": "cctv_camera",
+        "foreign_column": "camera_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "job_id",
+        "foreign_table": "cctv_search_job",
+        "foreign_column": "job_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "civix_user": {
+    "columns": [
+      {
+        "name": "user_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "external_auth_id",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "username",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "display_name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "role",
+        "type": "civix_role_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "clearance_level",
+        "type": "clearance_enum",
+        "nullable": false,
+        "default": "'UNCLASSIFIED'::civix.clearance_enum",
+        "generated": false
+      },
+      {
+        "name": "is_active",
+        "type": "boolean",
+        "nullable": false,
+        "default": "true",
+        "generated": false
+      },
+      {
+        "name": "department",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "last_login_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "user_id"
+    ],
+    "foreign_keys": [],
+    "unique_constraints": [
+      "external_auth_id",
+      "username"
+    ],
+    "triggers": []
+  },
+  "data_quality_issue": {
+    "columns": [
+      {
+        "name": "issue_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "affected_entity_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "affected_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "issue_type",
+        "type": "data_quality_issue_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "severity",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "detected_by",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "detection_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "detected_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "status",
+        "type": "text",
+        "nullable": false,
+        "default": "'OPEN'::text",
+        "generated": false
+      },
+      {
+        "name": "resolution_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "resolved_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "resolved_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "issue_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "detection_run_id",
+        "foreign_table": "analysis_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "resolved_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "dataset": {
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "dataset_type",
+        "type": "dataset_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "version",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "is_production_isolated",
+        "type": "boolean",
+        "nullable": false,
+        "default": "true",
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "dataset_id"
+    ],
+    "foreign_keys": [],
+    "unique_constraints": [
+      "name"
+    ],
+    "triggers": []
+  },
+  "device": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "imei",
+        "type": "character varying",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "mac_address",
+        "type": "character varying",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "device_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "manufacturer",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "model",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "imei",
+      "mac_address"
+    ],
+    "triggers": [
+      {
+        "name": "trg_device_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_device_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "entity": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "entity_type",
+        "type": "entity_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "visibility_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'ACTIVE'::text",
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "created_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "created_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_entity_no_delete",
+        "timing": "BEFORE",
+        "event": "DELETE",
+        "statement": "EXECUTE FUNCTION civix.trg_entity_no_delete()"
+      },
+      {
+        "name": "trg_entity_tombstone_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_entity_tombstone_outbox()"
+      },
+      {
+        "name": "enforce_no_delete_unless_synthetic",
+        "timing": "BEFORE",
+        "event": "DELETE",
+        "statement": "EXECUTE FUNCTION civix.trg_entity_no_delete()"
+      }
+    ]
+  },
+  "event": {
+    "columns": [
+      {
+        "name": "event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "event_type",
+        "type": "event_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "occurred_at",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "event_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "generation_run_id",
+        "foreign_table": "generation_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_event_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      },
+      {
+        "name": "trg_event_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      }
+    ]
+  },
+  "event_location": {
+    "columns": [
+      {
+        "name": "event_location_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "location_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "location_predicate",
+        "type": "predicate_enum",
+        "nullable": false,
+        "default": "'LOCATED_AT'::civix.predicate_enum",
+        "generated": false
+      },
+      {
+        "name": "epistemic_status",
+        "type": "epistemic_status_enum",
+        "nullable": false,
+        "default": "'PROBABLE'::civix.epistemic_status_enum",
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "event_location_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      },
+      {
+        "column": "event_id",
+        "foreign_table": "event",
+        "foreign_column": "event_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      },
+      {
+        "column": "location_id",
+        "foreign_table": "location",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      }
+    ],
+    "unique_constraints": [
+      "event_id",
+      "location_id",
+      "location_predicate"
+    ],
+    "triggers": []
+  },
+  "event_participant": {
+    "columns": [
+      {
+        "name": "participant_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "participant_role",
+        "type": "participant_role_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "role_confidence",
+        "type": "numeric",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "participant_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "event_id",
+        "foreign_table": "event",
+        "foreign_column": "event_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "event_id",
+      "entity_id",
+      "participant_role"
+    ],
+    "triggers": [
+      {
+        "name": "trg_event_participant_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      },
+      {
+        "name": "trg_event_participant_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      }
+    ]
+  },
+  "evidence_artifact": {
+    "columns": [
+      {
+        "name": "artifact_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "sha256_hash",
+        "type": "bytea",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "hash_algorithm",
+        "type": "hash_algorithm_enum",
+        "nullable": false,
+        "default": "'SHA256'::civix.hash_algorithm_enum",
+        "generated": false
+      },
+      {
+        "name": "file_size_bytes",
+        "type": "bigint",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "mime_type",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "original_filename",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "storage_uri",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "is_integrity_verified",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "acquired_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "media_metadata",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "parent_artifact_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "classification_level",
+        "type": "clearance_enum",
+        "nullable": false,
+        "default": "'UNCLASSIFIED'::civix.clearance_enum",
+        "generated": false
+      },
+      {
+        "name": "processing_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'PENDING'::text",
+        "generated": false
+      },
+      {
+        "name": "processing_error",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "processed_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "artifact_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "parent_artifact_id",
+        "foreign_table": "evidence_artifact",
+        "foreign_column": "artifact_id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT"
+      }
+    ],
+    "unique_constraints": [
+      "sha256_hash",
+      "hash_algorithm"
+    ],
+    "triggers": [
+      {
+        "name": "evidence_artifact_mutation_trigger",
+        "timing": "BEFORE",
+        "event": "DELETE",
+        "statement": "EXECUTE FUNCTION civix.evidence_artifact_mutation()"
+      },
+      {
+        "name": "evidence_artifact_mutation_trigger",
+        "timing": "BEFORE",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.evidence_artifact_mutation()"
+      }
+    ]
+  },
+  "evidence_instance": {
+    "columns": [
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "artifact_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "acquired_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "acquisition_method",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "acquisition_context",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "legal_status",
+        "type": "text",
+        "nullable": false,
+        "default": "'ACTIVE'::text",
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "instance_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "acquired_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "artifact_id",
+        "foreign_table": "evidence_artifact",
+        "foreign_column": "artifact_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "extraction": {
+    "columns": [
+      {
+        "name": "extraction_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "analysis_run_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "extraction_type",
+        "type": "extraction_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "extracted_value",
+        "type": "jsonb",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "ai_confidence",
+        "type": "numeric",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "is_superseded",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "superseded_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "extraction_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "analysis_run_id",
+        "foreign_table": "analysis_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "instance_id",
+        "foreign_table": "evidence_instance",
+        "foreign_column": "instance_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "superseded_by",
+        "foreign_table": "extraction",
+        "foreign_column": "extraction_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "financial_account": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "masked_number",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "account_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "bank_name",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "ifsc_code",
+        "type": "character",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "currency",
+        "type": "character",
+        "nullable": false,
+        "default": "'INR'::bpchar",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_financial_account_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_financial_account_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "fir": {
+    "columns": [
+      {
+        "name": "fir_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "fir_number",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "police_station",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "district",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "filed_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "filed_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "complainant_entity_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "sections_invoked",
+        "type": "ARRAY",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "fir_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "complainant_entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "filed_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_fir_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_fir_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "forensic_report": {
+    "columns": [
+      {
+        "name": "report_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "report_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "lab_name",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "examiner_name",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "findings_summary",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "report_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "instance_id",
+        "foreign_table": "evidence_instance",
+        "foreign_column": "instance_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "generation_run": {
+    "columns": [
+      {
+        "name": "run_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "scenario_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "generator_version",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "started_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "finished_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "record_counts",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "run_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "scenario_id",
+        "foreign_table": "scenario",
+        "foreign_column": "scenario_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "hypothesis": {
+    "columns": [
+      {
+        "name": "hypothesis_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "hypothesis_text",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "status",
+        "type": "hypothesis_status_enum",
+        "nullable": false,
+        "default": "'ACTIVE'::civix.hypothesis_status_enum",
+        "generated": false
+      },
+      {
+        "name": "created_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "confirmed_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "hypothesis_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "confirmed_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "created_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "hypothesis_id",
+      "case_id"
+    ],
+    "triggers": [
+      {
+        "name": "trg_hypothesis_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      },
+      {
+        "name": "trg_hypothesis_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      }
+    ]
+  },
+  "hypothesis_support": {
+    "columns": [
+      {
+        "name": "support_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "hypothesis_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "assertion_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "stance",
+        "type": "support_stance_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "weight",
+        "type": "numeric",
+        "nullable": false,
+        "default": "1.0",
+        "generated": false
+      },
+      {
+        "name": "assigned_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "analysis_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "support_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "analysis_run_id",
+        "foreign_table": "analysis_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "assertion_id",
+        "foreign_table": "assertion",
+        "foreign_column": "assertion_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "assigned_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "hypothesis_id",
+        "foreign_table": "hypothesis",
+        "foreign_column": "hypothesis_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_hypothesis_support_bitemporal",
+        "timing": "BEFORE",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_hypothesis_support_bitemporal()"
+      },
+      {
+        "name": "trg_hypothesis_support_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_hypothesis_support_outbox()"
+      },
+      {
+        "name": "trg_hypothesis_support_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_hypothesis_support_outbox()"
+      },
+      {
+        "name": "trg_hypothesis_support_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      },
+      {
+        "name": "trg_hypothesis_support_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      }
+    ]
+  },
+  "identity_candidate": {
+    "columns": [
+      {
+        "name": "candidate_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "source_identity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "proposed_person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "ai_confidence",
+        "type": "numeric",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "analysis_run_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "is_active",
+        "type": "boolean",
+        "nullable": false,
+        "default": "true",
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "deterministic_signals",
+        "type": "jsonb",
+        "nullable": false,
+        "default": "'[]'::jsonb",
+        "generated": false
+      },
+      {
+        "name": "matching_rule_id",
+        "type": "text",
+        "nullable": false,
+        "default": "'LEGACY'::text",
+        "generated": false
+      },
+      {
+        "name": "supporting_evidence_ids",
+        "type": "ARRAY",
+        "nullable": false,
+        "default": "'{}'::uuid[]",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "candidate_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "analysis_run_id",
+        "foreign_table": "analysis_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "proposed_person_id",
+        "foreign_table": "person",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_identity_id",
+        "foreign_table": "source_identity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "source_identity_id",
+      "proposed_person_id"
+    ],
+    "triggers": [
+      {
+        "name": "trg_identity_candidate_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_outbox_identity_candidate()"
+      },
+      {
+        "name": "trg_identity_candidate_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_outbox_identity_candidate()"
+      }
+    ]
+  },
+  "identity_merge_event": {
+    "columns": [
+      {
+        "name": "merge_event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "source_identity_a",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_identity_b",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "merged_into_person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "resolution_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "decided_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "occurred_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "reason",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "merge_event_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "decided_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "merged_into_person_id",
+        "foreign_table": "person",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "resolution_id",
+        "foreign_table": "identity_resolution",
+        "foreign_column": "resolution_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_identity_a",
+        "foreign_table": "source_identity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_identity_b",
+        "foreign_table": "source_identity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "identity_resolution": {
+    "columns": [
+      {
+        "name": "resolution_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "source_identity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "candidate_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "resolved_person_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "status",
+        "type": "identity_resolution_status_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "decided_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "decision_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "superseded_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "resolution_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "candidate_id",
+        "foreign_table": "identity_candidate",
+        "foreign_column": "candidate_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "decided_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "resolved_person_id",
+        "foreign_table": "person",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_identity_id",
+        "foreign_table": "source_identity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "superseded_by",
+        "foreign_table": "identity_resolution",
+        "foreign_column": "resolution_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_identity_resolution_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      },
+      {
+        "name": "trg_identity_resolution_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      }
+    ]
+  },
+  "identity_split_event": {
+    "columns": [
+      {
+        "name": "split_event_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "original_resolution_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "split_source_identity_a",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "split_source_identity_b",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "new_person_b_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "decided_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "reason",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "occurred_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "split_event_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "decided_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "new_person_b_id",
+        "foreign_table": "person",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "original_resolution_id",
+        "foreign_table": "identity_resolution",
+        "foreign_column": "resolution_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "split_source_identity_a",
+        "foreign_table": "source_identity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "split_source_identity_b",
+        "foreign_table": "source_identity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "investigation_task": {
+    "columns": [
+      {
+        "name": "task_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "lead_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "task_type",
+        "type": "task_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "assigned_to",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "status",
+        "type": "task_status_enum",
+        "nullable": false,
+        "default": "'PENDING'::civix.task_status_enum",
+        "generated": false
+      },
+      {
+        "name": "due_date",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "outcome_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "completed_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "task_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "assigned_to",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "lead_id",
+        "foreign_table": "investigative_lead",
+        "foreign_column": "lead_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "investigative_case": {
+    "columns": [
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "case_number",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "case_type",
+        "type": "case_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "status",
+        "type": "case_status_enum",
+        "nullable": false,
+        "default": "'OPEN'::civix.case_status_enum",
+        "generated": false
+      },
+      {
+        "name": "priority",
+        "type": "case_priority_enum",
+        "nullable": false,
+        "default": "'MEDIUM'::civix.case_priority_enum",
+        "generated": false
+      },
+      {
+        "name": "jurisdiction",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "investigating_unit",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "opened_at",
+        "type": "date",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "closed_at",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "lead_investigator_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "updated_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "case_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "lead_investigator_id",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "case_number"
+    ],
+    "triggers": [
+      {
+        "name": "trg_investigative_case_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_investigative_case_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "investigative_finding": {
+    "columns": [
+      {
+        "name": "finding_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "lead_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "finding_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "subject_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "object_entity_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "relationship_strength",
+        "type": "text",
+        "nullable": false,
+        "default": "'MODERATE'::text",
+        "generated": false
+      },
+      {
+        "name": "key_facts",
+        "type": "jsonb",
+        "nullable": false,
+        "default": "'[]'::jsonb",
+        "generated": false
+      },
+      {
+        "name": "evidence_ids",
+        "type": "ARRAY",
+        "nullable": false,
+        "default": "'{}'::uuid[]",
+        "generated": false
+      },
+      {
+        "name": "path_description",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "hop_count",
+        "type": "integer",
+        "nullable": false,
+        "default": "1",
+        "generated": false
+      },
+      {
+        "name": "matching_rule_id",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "date_range_start",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "date_range_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "suppressed",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "suppression_reason",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "finding_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "lead_id",
+        "foreign_table": "investigative_lead",
+        "foreign_column": "lead_id",
+        "on_update": "NO ACTION",
+        "on_delete": "CASCADE"
+      },
+      {
+        "column": "object_entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "subject_entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "investigative_lead": {
+    "columns": [
+      {
+        "name": "lead_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "case_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "generated_by_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "generated_by_person",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "lead_text",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "explanation",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "priority",
+        "type": "lead_priority_enum",
+        "nullable": false,
+        "default": "'MEDIUM'::civix.lead_priority_enum",
+        "generated": false
+      },
+      {
+        "name": "status",
+        "type": "lead_status_enum",
+        "nullable": false,
+        "default": "'OPEN'::civix.lead_status_enum",
+        "generated": false
+      },
+      {
+        "name": "ai_confidence",
+        "type": "numeric",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "disposition_notes",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "disposed_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "disposed_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "target_entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "hypothesis_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "feature_vector_version",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "deterministic_findings",
+        "type": "jsonb",
+        "nullable": true,
+        "default": "'[]'::jsonb",
+        "generated": false
+      },
+      {
+        "name": "explanation_status",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "lead_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "hypothesis_id",
+        "foreign_table": "hypothesis",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "hypothesis_id",
+        "foreign_table": "hypothesis",
+        "foreign_column": "hypothesis_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "case_id",
+        "foreign_table": "hypothesis",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "case_id",
+        "foreign_table": "hypothesis",
+        "foreign_column": "hypothesis_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "case_id",
+        "foreign_table": "investigative_case",
+        "foreign_column": "case_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "disposed_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "generated_by_person",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "generated_by_run_id",
+        "foreign_table": "analysis_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "target_entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "RESTRICT"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_lead_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      },
+      {
+        "name": "trg_lead_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_epistemic_and_edge_outbox()"
+      }
+    ]
+  },
+  "legal_restriction": {
+    "columns": [
+      {
+        "name": "restriction_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "target_entity_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "target_artifact_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "restriction_type",
+        "type": "legal_restriction_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "authority",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "court_order_reference",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "effective_range",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "scope",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "status",
+        "type": "text",
+        "nullable": false,
+        "default": "'ACTIVE'::text",
+        "generated": false
+      },
+      {
+        "name": "created_by",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "lifted_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "lifted_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "restriction_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "created_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "lifted_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "target_artifact_id",
+        "foreign_table": "evidence_artifact",
+        "foreign_column": "artifact_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "target_entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "location": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "location_name",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "geometry",
+        "type": "geometry",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "location_type",
+        "type": "location_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "uncertainty_radius_meters",
+        "type": "double precision",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "altitude_meters",
+        "type": "double precision",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "azimuth_degrees",
+        "type": "double precision",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "beamwidth_degrees",
+        "type": "double precision",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_location_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_location_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "medical_report": {
+    "columns": [
+      {
+        "name": "report_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "examination_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "findings_summary",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "practitioner_name",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "examination_date",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "report_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "instance_id",
+        "foreign_table": "evidence_instance",
+        "foreign_column": "instance_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "network": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "network_name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "network_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "notes",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_network_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_network_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "observation": {
+    "columns": [
+      {
+        "name": "observation_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "instance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "observer_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "observed_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "observation_type",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "observation_text",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "structured_content",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "observed_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "observation_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "instance_id",
+        "foreign_table": "evidence_instance",
+        "foreign_column": "instance_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "observed_by",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "organization": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "legal_name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "org_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "registration_number",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "incorporation_date",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "jurisdiction",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_organization_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_organization_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "outbox": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "action",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "entity_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "payload",
+        "type": "jsonb",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "consumed_at",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "error_status",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "error_message",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "seq_no",
+        "type": "bigint",
+        "nullable": false,
+        "default": "nextval('civix.outbox_seq_no_seq'::regclass)",
+        "generated": false
+      },
+      {
+        "name": "retry_count",
+        "type": "integer",
+        "nullable": false,
+        "default": "0",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [],
+    "unique_constraints": [
+      "seq_no"
+    ],
+    "triggers": []
+  },
+  "person": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "display_name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "date_of_birth",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "gender",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "nationality",
+        "type": "character",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "is_deceased",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "deceased_at",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "notes",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_person_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_person_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "person_alias": {
+    "columns": [
+      {
+        "name": "alias_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "alias_value",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "alias_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "valid_from",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "valid_to",
+        "type": "date",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "alias_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "person_id",
+        "foreign_table": "person",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "person_id",
+      "alias_value",
+      "alias_type"
+    ],
+    "triggers": []
+  },
+  "person_device_use": {
+    "columns": [
+      {
+        "name": "use_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "usage_type",
+        "type": "text",
+        "nullable": false,
+        "default": "'PRIMARY'::text",
+        "generated": false
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "use_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "device_id",
+        "foreign_table": "device",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "person_id",
+        "foreign_table": "person",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "person_sim_ownership": {
+    "columns": [
+      {
+        "name": "ownership_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "person_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "sim_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "ownership_type",
+        "type": "text",
+        "nullable": false,
+        "default": "'REGISTERED'::text",
+        "generated": false
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "ownership_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "person_id",
+        "foreign_table": "person",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "sim_id",
+        "foreign_table": "sim",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "phone_number": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "msisdn",
+        "type": "character varying",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "country_code",
+        "type": "character",
+        "nullable": false,
+        "default": "'IND'::bpchar",
+        "generated": false
+      },
+      {
+        "name": "operator",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "number_type",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "msisdn"
+    ],
+    "triggers": [
+      {
+        "name": "trg_phone_number_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_phone_number_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "property": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "property_ref",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "property_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "area_sqm",
+        "type": "numeric",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "boundary_geometry",
+        "type": "geometry",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_property_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_property_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "provenance": {
+    "columns": [
+      {
+        "name": "provenance_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "derived_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "derived_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "derivation_method",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "provenance_id"
+    ],
+    "foreign_keys": [],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "scenario": {
+    "columns": [
+      {
+        "name": "scenario_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "dataset_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "scenario_label",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "random_seed",
+        "type": "bigint",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "ground_truth",
+        "type": "jsonb",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "scenario_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "dataset_id",
+        "foreign_table": "dataset",
+        "foreign_column": "dataset_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "sim": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "iccid",
+        "type": "character varying",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "imsi",
+        "type": "character varying",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "issuing_operator",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "iccid",
+      "imsi"
+    ],
+    "triggers": [
+      {
+        "name": "trg_sim_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_sim_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "sim_in_device": {
+    "columns": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "sim_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "device_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "device_id",
+        "foreign_table": "device",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "sim_id",
+        "foreign_table": "sim",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "sim_number_assignment": {
+    "columns": [
+      {
+        "name": "assignment_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "sim_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "phone_number_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "valid_time",
+        "type": "tstzrange",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "assignment_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "phone_number_id",
+        "foreign_table": "phone_number",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "sim_id",
+        "foreign_table": "sim",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": []
+  },
+  "source": {
+    "columns": [
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "source_name",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "agency_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "reliability_score",
+        "type": "numeric",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "jurisdiction",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "is_identity_protected",
+        "type": "boolean",
+        "nullable": false,
+        "default": "false",
+        "generated": false
+      },
+      {
+        "name": "source_handler_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "source_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "source_handler_id",
+        "foreign_table": "civix_user",
+        "foreign_column": "user_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "source_name"
+    ],
+    "triggers": []
+  },
+  "source_identity": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "raw_identifier",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "identifier_type",
+        "type": "source_identity_type_enum",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "observed_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "tx_start",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "tx_end",
+        "type": "timestamp with time zone",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_record_id",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_source_identity_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_source_identity_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  },
+  "source_record": {
+    "columns": [
+      {
+        "name": "source_record_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": "gen_random_uuid()",
+        "generated": false
+      },
+      {
+        "name": "source_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "external_reference",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "record_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "raw_content_hash",
+        "type": "bytea",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "received_at",
+        "type": "timestamp with time zone",
+        "nullable": false,
+        "default": "now()",
+        "generated": false
+      },
+      {
+        "name": "superseded_by",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "generation_run_id",
+        "type": "uuid",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "source_record_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "generation_run_id",
+        "foreign_table": "generation_run",
+        "foreign_column": "run_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "source_id",
+        "foreign_table": "source",
+        "foreign_column": "source_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      },
+      {
+        "column": "superseded_by",
+        "foreign_table": "source_record",
+        "foreign_column": "source_record_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [],
+    "triggers": [
+      {
+        "name": "trg_source_record_immutable",
+        "timing": "BEFORE",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_source_record_immutable()"
+      }
+    ]
+  },
+  "vehicle": {
+    "columns": [
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "registration_number",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "vin",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "make",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "model",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "color",
+        "type": "text",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "vehicle_type",
+        "type": "text",
+        "nullable": false,
+        "default": null,
+        "generated": false
+      },
+      {
+        "name": "registration_year",
+        "type": "integer",
+        "nullable": true,
+        "default": null,
+        "generated": false
+      }
+    ],
+    "primary_key": [
+      "entity_id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "entity_id",
+        "foreign_table": "entity",
+        "foreign_column": "entity_id",
+        "on_update": "NO ACTION",
+        "on_delete": "NO ACTION"
+      }
+    ],
+    "unique_constraints": [
+      "registration_number",
+      "vin"
+    ],
+    "triggers": [
+      {
+        "name": "trg_vehicle_upsert_outbox",
+        "timing": "AFTER",
+        "event": "INSERT",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      },
+      {
+        "name": "trg_vehicle_upsert_outbox",
+        "timing": "AFTER",
+        "event": "UPDATE",
+        "statement": "EXECUTE FUNCTION civix.trg_upsert_node_outbox()"
+      }
+    ]
+  }
+}

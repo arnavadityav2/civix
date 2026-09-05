@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { casesApi } from '../api/cases';
 import { useCaseSelection } from '../context/CaseSelectionContext';
-import type { CaseListItem, CaseCreateRequest } from '../types/api';
+import type { CaseRegistryItem, CaseRegistryResponse, CaseCreateRequest } from '../types/api';
 import { Panel } from '../components/ui/Panel';
 import { Badge } from '../components/ui/Badge';
 import {
@@ -13,18 +13,20 @@ import {
   AlertTriangle,
   RefreshCw,
   ChevronRight,
-  Filter,
   X,
   Loader2,
-  ArrowUpDown,
   CheckCircle2,
+  Users,
+  FileText
 } from 'lucide-react';
 
-// ── Status & Priority badge mapping ──────────────────────────────────────────
+// ── Badge mappings ──────────────────────────────────────────────────────────
 
 const STATUS_VARIANTS: Record<string, string> = {
   OPEN: 'active',
   ACTIVE: 'confirmed',
+  CLOSED_SOLVED: 'closed',
+  CLOSED_UNSOLVED: 'closed',
   CLOSED: 'closed',
   ARCHIVED: 'deferred',
   SUSPENDED: 'warning',
@@ -37,47 +39,35 @@ const PRIORITY_VARIANTS: Record<string, string> = {
   LOW: 'default',
 };
 
-const PRIORITY_ORDER: Record<string, number> = {
-  CRITICAL: 0,
-  HIGH: 1,
-  MEDIUM: 2,
-  LOW: 3,
-};
+// ── Time helper ──────────────────────────────────────────────────────────────
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+function formatRelativeTime(dateString: string): string {
+  if (!dateString) return 'Unknown';
+  const now = new Date();
+  const past = new Date(dateString);
+  const diffMs = Math.max(0, now.getTime() - past.getTime());
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
 
-function normalizeFilterValue(v: string) {
-  return v.toUpperCase().trim();
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins} min${diffMins !== 1 ? 's' : ''} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 30) return `${diffDays} days ago`;
+  return past.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-function matchesFilter(item: CaseListItem, filters: FilterState, search: string) {
-  if (search) {
-    const q = search.toLowerCase();
-    if (
-      !item.title.toLowerCase().includes(q) &&
-      !item.case_number.toLowerCase().includes(q) &&
-      !item.jurisdiction.toLowerCase().includes(q)
-    ) {
-      return false;
-    }
-  }
-  if (filters.status && normalizeFilterValue(item.status) !== normalizeFilterValue(filters.status)) return false;
-  if (filters.priority && normalizeFilterValue(item.priority) !== normalizeFilterValue(filters.priority)) return false;
-  if (filters.jurisdiction && normalizeFilterValue(item.jurisdiction) !== normalizeFilterValue(filters.jurisdiction)) return false;
-  return true;
+function formatDateFormatted(dateString: string): string {
+  if (!dateString) return '';
+  const d = new Date(dateString);
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + 
+    ', ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-interface FilterState {
-  status: string;
-  priority: string;
-  jurisdiction: string;
-}
-
-type SortField = 'case_number' | 'title' | 'status' | 'priority' | 'jurisdiction';
-
-const INITIAL_FILTERS: FilterState = { status: '', priority: '', jurisdiction: '' };
+type TabCategory = 'ALL' | 'ACTIVE' | 'CRITICAL' | 'FINANCIAL' | 'PROPERTY' | 'INTELLIGENCE' | 'SURVEILLANCE' | 'UNRESOLVED';
 
 // ── New Case Modal ────────────────────────────────────────────────────────────
 
@@ -104,7 +94,7 @@ const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
   const mutation = useMutation({
     mutationFn: (data: CaseCreateRequest) => casesApi.createCase(data),
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ['cases'] });
+      queryClient.invalidateQueries({ queryKey: ['cases-registry'] });
       onSuccess(result.case_id);
     },
     onError: (err: Error) => {
@@ -124,34 +114,33 @@ const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
     });
   }
 
+  const inputCls = 'w-full bg-civix-bg border border-civix-border rounded-sm px-3 py-2 text-xs font-mono text-civix-text-primary placeholder-civix-text-muted focus:outline-none focus:border-civix-blue transition-colors disabled:opacity-50';
+  const labelCls = 'block text-[10px] font-bold text-civix-text-muted uppercase tracking-widest mb-1 font-mono';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-slate-900/40" onClick={onClose} />
-
-      {/* Dialog */}
-      <div className="relative z-10 bg-white border border-slate-300 rounded shadow-lg w-full max-w-md mx-4">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-slate-50">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative z-10 bg-civix-surface border border-civix-border rounded-sm shadow-civix-lg w-full max-w-md mx-4">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-civix-border bg-civix-surface-2">
           <div className="flex items-center space-x-2">
-            <Briefcase className="w-4 h-4 text-amber-600" />
-            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">Open New Investigation</h2>
+            <Briefcase className="w-4 h-4 text-civix-gold" />
+            <h2 className="text-sm font-bold text-civix-text-primary uppercase tracking-wide font-mono">
+              Open New Investigation
+            </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200 rounded transition-colors"
+            className="p-1.5 text-civix-text-muted hover:text-civix-text-primary hover:bg-civix-surface-3 rounded-sm transition-colors"
             disabled={mutation.isPending}
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Body */}
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
-          {/* Case Number */}
           <div>
-            <label htmlFor="nc-case-number" className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wide">
-              Case Number <span className="text-red-600">*</span>
+            <label htmlFor="nc-case-number" className={labelCls}>
+              Case Number <span className="text-civix-red">*</span>
             </label>
             <input
               id="nc-case-number"
@@ -159,16 +148,15 @@ const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
               placeholder="e.g. CASE-2026-0143"
               value={form.case_number}
               onChange={(e) => setForm((f) => ({ ...f, case_number: e.target.value }))}
-              className="w-full border border-slate-300 rounded px-3 py-2 text-xs font-mono text-slate-900 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 placeholder-slate-400"
+              className={inputCls}
               required
               disabled={mutation.isPending}
             />
           </div>
 
-          {/* Title */}
           <div>
-            <label htmlFor="nc-title" className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wide">
-              Investigation Title <span className="text-red-600">*</span>
+            <label htmlFor="nc-title" className={labelCls}>
+              Investigation Title <span className="text-civix-red">*</span>
             </label>
             <input
               id="nc-title"
@@ -176,23 +164,20 @@ const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
               placeholder="Brief operational case title"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              className="w-full border border-slate-300 rounded px-3 py-2 text-xs text-slate-900 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 placeholder-slate-400"
+              className={inputCls}
               required
               disabled={mutation.isPending}
             />
           </div>
 
-          {/* Case Type + Priority */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="nc-case-type" className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wide">
-                Case Type
-              </label>
+              <label htmlFor="nc-case-type" className={labelCls}>Case Type</label>
               <select
                 id="nc-case-type"
                 value={form.case_type}
                 onChange={(e) => setForm((f) => ({ ...f, case_type: e.target.value }))}
-                className="w-full border border-slate-300 rounded px-3 py-2 text-xs text-slate-900 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className={inputCls}
                 disabled={mutation.isPending}
               >
                 {CASE_TYPES.map((t) => (
@@ -201,14 +186,12 @@ const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
               </select>
             </div>
             <div>
-              <label htmlFor="nc-priority" className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wide">
-                Priority
-              </label>
+              <label htmlFor="nc-priority" className={labelCls}>Priority</label>
               <select
                 id="nc-priority"
                 value={form.priority}
                 onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value }))}
-                className="w-full border border-slate-300 rounded px-3 py-2 text-xs text-slate-900 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className={inputCls}
                 disabled={mutation.isPending}
               >
                 {PRIORITIES.map((p) => (
@@ -218,61 +201,57 @@ const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
             </div>
           </div>
 
-          {/* Jurisdiction */}
           <div>
-            <label htmlFor="nc-jurisdiction" className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wide">
-              Jurisdiction <span className="text-red-600">*</span>
+            <label htmlFor="nc-jurisdiction" className={labelCls}>
+              Jurisdiction <span className="text-civix-red">*</span>
             </label>
             <input
               id="nc-jurisdiction"
               type="text"
-              placeholder="e.g. DELHI_NCR, MUMBAI, NATIONAL"
+              placeholder="e.g. North-West Delhi, Dwarka, National"
               value={form.jurisdiction}
               onChange={(e) => setForm((f) => ({ ...f, jurisdiction: e.target.value }))}
-              className="w-full border border-slate-300 rounded px-3 py-2 text-xs font-mono text-slate-900 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 placeholder-slate-400"
+              className={inputCls}
               required
               disabled={mutation.isPending}
             />
           </div>
 
-          {/* Investigating Unit (optional) */}
           <div>
-            <label htmlFor="nc-unit" className="block text-xs font-semibold text-slate-700 mb-1 uppercase tracking-wide">
-              Investigating Unit <span className="text-slate-400 font-normal">(optional)</span>
+            <label htmlFor="nc-unit" className={labelCls}>
+              Investigating Unit <span className="text-civix-text-muted font-normal">(optional)</span>
             </label>
             <input
               id="nc-unit"
               type="text"
-              placeholder="e.g. Delhi NCR Task Force"
+              placeholder="e.g. Delhi NCR Cyber Crime Cell"
               value={form.investigating_unit}
               onChange={(e) => setForm((f) => ({ ...f, investigating_unit: e.target.value }))}
-              className="w-full border border-slate-300 rounded px-3 py-2 text-xs text-slate-900 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 placeholder-slate-400"
+              className={inputCls}
               disabled={mutation.isPending}
             />
           </div>
 
-          {/* Error */}
           {formError && (
-            <div className="flex items-start space-x-2 bg-red-50 border border-red-200 rounded p-3">
-              <AlertTriangle className="w-3.5 h-3.5 text-red-600 flex-shrink-0 mt-0.5" />
-              <span className="text-xs text-red-700">{formError}</span>
+            <div className="flex items-start space-x-2 bg-civix-red-subtle border border-civix-red-muted rounded-sm p-3">
+              <AlertTriangle className="w-3.5 h-3.5 text-civix-red flex-shrink-0 mt-0.5" />
+              <span className="text-xs text-civix-red-light">{formError}</span>
             </div>
           )}
 
-          {/* Actions */}
-          <div className="flex items-center justify-end space-x-3 pt-2 border-t border-slate-100">
+          <div className="flex items-center justify-end space-x-3 pt-2 border-t border-civix-border">
             <button
               type="button"
               onClick={onClose}
               disabled={mutation.isPending}
-              className="px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-300 rounded hover:bg-slate-200 transition-colors disabled:opacity-50"
+              className="civix-btn-secondary disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="flex items-center space-x-2 px-4 py-2 text-xs font-bold bg-slate-900 text-white rounded hover:bg-slate-800 transition-colors disabled:opacity-50 shadow-sm"
+              className="civix-btn-primary flex items-center space-x-2 disabled:opacity-50"
             >
               {mutation.isPending ? (
                 <>
@@ -281,7 +260,7 @@ const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
                 </>
               ) : (
                 <>
-                  <Plus className="w-3.5 h-3.5 text-amber-400" />
+                  <Plus className="w-3.5 h-3.5" />
                   <span>Open Investigation</span>
                 </>
               )}
@@ -293,141 +272,68 @@ const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
   );
 };
 
-// ── Case Preview Panel ────────────────────────────────────────────────────────
-
-interface CasePreviewProps {
-  caseItem: CaseListItem;
-  onOpenCase: (caseId: string) => void;
-}
-
-const CasePreview: React.FC<CasePreviewProps> = ({ caseItem, onOpenCase }) => {
-  const statusVariant = STATUS_VARIANTS[caseItem.status?.toUpperCase()] || 'default';
-  const priorityVariant = PRIORITY_VARIANTS[caseItem.priority?.toUpperCase()] || 'default';
-
-  return (
-    <div className="bg-white border border-slate-200 rounded shadow-sm overflow-hidden">
-      {/* Preview header */}
-      <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-        <div>
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Case Preview</h3>
-          <p className="text-[11px] text-slate-500 font-mono mt-0.5">{caseItem.case_number}</p>
-        </div>
-        <button
-          onClick={() => onOpenCase(caseItem.case_id)}
-          className="flex items-center space-x-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 px-3 py-1.5 rounded transition-colors shadow-sm"
-        >
-          <span>Open Investigation</span>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </button>
-      </div>
-
-      {/* Preview body */}
-      <div className="p-4 space-y-3">
-        <div>
-          <p className="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">Title / Subject</p>
-          <p className="text-sm font-bold text-slate-900">{caseItem.title}</p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <p className="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">Status</p>
-            <Badge variant={statusVariant as any}>{caseItem.status}</Badge>
-          </div>
-          <div>
-            <p className="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">Priority</p>
-            <Badge variant={priorityVariant as any}>{caseItem.priority}</Badge>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <p className="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">Case Type</p>
-            <p className="text-xs font-mono font-semibold text-slate-800">{caseItem.case_type}</p>
-          </div>
-          <div>
-            <p className="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">Jurisdiction</p>
-            <p className="text-xs font-mono font-semibold text-slate-800">{caseItem.jurisdiction}</p>
-          </div>
-        </div>
-
-        <div className="pt-2 border-t border-slate-100">
-          <p className="text-[10px] font-mono text-slate-400">
-            CASE ID: {caseItem.case_id}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 // ── Main CasesPage ────────────────────────────────────────────────────────────
 
 export const CasesPage: React.FC = () => {
   const navigate = useNavigate();
   const { selectedCaseId, setSelectedCaseId } = useCaseSelection();
 
+  // Filter & Query parameters
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(50);
   const [search, setSearch] = useState('');
-  const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
-  const [sortField, setSortField] = useState<SortField>('priority');
-  const [sortAsc, setSortAsc] = useState(true);
-  const [showFilters, setShowFilters] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabCategory>('ALL');
+  const [caseTypeFilter, setCaseTypeFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('');
+  const [jurisdictionFilter, setJurisdictionFilter] = useState('');
+  const [provenanceFilter, setProvenanceFilter] = useState('');
+  const [sortBy, setSortBy] = useState('last_activity_at');
+  const [sortOrder, setSortOrder] = useState('desc');
   const [showNewCaseModal, setShowNewCaseModal] = useState(false);
   const [newCaseSuccess, setNewCaseSuccess] = useState<string | null>(null);
 
-  // ── Data fetching ────────────────────────────────────────────────────────
-  const { data: cases, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ['cases'],
-    queryFn: () => casesApi.listCases(),
-    staleTime: 30_000,
+  // Compute effective query parameters based on tab + selected filters
+  const effectiveParams = React.useMemo(() => {
+    let type = caseTypeFilter;
+    let stat = statusFilter;
+    let prio = priorityFilter;
+
+    if (activeTab === 'ACTIVE') stat = 'ACTIVE';
+    else if (activeTab === 'CRITICAL') prio = 'CRITICAL';
+    else if (activeTab === 'FINANCIAL') type = 'FINANCIAL';
+    else if (activeTab === 'PROPERTY') type = 'PROPERTY';
+    else if (activeTab === 'INTELLIGENCE') type = 'INTELLIGENCE';
+    else if (activeTab === 'SURVEILLANCE') type = 'SURVEILLANCE';
+    else if (activeTab === 'UNRESOLVED') stat = 'OPEN';
+
+    return {
+      page,
+      page_size: pageSize,
+      search: search.trim() || undefined,
+      case_type: type || undefined,
+      status: stat || undefined,
+      priority: prio || undefined,
+      jurisdiction: jurisdictionFilter.trim() || undefined,
+      provenance: provenanceFilter || undefined,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+    };
+  }, [page, pageSize, search, activeTab, caseTypeFilter, statusFilter, priorityFilter, jurisdictionFilter, provenanceFilter, sortBy, sortOrder]);
+
+  const { data: registryResponse, isLoading, error, refetch, isFetching } = useQuery<CaseRegistryResponse>({
+    queryKey: ['cases-registry', effectiveParams],
+    queryFn: () => casesApi.getRegistry(effectiveParams),
+    staleTime: 15_000,
   });
 
-  // ── Client-side filtering + sorting ─────────────────────────────────────
-  // NOTE: Backend GET /cases does not expose query params for server-side
-  // filtering. This client-side filter operates on the full user-accessible
-  // case list (enforced by RLS). Future scale: if case count grows large,
-  // a backend filter param should be requested.
-  const filtered = React.useMemo(() => {
-    if (!cases) return [];
-    let result = cases.filter((c) => matchesFilter(c, filters, search));
-    result.sort((a, b) => {
-      let va: string | number = '';
-      let vb: string | number = '';
-      if (sortField === 'priority') {
-        va = PRIORITY_ORDER[a.priority?.toUpperCase()] ?? 99;
-        vb = PRIORITY_ORDER[b.priority?.toUpperCase()] ?? 99;
-      } else {
-        va = (a[sortField] || '').toLowerCase();
-        vb = (b[sortField] || '').toLowerCase();
-      }
-      if (va < vb) return sortAsc ? -1 : 1;
-      if (va > vb) return sortAsc ? 1 : -1;
-      return 0;
-    });
-    return result;
-  }, [cases, filters, search, sortField, sortAsc]);
+  const summary = registryResponse?.summary;
+  const items = registryResponse?.items || [];
+  const pagination = registryResponse?.pagination;
 
-  // ── Derived filter options from actual data ──────────────────────────────
-  const filterOptions = React.useMemo(() => {
-    if (!cases) return { statuses: [], priorities: [], jurisdictions: [] };
-    return {
-      statuses: [...new Set(cases.map((c) => c.status).filter(Boolean))].sort(),
-      priorities: [...new Set(cases.map((c) => c.priority).filter(Boolean))].sort(),
-      jurisdictions: [...new Set(cases.map((c) => c.jurisdiction).filter(Boolean))].sort(),
-    };
-  }, [cases]);
+  const hasActiveFilters = search || caseTypeFilter || statusFilter || priorityFilter || jurisdictionFilter || provenanceFilter || activeTab !== 'ALL';
 
-  const hasActiveFilters = filters.status || filters.priority || filters.jurisdiction || search;
-
-  function handleSort(field: SortField) {
-    if (sortField === field) {
-      setSortAsc((v) => !v);
-    } else {
-      setSortField(field);
-      setSortAsc(true);
-    }
-  }
-
-  function handleCaseSelect(caseItem: CaseListItem) {
+  function handleCaseSelect(caseItem: CaseRegistryItem) {
     setSelectedCaseId(caseItem.case_id);
   }
 
@@ -443,356 +349,471 @@ export const CasesPage: React.FC = () => {
     setTimeout(() => setNewCaseSuccess(null), 4000);
   }
 
-  const selectedCase = filtered.find((c) => c.case_id === selectedCaseId) ||
-    cases?.find((c) => c.case_id === selectedCaseId);
+  function clearAllFilters() {
+    setSearch('');
+    setActiveTab('ALL');
+    setCaseTypeFilter('');
+    setStatusFilter('');
+    setPriorityFilter('');
+    setJurisdictionFilter('');
+    setProvenanceFilter('');
+    setPage(1);
+  }
 
-  // ── Render ───────────────────────────────────────────────────────────────
+  const selectCls = 'bg-civix-bg border border-civix-border rounded-sm px-2.5 py-1.5 text-xs text-civix-text-primary font-mono focus:outline-none focus:border-civix-blue transition-colors';
+
   return (
-    <div className="space-y-5">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-3 border-b border-slate-200 gap-3">
+    <div className="space-y-4">
+      {/* ── Top Header & Summary Banner ────────────────────────────────────────── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-civix-surface border border-civix-border p-4 rounded-sm">
         <div>
-          <div className="flex items-center space-x-3">
-            <h1 className="text-xl font-extrabold text-slate-900 tracking-tight uppercase">Cases</h1>
-            {cases && (
-              <span className="text-[11px] font-mono font-bold bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded border border-slate-300">
-                {cases.length} CASE{cases.length !== 1 ? 'S' : ''}
-              </span>
-            )}
-          </div>
-          <p className="text-xs text-slate-500 mt-0.5 font-medium">Case Registry &amp; Investigation Management</p>
+          <h1 className="text-xl font-extrabold text-civix-text-primary tracking-tight uppercase flex items-center space-x-2 font-mono">
+            <span>CASES</span>
+          </h1>
+          <p className="text-xs text-civix-text-muted font-mono mt-0.5">
+            Case Registry &amp; Investigation Management — Monitor. Investigate. Connect the Dots.
+          </p>
         </div>
 
-        {/* New Case CTA */}
-        <button
-          id="new-case-btn"
-          onClick={() => setShowNewCaseModal(true)}
-          className="flex items-center space-x-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2.5 rounded transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4 text-amber-400" />
-          <span>New Case</span>
-        </button>
+        {/* Summary Stats Cards */}
+        <div className="flex items-center gap-4 border-l border-civix-border pl-4 overflow-x-auto py-1">
+          <div className="text-center px-2">
+            <p className="text-[10px] font-mono font-bold text-civix-text-muted uppercase tracking-wider">Total Cases</p>
+            <p className="text-lg font-mono font-extrabold text-civix-text-primary">{summary?.total_cases ?? '...'}</p>
+          </div>
+          <div className="text-center px-2 border-l border-civix-border-subtle">
+            <p className="text-[10px] font-mono font-bold text-civix-text-muted uppercase tracking-wider">Synthetic Benchmark</p>
+            <p className="text-lg font-mono font-extrabold text-civix-blue-light">{summary?.synthetic_cases ?? '...'}</p>
+          </div>
+          <div className="text-center px-2 border-l border-civix-border-subtle">
+            <p className="text-[10px] font-mono font-bold text-civix-gold uppercase tracking-wider">Golden Cases</p>
+            <p className="text-lg font-mono font-extrabold text-civix-gold">{summary?.golden_cases ?? '...'}</p>
+          </div>
+          <div className="text-center px-2 border-l border-civix-border-subtle">
+            <p className="text-[10px] font-mono font-bold text-civix-green uppercase tracking-wider">Active</p>
+            <p className="text-lg font-mono font-extrabold text-civix-green">{summary?.active_cases ?? '...'}</p>
+          </div>
+          <div className="text-center px-2 border-l border-civix-border-subtle">
+            <p className="text-[10px] font-mono font-bold text-civix-red uppercase tracking-wider">Critical Priority</p>
+            <p className="text-lg font-mono font-extrabold text-civix-red">{summary?.critical_cases ?? '...'}</p>
+          </div>
+          <div className="text-center px-2 border-l border-civix-border-subtle">
+            <p className="text-[10px] font-mono font-bold text-civix-text-secondary uppercase tracking-wider">Updated Today</p>
+            <p className="text-lg font-mono font-extrabold text-civix-text-primary">{summary?.updated_today ?? '...'}</p>
+          </div>
+        </div>
       </div>
 
-      {/* Success banner */}
+      {/* Success Banner */}
       {newCaseSuccess && (
-        <div className="flex items-center space-x-2 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-semibold px-4 py-2.5 rounded">
+        <div className="flex items-center space-x-2 bg-civix-green-subtle border border-civix-green-muted text-civix-green text-xs font-semibold px-4 py-2.5 rounded-sm">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-          <span>Investigation opened successfully. Case ID: <span className="font-mono">{newCaseSuccess}</span></span>
+          <span>Investigation opened. Case ID: <span className="font-mono text-civix-text-mono">{newCaseSuccess}</span></span>
         </div>
       )}
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-        {/* Search */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-          <input
-            id="cases-search"
-            type="text"
-            placeholder="Search cases, title, jurisdiction..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-8 pr-3 py-2 border border-slate-300 rounded text-xs text-slate-900 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 placeholder-slate-400"
-          />
-          {search && (
+      {/* ── Toolbar: Search & Selectors ────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-civix-surface-2 border border-civix-border p-3 rounded-sm">
+        <div className="flex flex-wrap items-center gap-2 flex-1">
+          {/* Search Input */}
+          <div className="relative flex-1 min-w-[220px] max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-civix-text-muted" />
+            <input
+              id="cases-search"
+              type="text"
+              placeholder="Search cases, title, jurisdiction, entities, vehicles, IMEI..."
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              className="w-full pl-9 pr-8 py-1.5 bg-civix-bg border border-civix-border rounded-sm text-xs text-civix-text-primary placeholder-civix-text-muted focus:outline-none focus:border-civix-blue transition-colors font-mono"
+            />
+            {search && (
+              <button
+                onClick={() => { setSearch(''); setPage(1); }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-civix-text-muted hover:text-civix-text-primary transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Quick Dropdown Filters */}
+          <select
+            value={caseTypeFilter}
+            onChange={(e) => { setCaseTypeFilter(e.target.value); setPage(1); }}
+            className={selectCls}
+          >
+            <option value="">All Types</option>
+            {CASE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+            className={selectCls}
+          >
+            <option value="">All Status</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="OPEN">OPEN</option>
+            <option value="CLOSED_SOLVED">CLOSED SOLVED</option>
+            <option value="CLOSED_UNSOLVED">CLOSED UNSOLVED</option>
+          </select>
+
+          <select
+            value={priorityFilter}
+            onChange={(e) => { setPriorityFilter(e.target.value); setPage(1); }}
+            className={selectCls}
+          >
+            <option value="">All Priority</option>
+            {PRIORITIES.map((p) => <option key={p} value={p}>{p}</option>)}
+          </select>
+
+          <select
+            value={provenanceFilter}
+            onChange={(e) => { setProvenanceFilter(e.target.value); setPage(1); }}
+            className={selectCls}
+          >
+            <option value="">All Provenance</option>
+            <option value="GOLDEN">Golden Cases</option>
+            <option value="SYNTHETIC">Synthetic Cases</option>
+          </select>
+
+          {hasActiveFilters && (
             <button
-              onClick={() => setSearch('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+              onClick={clearAllFilters}
+              className="flex items-center space-x-1 px-2.5 py-1 text-xs font-semibold text-civix-text-muted bg-civix-surface-3 border border-civix-border rounded-sm hover:text-civix-text-primary transition-colors font-mono"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
+              <span>Reset</span>
             </button>
           )}
         </div>
 
-        {/* Filter Toggle */}
-        <button
-          id="cases-filter-toggle"
-          onClick={() => setShowFilters((v) => !v)}
-          className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold rounded border transition-colors ${
-            showFilters || (filters.status || filters.priority || filters.jurisdiction)
-              ? 'bg-slate-900 text-white border-slate-900'
-              : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
-          }`}
-        >
-          <Filter className="w-3.5 h-3.5" />
-          <span>Filters</span>
-          {(filters.status || filters.priority || filters.jurisdiction) && (
-            <span className="bg-amber-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center">
-              {[filters.status, filters.priority, filters.jurisdiction].filter(Boolean).length}
-            </span>
-          )}
-        </button>
-
-        {/* Refresh */}
-        <button
-          id="cases-refresh"
-          onClick={() => refetch()}
-          disabled={isFetching}
-          className="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors disabled:opacity-50"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
-          <span>Refresh</span>
-        </button>
-
-        {/* Clear filters */}
-        {hasActiveFilters && (
+        {/* Right side actions */}
+        <div className="flex items-center space-x-2">
           <button
-            id="cases-clear-filters"
-            onClick={() => { setFilters(INITIAL_FILTERS); setSearch(''); }}
-            className="flex items-center space-x-1.5 px-3 py-2 text-xs font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded hover:bg-slate-200 transition-colors"
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="flex items-center space-x-1.5 civix-btn-secondary py-1.5 text-xs font-mono disabled:opacity-50"
           >
-            <X className="w-3.5 h-3.5" />
-            <span>Clear</span>
+            <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
+            <span>Refresh</span>
           </button>
-        )}
-      </div>
 
-      {/* Filter Bar */}
-      {showFilters && (
-        <div className="flex flex-wrap gap-3 p-3 bg-slate-50 border border-slate-200 rounded">
-          <div className="flex items-center space-x-2">
-            <label htmlFor="filter-status" className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Status</label>
-            <select
-              id="filter-status"
-              value={filters.status}
-              onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
-              className="border border-slate-300 rounded px-2 py-1 text-xs text-slate-800 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900"
-            >
-              <option value="">All</option>
-              {filterOptions.statuses.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex items-center space-x-2">
-            <label htmlFor="filter-priority" className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Priority</label>
-            <select
-              id="filter-priority"
-              value={filters.priority}
-              onChange={(e) => setFilters((f) => ({ ...f, priority: e.target.value }))}
-              className="border border-slate-300 rounded px-2 py-1 text-xs text-slate-800 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900"
-            >
-              <option value="">All</option>
-              {filterOptions.priorities.map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
-          </div>
-          <div className="flex items-center space-x-2">
-            <label htmlFor="filter-jurisdiction" className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Jurisdiction</label>
-            <select
-              id="filter-jurisdiction"
-              value={filters.jurisdiction}
-              onChange={(e) => setFilters((f) => ({ ...f, jurisdiction: e.target.value }))}
-              className="border border-slate-300 rounded px-2 py-1 text-xs text-slate-800 bg-white focus:outline-none focus:ring-1 focus:ring-slate-900"
-            >
-              <option value="">All</option>
-              {filterOptions.jurisdictions.map((j) => (
-                <option key={j} value={j}>{j}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      )}
-
-      {/* Main Content */}
-      <div className="flex gap-5 items-start">
-        {/* Case Registry Table */}
-        <div className="flex-1 min-w-0">
-          <Panel
-            title="CASE REGISTRY"
-            subtitle="Active investigations visible under current investigator context"
-            headerAction={
-              <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest">
-                {isLoading ? '...' : `${filtered.length} results`}
-              </span>
-            }
+          <button
+            id="new-case-btn"
+            onClick={() => setShowNewCaseModal(true)}
+            className="flex items-center space-x-2 civix-btn-primary py-1.5 text-xs font-mono font-bold"
           >
-            {/* Loading state */}
-            {isLoading && (
-              <div className="flex items-center justify-center py-16 space-x-2 text-slate-400">
-                <Loader2 className="w-5 h-5 animate-spin text-amber-600" />
-                <span className="text-xs font-mono">Loading case registry...</span>
-              </div>
-            )}
+            <Plus className="w-3.5 h-3.5" />
+            <span>+ New Case</span>
+          </button>
+        </div>
+      </div>
 
-            {/* Error state */}
-            {!isLoading && error && (
-              <div className="py-12 text-center space-y-3">
-                <div className="flex justify-center">
-                  <AlertTriangle className="w-8 h-8 text-red-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-slate-900 uppercase tracking-wide">Case Registry Unavailable</p>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Unable to retrieve case records from the investigation service.
-                  </p>
-                </div>
-                <button
-                  onClick={() => refetch()}
-                  className="inline-flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-white bg-slate-900 rounded hover:bg-slate-800 transition-colors"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  <span>Retry</span>
-                </button>
-              </div>
-            )}
-
-            {/* Empty: no cases at all */}
-            {!isLoading && !error && cases && cases.length === 0 && (
-              <div className="py-12 text-center space-y-2">
-                <Briefcase className="w-8 h-8 text-slate-300 mx-auto" />
-                <p className="text-sm font-semibold text-slate-700">No investigations available.</p>
-                <p className="text-xs text-slate-400">Open a new investigation to begin.</p>
-              </div>
-            )}
-
-            {/* Empty: filtered returns nothing */}
-            {!isLoading && !error && cases && cases.length > 0 && filtered.length === 0 && (
-              <div className="py-12 text-center space-y-2">
-                <Filter className="w-8 h-8 text-slate-300 mx-auto" />
-                <p className="text-sm font-semibold text-slate-700">No cases match the current filters.</p>
-                <button
-                  onClick={() => { setFilters(INITIAL_FILTERS); setSearch(''); }}
-                  className="text-xs text-slate-500 underline hover:text-slate-700"
-                >
-                  Clear all filters
-                </button>
-              </div>
-            )}
-
-            {/* Table */}
-            {!isLoading && !error && filtered.length > 0 && (
-              <div className="overflow-x-auto -m-4">
-                <table className="w-full text-xs border-collapse">
-                  <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200">
-                      {([
-                        { label: 'Case ID', field: 'case_number' as SortField },
-                        { label: 'Title / Subject', field: 'title' as SortField },
-                        { label: 'Status', field: 'status' as SortField },
-                        { label: 'Priority', field: 'priority' as SortField },
-                        { label: 'Jurisdiction', field: 'jurisdiction' as SortField },
-                        { label: 'Type', field: null },
-                      ]).map(({ label, field }) => (
-                        <th
-                          key={label}
-                          className={`text-left px-4 py-2.5 text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap ${field ? 'cursor-pointer hover:text-slate-700 select-none' : ''}`}
-                          onClick={field ? () => handleSort(field) : undefined}
-                        >
-                          <div className="flex items-center space-x-1">
-                            <span>{label}</span>
-                            {field && sortField === field && (
-                              <ArrowUpDown className="w-2.5 h-2.5 text-amber-600" />
-                            )}
-                          </div>
-                        </th>
-                      ))}
-                      <th className="text-right px-4 py-2.5 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filtered.map((caseItem, idx) => {
-                      const isSelected = caseItem.case_id === selectedCaseId;
-                      const statusVariant = STATUS_VARIANTS[caseItem.status?.toUpperCase()] || 'default';
-                      const priorityVariant = PRIORITY_VARIANTS[caseItem.priority?.toUpperCase()] || 'default';
-
-                      return (
-                        <tr
-                          key={caseItem.case_id}
-                          id={`case-row-${caseItem.case_id}`}
-                          onClick={() => handleCaseSelect(caseItem)}
-                          className={`border-b transition-colors cursor-pointer ${
-                            isSelected
-                              ? 'bg-blue-50 border-blue-200 hover:bg-blue-50'
-                              : idx % 2 === 0
-                              ? 'bg-white border-slate-100 hover:bg-slate-50'
-                              : 'bg-slate-50/50 border-slate-100 hover:bg-slate-50'
-                          }`}
-                        >
-                          {/* Case ID */}
-                          <td className="px-4 py-2.5 whitespace-nowrap">
-                            <div className="flex items-center space-x-2">
-                              {isSelected && (
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-700 flex-shrink-0" />
-                              )}
-                              <span className={`font-mono font-bold text-[11px] ${isSelected ? 'text-blue-900' : 'text-slate-900'}`}>
-                                {caseItem.case_number}
-                              </span>
-                            </div>
-                          </td>
-
-                          {/* Title */}
-                          <td className="px-4 py-2.5 max-w-[260px]">
-                            <span className={`font-semibold leading-tight ${isSelected ? 'text-blue-900' : 'text-slate-900'}`}>
-                              {caseItem.title}
-                            </span>
-                          </td>
-
-                          {/* Status */}
-                          <td className="px-4 py-2.5 whitespace-nowrap">
-                            <Badge variant={statusVariant as any}>{caseItem.status}</Badge>
-                          </td>
-
-                          {/* Priority */}
-                          <td className="px-4 py-2.5 whitespace-nowrap">
-                            <Badge variant={priorityVariant as any}>{caseItem.priority}</Badge>
-                          </td>
-
-                          {/* Jurisdiction */}
-                          <td className="px-4 py-2.5 whitespace-nowrap">
-                            <span className="font-mono text-[10px] text-slate-600">{caseItem.jurisdiction}</span>
-                          </td>
-
-                          {/* Case Type */}
-                          <td className="px-4 py-2.5 whitespace-nowrap">
-                            <span className="font-mono text-[10px] text-slate-500">{caseItem.case_type}</span>
-                          </td>
-
-                          {/* Actions */}
-                          <td className="px-4 py-2.5 text-right whitespace-nowrap">
-                            <button
-                              id={`open-case-${caseItem.case_id}`}
-                              onClick={(e) => { e.stopPropagation(); handleCaseOpen(caseItem.case_id); }}
-                              className="inline-flex items-center space-x-1 px-2.5 py-1 text-[10px] font-bold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-colors shadow-2xs"
-                            >
-                              <span>Open</span>
-                              <ChevronRight className="w-3 h-3" />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-
-                {/* Scale note — backend has no pagination for this endpoint */}
-                <div className="px-4 py-2 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-slate-400">
-                    Showing {filtered.length} of {cases?.length ?? 0} accessible cases
+      {/* ── Category Filter Tabs + Sorting ────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between border-b border-civix-border gap-2 pb-1">
+        {/* Filter Pills */}
+        <div className="flex items-center gap-1 overflow-x-auto pb-1">
+          {[
+            { id: 'ALL', label: 'All Cases', count: summary?.total_cases },
+            { id: 'ACTIVE', label: 'Active', count: summary?.active_cases },
+            { id: 'CRITICAL', label: 'Critical', count: summary?.critical_cases },
+            { id: 'FINANCIAL', label: 'Financial' },
+            { id: 'PROPERTY', label: 'Property' },
+            { id: 'INTELLIGENCE', label: 'Intelligence' },
+            { id: 'SURVEILLANCE', label: 'Surveillance' },
+            { id: 'UNRESOLVED', label: 'Unresolved' },
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id as TabCategory); setPage(1); }}
+                className={`px-3 py-1.5 rounded-t-sm text-xs font-mono font-semibold flex items-center space-x-1.5 transition-colors border-b-2 whitespace-nowrap ${
+                  isActive
+                    ? 'border-civix-blue text-civix-blue-light bg-civix-blue-subtle/30 font-bold'
+                    : 'border-transparent text-civix-text-secondary hover:text-civix-text-primary hover:bg-civix-surface-2'
+                }`}
+              >
+                <span>{tab.label}</span>
+                {tab.count !== undefined && (
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${isActive ? 'bg-civix-blue text-white' : 'bg-civix-surface-3 text-civix-text-muted'}`}>
+                    {tab.count}
                   </span>
-                  {isFetching && (
-                    <span className="text-[10px] font-mono text-amber-600 flex items-center space-x-1">
-                      <Loader2 className="w-2.5 h-2.5 animate-spin" />
-                      <span>Updating...</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-          </Panel>
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Case Preview Panel */}
-        {selectedCase && (
-          <div className="w-72 flex-shrink-0">
-            <CasePreview caseItem={selectedCase} onOpenCase={handleCaseOpen} />
+        {/* Sorting Dropdown */}
+        <div className="flex items-center space-x-2 text-xs font-mono text-civix-text-muted py-1">
+          <span>Sort by:</span>
+          <select
+            value={`${sortBy}:${sortOrder}`}
+            onChange={(e) => {
+              const [sb, so] = e.target.value.split(':');
+              setSortBy(sb);
+              setSortOrder(so);
+              setPage(1);
+            }}
+            className="bg-civix-bg border border-civix-border rounded-sm px-2 py-1 text-xs text-civix-text-primary font-mono focus:outline-none focus:border-civix-blue"
+          >
+            <option value="last_activity_at:desc">Last Updated (Newest)</option>
+            <option value="last_activity_at:asc">Last Updated (Oldest)</option>
+            <option value="priority:desc">Priority (Highest)</option>
+            <option value="case_number:asc">Case Number (A-Z)</option>
+            <option value="title:asc font-mono">Title (A-Z)</option>
+          </select>
+        </div>
+      </div>
+
+      {/* ── Main Case Registry Table Panel ────────────────────────────────────────── */}
+      <Panel
+        title="INVESTIGATIVE CASE REGISTRY"
+        subtitle="Authoritative cases derived dynamically from PostgreSQL"
+        headerAction={
+          <span className="text-[10px] font-mono font-bold text-civix-text-muted uppercase tracking-widest">
+            {isLoading ? '...' : `Showing ${items.length} of ${pagination?.total ?? 0} cases`}
+          </span>
+        }
+      >
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-20 space-x-3 text-civix-text-muted">
+            <Loader2 className="w-6 h-6 animate-spin text-civix-blue-light" />
+            <span className="text-xs font-mono">Querying PostgreSQL Case Registry...</span>
           </div>
         )}
-      </div>
+
+        {/* Error State */}
+        {!isLoading && error && (
+          <div className="py-16 text-center space-y-3">
+            <AlertTriangle className="w-8 h-8 text-civix-red mx-auto" />
+            <div>
+              <p className="text-sm font-bold text-civix-text-primary uppercase tracking-wide font-mono">Unable to Load Case Registry</p>
+              <p className="text-xs text-civix-text-muted mt-1 font-mono">Database query failed. Please verify API server state.</p>
+            </div>
+            <button onClick={() => refetch()} className="inline-flex items-center space-x-2 civix-btn-primary py-1.5 text-xs font-mono font-bold">
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Retry</span>
+            </button>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !error && items.length === 0 && (
+          <div className="py-16 text-center space-y-3">
+            <Briefcase className="w-8 h-8 text-civix-text-muted mx-auto" />
+            <p className="text-sm font-semibold text-civix-text-secondary font-mono">No investigations match the current filter criteria.</p>
+            <button
+              onClick={clearAllFilters}
+              className="text-xs text-civix-blue-light hover:text-civix-text-primary transition-colors font-mono underline"
+            >
+              Clear all filters
+            </button>
+          </div>
+        )}
+
+        {/* Table View */}
+        {!isLoading && !error && items.length > 0 && (
+          <div className="overflow-x-auto -m-4">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-civix-surface-2 border-b border-civix-border text-[9px] font-bold text-civix-text-muted uppercase tracking-widest font-mono">
+                  <th className="text-left px-4 py-3">CASE ID</th>
+                  <th className="text-left px-4 py-3">TITLE / SUBJECT</th>
+                  <th className="text-left px-4 py-3">TYPE</th>
+                  <th className="text-left px-4 py-3">STATUS</th>
+                  <th className="text-left px-4 py-3">PRIORITY</th>
+                  <th className="text-left px-4 py-3">JURISDICTION</th>
+                  <th className="text-left px-4 py-3">LAST ACTIVITY</th>
+                  <th className="text-center px-4 py-3">ENTITIES</th>
+                  <th className="text-center px-4 py-3">EVIDENCE</th>
+                  <th className="text-right px-4 py-3">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-civix-border-subtle font-mono">
+                {items.map((caseItem) => {
+                  const isSelected = caseItem.case_id === selectedCaseId;
+                  const statusVar = STATUS_VARIANTS[caseItem.status?.toUpperCase()] || 'default';
+                  const priorityVar = PRIORITY_VARIANTS[caseItem.priority?.toUpperCase()] || 'default';
+
+                  return (
+                    <tr
+                      key={caseItem.case_id}
+                      id={`case-row-${caseItem.case_id}`}
+                      onClick={() => handleCaseSelect(caseItem)}
+                      className={`transition-colors cursor-pointer ${
+                        isSelected
+                          ? 'bg-civix-blue-subtle/40 border-l-2 border-l-civix-blue'
+                          : 'hover:bg-civix-surface-3'
+                      }`}
+                    >
+                      {/* Case ID + Provenance Badge */}
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex flex-col space-y-1">
+                          <span className={`font-mono font-extrabold text-xs ${isSelected ? 'text-civix-blue-light' : 'text-civix-text-mono'}`}>
+                            {caseItem.case_number}
+                          </span>
+                          <span className={`inline-block text-[8px] font-mono font-bold px-1.5 py-0.2 rounded-xs tracking-wider w-max ${
+                            caseItem.provenance === 'GOLDEN' 
+                              ? 'bg-civix-gold/20 text-civix-gold border border-civix-gold/40' 
+                              : 'bg-civix-blue/15 text-civix-blue-light border border-civix-blue/30'
+                          }`}>
+                            {caseItem.provenance}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Title / Subject & Description */}
+                      <td className="px-4 py-3 max-w-[280px]">
+                        <div className="flex flex-col">
+                          <span className="font-bold text-xs leading-snug text-civix-text-primary hover:text-civix-blue-light transition-colors font-sans">
+                            {caseItem.title}
+                          </span>
+                          {caseItem.description && (
+                            <span className="text-[10px] text-civix-text-muted truncate mt-0.5 font-sans">
+                              {caseItem.description}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* Case Type */}
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-xs bg-civix-surface-3 border border-civix-border text-civix-text-secondary">
+                          {caseItem.case_type}
+                        </span>
+                      </td>
+
+                      {/* Status */}
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <Badge variant={statusVar as any}>{caseItem.status}</Badge>
+                      </td>
+
+                      {/* Priority */}
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <Badge variant={priorityVar as any}>{caseItem.priority}</Badge>
+                      </td>
+
+                      {/* Jurisdiction & Police Station */}
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-civix-text-primary font-sans">
+                            {caseItem.police_station}
+                          </span>
+                          <span className="text-[10px] text-civix-text-muted font-sans">
+                            {caseItem.jurisdiction}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Last Activity */}
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-civix-text-primary font-mono">
+                            {formatRelativeTime(caseItem.last_activity_at)}
+                          </span>
+                          <span className="text-[9px] text-civix-text-muted font-mono">
+                            {formatDateFormatted(caseItem.last_activity_at)}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Entities Count */}
+                      <td className="px-4 py-3 text-center whitespace-nowrap">
+                        <div className="inline-flex items-center space-x-1.5 bg-civix-surface-3 px-2 py-1 rounded-sm border border-civix-border">
+                          <Users className="w-3 h-3 text-civix-blue-light" />
+                          <span className="font-mono font-bold text-xs text-civix-text-primary">{caseItem.entity_count}</span>
+                        </div>
+                      </td>
+
+                      {/* Evidence Count */}
+                      <td className="px-4 py-3 text-center whitespace-nowrap">
+                        <div className="inline-flex items-center space-x-1.5 bg-civix-surface-3 px-2 py-1 rounded-sm border border-civix-border">
+                          <FileText className="w-3 h-3 text-civix-gold" />
+                          <span className="font-mono font-bold text-xs text-civix-text-primary">{caseItem.evidence_count}</span>
+                        </div>
+                      </td>
+
+                      {/* Action / Open Button */}
+                      <td className="px-4 py-3 text-right whitespace-nowrap">
+                        <button
+                          id={`open-case-${caseItem.case_id}`}
+                          onClick={(e) => { e.stopPropagation(); handleCaseOpen(caseItem.case_id); }}
+                          className="inline-flex items-center space-x-1 px-2.5 py-1 text-[10px] font-bold text-civix-text-secondary bg-civix-surface-3 border border-civix-border rounded-sm hover:bg-civix-blue hover:text-white hover:border-civix-blue-dark transition-colors font-mono"
+                        >
+                          <span>Open</span>
+                          <ChevronRight className="w-3 h-3" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+
+            {/* Pagination Controls */}
+            {pagination && pagination.total > 0 && (
+              <div className="px-4 py-3 border-t border-civix-border flex flex-col sm:flex-row items-center justify-between bg-civix-surface-2 gap-3 font-mono text-xs">
+                <span className="text-civix-text-muted text-[11px]">
+                  Showing {Math.min((pagination.page - 1) * pagination.page_size + 1, pagination.total)}–{Math.min(pagination.page * pagination.page_size, pagination.total)} of {pagination.total} cases
+                </span>
+
+                <div className="flex items-center space-x-1">
+                  <button
+                    disabled={pagination.page <= 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    className="px-2.5 py-1 bg-civix-surface border border-civix-border rounded-sm disabled:opacity-40 hover:bg-civix-surface-3 transition-colors"
+                  >
+                    &lt;
+                  </button>
+
+                  {Array.from({ length: Math.min(6, pagination.total_pages) }, (_, i) => i + 1).map((pNum) => (
+                    <button
+                      key={pNum}
+                      onClick={() => setPage(pNum)}
+                      className={`px-2.5 py-1 rounded-sm border font-bold transition-colors ${
+                        pagination.page === pNum
+                          ? 'bg-civix-blue text-white border-civix-blue'
+                          : 'bg-civix-surface border-civix-border text-civix-text-secondary hover:bg-civix-surface-3'
+                      }`}
+                    >
+                      {pNum}
+                    </button>
+                  ))}
+
+                  {pagination.total_pages > 6 && (
+                    <span className="px-1 text-civix-text-muted">...</span>
+                  )}
+
+                  {pagination.total_pages > 6 && (
+                    <button
+                      onClick={() => setPage(pagination.total_pages)}
+                      className={`px-2.5 py-1 rounded-sm border font-bold transition-colors ${
+                        pagination.page === pagination.total_pages
+                          ? 'bg-civix-blue text-white border-civix-blue'
+                          : 'bg-civix-surface border-civix-border text-civix-text-secondary hover:bg-civix-surface-3'
+                      }`}
+                    >
+                      {pagination.total_pages}
+                    </button>
+                  )}
+
+                  <button
+                    disabled={pagination.page >= pagination.total_pages}
+                    onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
+                    className="px-2.5 py-1 bg-civix-surface border border-civix-border rounded-sm disabled:opacity-40 hover:bg-civix-surface-3 transition-colors"
+                  >
+                    &gt;
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </Panel>
 
       {/* New Case Modal */}
       {showNewCaseModal && (

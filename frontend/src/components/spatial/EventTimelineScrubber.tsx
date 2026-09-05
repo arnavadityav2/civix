@@ -25,16 +25,16 @@ const getPredicateLabel = (pred: LocationPredicate): string => {
 const getEpistemicStyle = (status: EpistemicStatus) => {
   switch (status) {
     case 'CONFIRMED':
-      return { bg: 'bg-emerald-50 text-emerald-800 border-emerald-300', dot: 'bg-emerald-600 ring-emerald-200' };
+      return { bg: 'bg-civix-green-950 text-civix-green-400 border-civix-green-600/50', dot: 'bg-civix-green-400 ring-civix-green-900' };
     case 'PROBABLE':
-      return { bg: 'bg-amber-50 text-amber-800 border-amber-300', dot: 'bg-amber-600 ring-amber-200' };
+      return { bg: 'bg-civix-gold-950 text-civix-gold-400 border-civix-gold-600/50', dot: 'bg-civix-gold-400 ring-civix-gold-900' };
     case 'POSSIBLE':
-      return { bg: 'bg-slate-100 text-slate-700 border-slate-300', dot: 'bg-slate-500 ring-slate-200' };
+      return { bg: 'bg-civix-surface-2 text-civix-text-secondary border-civix-border', dot: 'bg-civix-text-muted ring-civix-surface-2' };
     case 'REFUTED':
-      return { bg: 'bg-red-50 text-red-800 border-red-300 line-through', dot: 'bg-red-500 ring-red-200' };
+      return { bg: 'bg-civix-red-950 text-civix-red-400 border-civix-red-600/50 line-through', dot: 'bg-civix-red-400 ring-civix-red-900' };
     case 'INCONCLUSIVE':
     default:
-      return { bg: 'bg-gray-100 text-gray-700 border-gray-300', dot: 'bg-gray-400 ring-gray-200' };
+      return { bg: 'bg-civix-surface-2 text-civix-text-muted border-civix-border', dot: 'bg-civix-text-muted ring-civix-surface-2' };
   }
 };
 
@@ -69,7 +69,7 @@ export const EventTimelineScrubber: React.FC<EventTimelineScrubberProps> = ({
 
   if (sortedEvents.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded p-4 text-center text-xs text-slate-400">
+      <div className="civix-panel p-4 text-center text-xs text-civix-text-muted">
         No chronological spatial events available for timeline display.
       </div>
     );
@@ -96,15 +96,15 @@ export const EventTimelineScrubber: React.FC<EventTimelineScrubberProps> = ({
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded p-3.5 shadow-2xs space-y-3 font-sans">
-      <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+    <div className="civix-panel p-3.5 space-y-3 font-sans">
+      <div className="flex items-center justify-between border-b border-civix-border pb-2">
         <div className="flex items-center space-x-1.5">
-          <Clock className="w-3.5 h-3.5 text-[#1a3a6c]" />
-          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+          <Clock className="w-3.5 h-3.5 text-civix-blue-400" />
+          <h3 className="civix-panel-title">
             CHRONOLOGICAL EVENT TIMELINE SCRUBBER ({sortedEvents.length})
           </h3>
         </div>
-        <span className="text-[10px] text-slate-400 font-mono">
+        <span className="text-[10px] text-civix-text-muted font-mono">
           Select an event node to focus map & inspector
         </span>
       </div>
@@ -112,7 +112,7 @@ export const EventTimelineScrubber: React.FC<EventTimelineScrubberProps> = ({
       {/* Horizontal Scrubber Container */}
       <div
         ref={containerRef}
-        className="overflow-x-auto pb-2 pt-1 flex items-start space-x-4 scrollbar-thin scrollbar-thumb-slate-300"
+        className="overflow-x-auto pb-2 pt-1 flex items-start space-x-4"
       >
         {sortedEvents.map((evt) => {
           const props = evt.properties;
@@ -125,46 +125,46 @@ export const EventTimelineScrubber: React.FC<EventTimelineScrubberProps> = ({
               key={props.event_location_id}
               ref={isSelected ? selectedNodeRef : null}
               onClick={() => onSelectEvent(props.event_location_id)}
-              className={`flex-shrink-0 w-56 p-2.5 rounded border transition-all cursor-pointer relative ${
+              className={`flex-shrink-0 w-56 p-2.5 rounded-sm border transition-all cursor-pointer relative ${
                 isSelected
-                  ? 'bg-blue-50/90 border-[#1a3a6c] shadow-md ring-2 ring-[#1a3a6c]/20'
-                  : 'bg-slate-50 hover:bg-slate-100 border-slate-200'
+                  ? 'bg-civix-blue-950/80 border-civix-blue-500 shadow-md ring-1 ring-civix-blue-500/30'
+                  : 'bg-civix-surface hover:bg-civix-surface-2 border-civix-border'
               }`}
             >
               {/* Timeline Connector Bar */}
               <div className="flex items-center space-x-2 mb-1.5">
                 <span className={`w-2.5 h-2.5 rounded-full ${epistemic.dot} ring-2 flex-shrink-0`} />
-                <span className="font-mono text-[10px] font-bold text-slate-600">
+                <span className="font-mono text-[10px] font-bold text-civix-text-secondary">
                   {formatTimeOnly(props.event_start)}
                 </span>
-                <span className="text-[9px] text-slate-400 font-mono">
+                <span className="text-[9px] text-civix-text-muted font-mono">
                   {formatDateShort(props.event_start)}
                 </span>
               </div>
 
               {/* Event Title & Type */}
               <div className="mb-1.5">
-                <span className="text-[9px] font-mono font-bold uppercase text-slate-400 block leading-tight">
+                <span className="text-[9px] font-mono font-bold uppercase text-civix-text-muted block leading-tight">
                   {props.event_type}
                 </span>
-                <h4 className="text-xs font-bold text-slate-900 leading-tight truncate" title={props.location_name}>
+                <h4 className="text-xs font-bold text-civix-text-main leading-tight truncate" title={props.location_name}>
                   {props.location_name}
                 </h4>
               </div>
 
               {/* Predicate & Epistemic Badges */}
               <div className="flex flex-wrap items-center gap-1 text-[9px]">
-                <span className="bg-white text-slate-700 px-1.5 py-0.5 rounded border border-slate-200 font-semibold truncate max-w-[120px]">
+                <span className="bg-civix-surface-2 text-civix-text-secondary px-1.5 py-0.5 rounded-sm border border-civix-border font-semibold truncate max-w-[120px]">
                   {predLabel}
                 </span>
-                <span className={`px-1.5 py-0.5 rounded border font-bold uppercase ${epistemic.bg}`}>
+                <span className={`px-1.5 py-0.5 rounded-sm border font-bold uppercase ${epistemic.bg}`}>
                   {props.epistemic_status}
                 </span>
               </div>
 
               {/* Open ended indicator */}
               {props.is_open_ended && (
-                <span className="mt-1 inline-block text-[8px] font-bold uppercase bg-amber-50 text-amber-700 px-1 rounded border border-amber-200">
+                <span className="mt-1 inline-block text-[8px] font-bold uppercase bg-civix-gold-950 text-civix-gold-400 px-1 rounded-sm border border-civix-gold-600/40">
                   Open Ended
                 </span>
               )}

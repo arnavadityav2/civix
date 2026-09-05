@@ -12,7 +12,7 @@ def test_real_vehicle_yolo_pipeline():
 
     detector = VehicleDetector(model_path='yolov8n.pt', conf_threshold=0.3)
     tracker = SimpleIoUTracker()
-    artifact_mgr = ArtifactManager(storage_dir='scratch/cctv_crops')
+    artifact_mgr = ArtifactManager(vehicle_dir='scratch/cctv_crops')
 
     processor = VideoProcessor(detector=detector, tracker=tracker)
     detections, tracks = processor.process_video(video_path)

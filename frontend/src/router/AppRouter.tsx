@@ -9,8 +9,10 @@ import { SearchPage } from '../pages/SearchPage';
 import { EntityDossierPage } from '../pages/EntityDossierPage';
 import { InvestigativeGraphPage } from '../pages/InvestigativeGraphPage';
 import { CCTVCommandCenterPage } from '../pages/CCTVCommandCenterPage';
+import { VisualAnalysisPage } from '../pages/VisualAnalysisPage';
 import { SpatialIntelligencePage } from '../pages/SpatialIntelligencePage';
 import { EvidencePage } from '../pages/EvidencePage';
+import { TelecomIntelligencePage } from '../pages/TelecomIntelligencePage';
 import { CivixSplashScreen } from '../components/splash/CivixSplashScreen';
 
 export const AppRouter: React.FC = () => {
@@ -39,10 +41,14 @@ export const AppRouter: React.FC = () => {
             <Route path="/cases" element={<CasesPage />} />
             <Route path="/cases/:caseId" element={<CaseWorkspacePage />} />
             <Route path="/cases/:caseId/graph" element={<InvestigativeGraphPage />} />
+            <Route path="/cases/:caseId/telecom" element={<TelecomIntelligencePage />} />
+            <Route path="/telecom" element={<TelecomIntelligencePage />} />
             <Route path="/evidence" element={<EvidencePage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/spatial" element={<SpatialIntelligencePage />} />
             <Route path="/cctv" element={<CCTVCommandCenterPage />} />
+            <Route path="/cctv/analysis/:cameraId" element={<VisualAnalysisPage />} />
+            <Route path="/cctv/analysis" element={<VisualAnalysisPage />} />
             <Route path="/entities/:entityId" element={<EntityDossierPage />} />
             <Route path="*" element={<CommandCenterPage />} />
           </Routes>

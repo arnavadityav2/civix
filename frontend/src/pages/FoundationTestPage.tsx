@@ -5,34 +5,34 @@ import { HierarchyBadge } from '../components/domain/HierarchyBadge';
 
 export const FoundationTestPage: React.FC = () => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
       <Panel
-        title="CIVIX 2.0 — Foundation Clean Reset Verified"
-        subtitle="Frontend architecture reset to light-first institutional standards"
+        title="CIVIX 2.0 — Dark Institutional Foundation Verified"
+        subtitle="Frontend architecture aligned with Dark + Institutional + Indian Police visual authority"
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-700 leading-relaxed">
-            The frontend has been successfully initialized from absolute zero. All legacy prototype code has been removed.
-            The foundation adheres strictly to the Master Design System: Light-first surfaces, restrained 4px borders, navy accents, and zero glassmorphism.
+          <p className="text-sm text-civix-text-main leading-relaxed">
+            The frontend visual design has been successfully transformed.
+            The foundation adheres strictly to the Dark Institutional Master Design System: dark slate surfaces (`bg-civix-bg`, `bg-civix-surface`), flat 1px borders (`civix-border`), Ashoka gold identity highlights, deep technical blue accents, and zero light-mode UI drift.
           </p>
 
-          <div className="border-t border-slate-200 pt-4">
-            <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-2">
+          <div className="border-t border-civix-border pt-4">
+            <h4 className="text-xs font-bold text-civix-text-muted uppercase tracking-wider mb-2">
               Visual Hierarchy Standard Verification
             </h4>
             <div className="flex flex-wrap gap-2 items-center">
               <HierarchyBadge tier="SOURCE_EVIDENCE" />
-              <span className="text-xs text-slate-400">➔</span>
+              <span className="text-xs text-civix-text-muted">➔</span>
               <HierarchyBadge tier="DETERMINISTIC_FINDING" />
-              <span className="text-xs text-slate-400">➔</span>
+              <span className="text-xs text-civix-text-muted">➔</span>
               <HierarchyBadge tier="MODEL_SIGNAL" />
-              <span className="text-xs text-slate-400">➔</span>
+              <span className="text-xs text-civix-text-muted">➔</span>
               <HierarchyBadge tier="AI_EXPLANATION" />
             </div>
           </div>
 
-          <div className="border-t border-slate-200 pt-4">
-            <h4 className="text-xs font-semibold text-slate-900 uppercase tracking-wider mb-2">
+          <div className="border-t border-civix-border pt-4">
+            <h4 className="text-xs font-bold text-civix-text-muted uppercase tracking-wider mb-2">
               Institutional Status & Entity Type Badges
             </h4>
             <div className="flex flex-wrap gap-2">

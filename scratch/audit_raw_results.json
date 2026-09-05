@@ -1,0 +1,1475 @@
+{
+  "manifest_verification": [
+    {
+      "manifest_id": "1346a86d-267a-a635-9d62-e34c76ecd24f",
+      "manifest_number": "CIV-2012-001",
+      "manifest_title": "Dwarka Sector 23 Cash Van Robbery",
+      "db_number": "CIV-2012-001",
+      "db_title": "Dwarka Sector 23 Cash Van Robbery",
+      "db_status": "CLOSED_SOLVED",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "Dwarka PS, Delhi",
+      "db_police_station": "Dwarka Sector 23",
+      "match": true
+    },
+    {
+      "manifest_id": "5f763ffd-2baf-e71c-d58e-e4452fb29b9c",
+      "manifest_number": "CIV-2018-036",
+      "manifest_title": "Nizamuddin Gold Bar Theft",
+      "db_number": "CIV-2018-036",
+      "db_title": "Nizamuddin Gold Bar Theft",
+      "db_status": "CLOSED_UNSOLVED",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "Nizamuddin PS, Delhi",
+      "db_police_station": "Nizamuddin",
+      "match": true
+    },
+    {
+      "manifest_id": "93ef3637-c83c-15f2-ffd2-dac8c1cf836a",
+      "manifest_number": "CIV-2021-003",
+      "manifest_title": "NH-48 Dacoity with Truck Heist",
+      "db_number": "CIV-2021-003",
+      "db_title": "NH-48 Dacoity with Truck Heist",
+      "db_status": "SUSPENDED",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "NH-48 Highway Patrol, Delhi",
+      "db_police_station": "NH-48 Highway Patrol",
+      "match": true
+    },
+    {
+      "manifest_id": "295b5a65-185e-8012-1c52-62659a346162",
+      "manifest_number": "CIV-2021-027",
+      "manifest_title": "KYC Phishing Ring \u2014 Shahdara",
+      "db_number": "CIV-2021-027",
+      "db_title": "KYC Phishing Ring \u2014 Shahdara",
+      "db_status": "ACTIVE",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "Shahdara PS, Delhi",
+      "db_police_station": "Shahdara",
+      "match": true
+    },
+    {
+      "manifest_id": "36fc5955-24b1-6eda-4c7e-22e14a21330b",
+      "manifest_number": "CIV-2023-032",
+      "manifest_title": "Digital Arrest Call Center \u2014 Rohini",
+      "db_number": "CIV-2023-032",
+      "db_title": "Digital Arrest Call Center \u2014 Rohini",
+      "db_status": "ACTIVE",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "Rohini PS, Delhi",
+      "db_police_station": "Rohini",
+      "match": true
+    },
+    {
+      "manifest_id": "46b0a28e-f3bb-0a31-da68-d79ec87306d8",
+      "manifest_number": "CIV-2023-044",
+      "manifest_title": "Gurugram Benami Land Fraud",
+      "db_number": "CIV-2023-044",
+      "db_title": "Gurugram Benami Land Fraud",
+      "db_status": "ACTIVE",
+      "db_type": "FINANCIAL",
+      "db_jurisdiction": "Gurugram PS, Haryana",
+      "db_police_station": "Gurugram Sector 14",
+      "match": true
+    },
+    {
+      "manifest_id": "980b70e5-465d-6aeb-a4fe-1c2ddfdb922d",
+      "manifest_number": "CIV-2024-010",
+      "manifest_title": "Arham Bullion GST Fraud & SAR Intelligence",
+      "db_number": "CIV-2024-010",
+      "db_title": "Arham Bullion GST Fraud & SAR Intelligence",
+      "db_status": "ACTIVE",
+      "db_type": "FINANCIAL",
+      "db_jurisdiction": "Chandni Chowk PS / EOW, Delhi",
+      "db_police_station": "Chandni Chowk",
+      "match": true
+    },
+    {
+      "manifest_id": "3b1fc2ad-efdb-bbd6-cc68-9696dee38912",
+      "manifest_number": "CIV-2024-038",
+      "manifest_title": "IGI Cargo Smuggling & Interpol Overlap",
+      "db_number": "CIV-2024-038",
+      "db_title": "IGI Cargo Smuggling & Interpol Overlap",
+      "db_status": "ACTIVE",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "IGI Airport PS, Delhi",
+      "db_police_station": "IGI Airport",
+      "match": true
+    },
+    {
+      "manifest_id": "feecb812-7258-c9e9-d653-878bab1057a1",
+      "manifest_number": "CIV-2024-051",
+      "manifest_title": "Ghost Vendor PWD Procurement Fraud",
+      "db_number": "CIV-2024-051",
+      "db_title": "Ghost Vendor PWD Procurement Fraud",
+      "db_status": "ACTIVE",
+      "db_type": "FINANCIAL",
+      "db_jurisdiction": "ITO PS / CBI, Delhi",
+      "db_police_station": "ITO",
+      "match": true
+    },
+    {
+      "manifest_id": "e0846c1a-a5e2-b253-7a6e-cc42af8f1031",
+      "manifest_number": "CIV-2025-022",
+      "manifest_title": "Gold Bar Concealment \u2014 Okhla Warehouse",
+      "db_number": "CIV-2025-022",
+      "db_title": "Gold Bar Concealment \u2014 Okhla Warehouse",
+      "db_status": "ACTIVE",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "Okhla PS, Delhi",
+      "db_police_station": "Okhla",
+      "match": true
+    },
+    {
+      "manifest_id": "bb1a67a5-525b-48f8-f793-d60c23c514ca",
+      "manifest_number": "CIV-2026-009",
+      "manifest_title": "Najafgarh Robbery & Suresh Valmiki Arrest",
+      "db_number": "CIV-2026-009",
+      "db_title": "Najafgarh Robbery & Suresh Valmiki Arrest",
+      "db_status": "ACTIVE",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "Najafgarh PS, Delhi",
+      "db_police_station": "Najafgarh",
+      "match": true
+    },
+    {
+      "manifest_id": "12e0fbb8-e44f-fb9b-6ab3-134655c8f345",
+      "manifest_number": "CIV-2026-019",
+      "manifest_title": "Plate Cloning Ring \u2014 Spatial Paradox",
+      "db_number": "CIV-2026-019",
+      "db_title": "Plate Cloning Ring \u2014 Spatial Paradox",
+      "db_status": "ACTIVE",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "Karol Bagh PS / Traffic, Delhi",
+      "db_police_station": "Karol Bagh",
+      "match": true
+    },
+    {
+      "manifest_id": "f1742012-0074-4000-8000-000000000074",
+      "manifest_number": "FIR-74/2012/SW",
+      "manifest_title": "FIR No. 74/2012 - Dwarka Sec 23 (Village Bharthal Incident)",
+      "db_number": "FIR-74/2012/SW",
+      "db_title": "FIR No. 74/2012 - Dwarka Sec 23 (Village Bharthal Incident)",
+      "db_status": "ACTIVE",
+      "db_type": "CRIMINAL",
+      "db_jurisdiction": "Delhi South West District",
+      "db_police_station": "N/A",
+      "match": true
+    }
+  ],
+  "case_baselines": [
+    {
+      "case_id": "1346a86d-267a-a635-9d62-e34c76ecd24f",
+      "case_number": "CIV-2012-001",
+      "title": "Dwarka Sector 23 Cash Van Robbery",
+      "roles_count": 9,
+      "unique_entities": 9,
+      "persons": 8,
+      "vehicles": 1,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 5,
+      "leads_count": 10,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 16,
+      "evidence_videos": 0,
+      "evidence_docs": 18,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "5f763ffd-2baf-e71c-d58e-e4452fb29b9c",
+      "case_number": "CIV-2018-036",
+      "title": "Nizamuddin Gold Bar Theft",
+      "roles_count": 4,
+      "unique_entities": 4,
+      "persons": 4,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 1,
+      "leads_count": 0,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "93ef3637-c83c-15f2-ffd2-dac8c1cf836a",
+      "case_number": "CIV-2021-003",
+      "title": "NH-48 Dacoity with Truck Heist",
+      "roles_count": 5,
+      "unique_entities": 5,
+      "persons": 5,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 4,
+      "leads_count": 2,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "295b5a65-185e-8012-1c52-62659a346162",
+      "case_number": "CIV-2021-027",
+      "title": "KYC Phishing Ring \u2014 Shahdara",
+      "roles_count": 5,
+      "unique_entities": 5,
+      "persons": 5,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 1,
+      "leads_count": 1,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "36fc5955-24b1-6eda-4c7e-22e14a21330b",
+      "case_number": "CIV-2023-032",
+      "title": "Digital Arrest Call Center \u2014 Rohini",
+      "roles_count": 4,
+      "unique_entities": 4,
+      "persons": 4,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 2,
+      "leads_count": 3,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "46b0a28e-f3bb-0a31-da68-d79ec87306d8",
+      "case_number": "CIV-2023-044",
+      "title": "Gurugram Benami Land Fraud",
+      "roles_count": 6,
+      "unique_entities": 6,
+      "persons": 6,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 4,
+      "leads_count": 3,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "980b70e5-465d-6aeb-a4fe-1c2ddfdb922d",
+      "case_number": "CIV-2024-010",
+      "title": "Arham Bullion GST Fraud & SAR Intelligence",
+      "roles_count": 7,
+      "unique_entities": 7,
+      "persons": 6,
+      "vehicles": 1,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 3,
+      "leads_count": 5,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "3b1fc2ad-efdb-bbd6-cc68-9696dee38912",
+      "case_number": "CIV-2024-038",
+      "title": "IGI Cargo Smuggling & Interpol Overlap",
+      "roles_count": 4,
+      "unique_entities": 4,
+      "persons": 4,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 3,
+      "leads_count": 2,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "feecb812-7258-c9e9-d653-878bab1057a1",
+      "case_number": "CIV-2024-051",
+      "title": "Ghost Vendor PWD Procurement Fraud",
+      "roles_count": 5,
+      "unique_entities": 5,
+      "persons": 5,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 1,
+      "leads_count": 1,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "e0846c1a-a5e2-b253-7a6e-cc42af8f1031",
+      "case_number": "CIV-2025-022",
+      "title": "Gold Bar Concealment \u2014 Okhla Warehouse",
+      "roles_count": 4,
+      "unique_entities": 4,
+      "persons": 4,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 2,
+      "leads_count": 2,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "bb1a67a5-525b-48f8-f793-d60c23c514ca",
+      "case_number": "CIV-2026-009",
+      "title": "Najafgarh Robbery & Suresh Valmiki Arrest",
+      "roles_count": 6,
+      "unique_entities": 6,
+      "persons": 6,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 5,
+      "leads_count": 3,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 14,
+      "evidence_videos": 0,
+      "evidence_docs": 20,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "12e0fbb8-e44f-fb9b-6ab3-134655c8f345",
+      "case_number": "CIV-2026-019",
+      "title": "Plate Cloning Ring \u2014 Spatial Paradox",
+      "roles_count": 5,
+      "unique_entities": 5,
+      "persons": 5,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 0,
+      "unique_event_types": 0,
+      "unique_event_participants": 0,
+      "event_locations": 0,
+      "additional_entities_from_events": 0,
+      "assertions_count": 0,
+      "leads_count": 4,
+      "firs_count": 1,
+      "evidence_artifacts": 34,
+      "evidence_instances": 34,
+      "evidence_images": 15,
+      "evidence_videos": 0,
+      "evidence_docs": 19,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    },
+    {
+      "case_id": "f1742012-0074-4000-8000-000000000074",
+      "case_number": "FIR-74/2012/SW",
+      "title": "FIR No. 74/2012 - Dwarka Sec 23 (Village Bharthal Incident)",
+      "roles_count": 0,
+      "unique_entities": 0,
+      "persons": 0,
+      "vehicles": 0,
+      "phones": 0,
+      "devices": 0,
+      "orgs": 0,
+      "locations": 0,
+      "financial_accounts": 0,
+      "properties": 0,
+      "sims": 0,
+      "events_count": 3,
+      "unique_event_types": 3,
+      "unique_event_participants": 0,
+      "event_locations": 3,
+      "additional_entities_from_events": 0,
+      "assertions_count": 0,
+      "leads_count": 0,
+      "firs_count": 0,
+      "evidence_artifacts": 0,
+      "evidence_instances": 0,
+      "evidence_images": 0,
+      "evidence_videos": 0,
+      "evidence_docs": 0,
+      "evidence_audio": 0,
+      "evidence_cctv": 0
+    }
+  ],
+  "neo4j_inventories": [
+    {
+      "case_id": "1346a86d-267a-a635-9d62-e34c76ecd24f",
+      "case_number": "CIV-2012-001",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 8,
+          "label_breakdown": {
+            "Person": 8
+          }
+        },
+        "2_hop": {
+          "total_nodes": 11,
+          "label_breakdown": {
+            "Person": 8,
+            "Case": 3
+          }
+        },
+        "3_hop": {
+          "total_nodes": 24,
+          "label_breakdown": {
+            "Person": 21,
+            "Case": 3
+          }
+        },
+        "4_hop": {
+          "total_nodes": 26,
+          "label_breakdown": {
+            "Person": 21,
+            "Case": 5
+          }
+        },
+        "5_hop": {
+          "total_nodes": 34,
+          "label_breakdown": {
+            "Person": 29,
+            "Case": 5
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 29
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "case_id": "5f763ffd-2baf-e71c-d58e-e4452fb29b9c",
+      "case_number": "CIV-2018-036",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 4,
+          "label_breakdown": {
+            "Person": 4
+          }
+        },
+        "2_hop": {
+          "total_nodes": 7,
+          "label_breakdown": {
+            "Person": 4,
+            "Case": 3
+          }
+        },
+        "3_hop": {
+          "total_nodes": 16,
+          "label_breakdown": {
+            "Person": 13,
+            "Case": 3
+          }
+        },
+        "4_hop": {
+          "total_nodes": 18,
+          "label_breakdown": {
+            "Person": 13,
+            "Case": 5
+          }
+        },
+        "5_hop": {
+          "total_nodes": 22,
+          "label_breakdown": {
+            "Person": 17,
+            "Case": 5
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 43
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 12
+        }
+      ]
+    },
+    {
+      "case_id": "93ef3637-c83c-15f2-ffd2-dac8c1cf836a",
+      "case_number": "CIV-2021-003",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 5,
+          "label_breakdown": {
+            "Person": 5
+          }
+        },
+        "2_hop": {
+          "total_nodes": 7,
+          "label_breakdown": {
+            "Person": 5,
+            "Case": 2
+          }
+        },
+        "3_hop": {
+          "total_nodes": 19,
+          "label_breakdown": {
+            "Person": 17,
+            "Case": 2
+          }
+        },
+        "4_hop": {
+          "total_nodes": 21,
+          "label_breakdown": {
+            "Person": 17,
+            "Case": 4
+          }
+        },
+        "5_hop": {
+          "total_nodes": 30,
+          "label_breakdown": {
+            "Person": 26,
+            "Case": 4
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 26
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "case_id": "295b5a65-185e-8012-1c52-62659a346162",
+      "case_number": "CIV-2021-027",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 5,
+          "label_breakdown": {
+            "Person": 5
+          }
+        },
+        "2_hop": {
+          "total_nodes": 7,
+          "label_breakdown": {
+            "Person": 5,
+            "Case": 2
+          }
+        },
+        "3_hop": {
+          "total_nodes": 17,
+          "label_breakdown": {
+            "Person": 15,
+            "Case": 2
+          }
+        },
+        "4_hop": {
+          "total_nodes": 19,
+          "label_breakdown": {
+            "Person": 15,
+            "Case": 4
+          }
+        },
+        "5_hop": {
+          "total_nodes": 28,
+          "label_breakdown": {
+            "Person": 24,
+            "Case": 4
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 24
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "case_id": "36fc5955-24b1-6eda-4c7e-22e14a21330b",
+      "case_number": "CIV-2023-032",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 4,
+          "label_breakdown": {
+            "Person": 4
+          }
+        },
+        "2_hop": {
+          "total_nodes": 5,
+          "label_breakdown": {
+            "Person": 4,
+            "Case": 1
+          }
+        },
+        "3_hop": {
+          "total_nodes": 9,
+          "label_breakdown": {
+            "Person": 8,
+            "Case": 1
+          }
+        },
+        "4_hop": {
+          "total_nodes": 10,
+          "label_breakdown": {
+            "Person": 8,
+            "Case": 2
+          }
+        },
+        "5_hop": {
+          "total_nodes": 17,
+          "label_breakdown": {
+            "Person": 15,
+            "Case": 2
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 15
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "case_id": "46b0a28e-f3bb-0a31-da68-d79ec87306d8",
+      "case_number": "CIV-2023-044",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 6,
+          "label_breakdown": {
+            "Person": 6
+          }
+        },
+        "2_hop": {
+          "total_nodes": 7,
+          "label_breakdown": {
+            "Person": 6,
+            "Case": 1
+          }
+        },
+        "3_hop": {
+          "total_nodes": 12,
+          "label_breakdown": {
+            "Person": 11,
+            "Case": 1
+          }
+        },
+        "4_hop": {
+          "total_nodes": 14,
+          "label_breakdown": {
+            "Person": 11,
+            "Case": 3
+          }
+        },
+        "5_hop": {
+          "total_nodes": 25,
+          "label_breakdown": {
+            "Person": 22,
+            "Case": 3
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 22
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "case_id": "980b70e5-465d-6aeb-a4fe-1c2ddfdb922d",
+      "case_number": "CIV-2024-010",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 6,
+          "label_breakdown": {
+            "Person": 6
+          }
+        },
+        "2_hop": {
+          "total_nodes": 10,
+          "label_breakdown": {
+            "Person": 6,
+            "Case": 4
+          }
+        },
+        "3_hop": {
+          "total_nodes": 21,
+          "label_breakdown": {
+            "Person": 17,
+            "Case": 4
+          }
+        },
+        "4_hop": {
+          "total_nodes": 21,
+          "label_breakdown": {
+            "Person": 17,
+            "Case": 4
+          }
+        },
+        "5_hop": {
+          "total_nodes": 21,
+          "label_breakdown": {
+            "Person": 17,
+            "Case": 4
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 31
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "case_id": "3b1fc2ad-efdb-bbd6-cc68-9696dee38912",
+      "case_number": "CIV-2024-038",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 4,
+          "label_breakdown": {
+            "Person": 4
+          }
+        },
+        "2_hop": {
+          "total_nodes": 7,
+          "label_breakdown": {
+            "Person": 4,
+            "Case": 3
+          }
+        },
+        "3_hop": {
+          "total_nodes": 16,
+          "label_breakdown": {
+            "Person": 13,
+            "Case": 3
+          }
+        },
+        "4_hop": {
+          "total_nodes": 18,
+          "label_breakdown": {
+            "Person": 13,
+            "Case": 5
+          }
+        },
+        "5_hop": {
+          "total_nodes": 22,
+          "label_breakdown": {
+            "Person": 17,
+            "Case": 5
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 43
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 12
+        }
+      ]
+    },
+    {
+      "case_id": "feecb812-7258-c9e9-d653-878bab1057a1",
+      "case_number": "CIV-2024-051",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 5,
+          "label_breakdown": {
+            "Person": 5
+          }
+        },
+        "2_hop": {
+          "total_nodes": 6,
+          "label_breakdown": {
+            "Person": 5,
+            "Case": 1
+          }
+        },
+        "3_hop": {
+          "total_nodes": 11,
+          "label_breakdown": {
+            "Person": 10,
+            "Case": 1
+          }
+        },
+        "4_hop": {
+          "total_nodes": 14,
+          "label_breakdown": {
+            "Person": 10,
+            "Case": 4
+          }
+        },
+        "5_hop": {
+          "total_nodes": 21,
+          "label_breakdown": {
+            "Person": 17,
+            "Case": 4
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 19
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "case_id": "e0846c1a-a5e2-b253-7a6e-cc42af8f1031",
+      "case_number": "CIV-2025-022",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 4,
+          "label_breakdown": {
+            "Person": 4
+          }
+        },
+        "2_hop": {
+          "total_nodes": 7,
+          "label_breakdown": {
+            "Person": 4,
+            "Case": 3
+          }
+        },
+        "3_hop": {
+          "total_nodes": 16,
+          "label_breakdown": {
+            "Person": 13,
+            "Case": 3
+          }
+        },
+        "4_hop": {
+          "total_nodes": 18,
+          "label_breakdown": {
+            "Person": 13,
+            "Case": 5
+          }
+        },
+        "5_hop": {
+          "total_nodes": 22,
+          "label_breakdown": {
+            "Person": 17,
+            "Case": 5
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 49
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 14
+        }
+      ]
+    },
+    {
+      "case_id": "bb1a67a5-525b-48f8-f793-d60c23c514ca",
+      "case_number": "CIV-2026-009",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 6,
+          "label_breakdown": {
+            "Person": 6
+          }
+        },
+        "2_hop": {
+          "total_nodes": 9,
+          "label_breakdown": {
+            "Person": 6,
+            "Case": 3
+          }
+        },
+        "3_hop": {
+          "total_nodes": 25,
+          "label_breakdown": {
+            "Person": 22,
+            "Case": 3
+          }
+        },
+        "4_hop": {
+          "total_nodes": 26,
+          "label_breakdown": {
+            "Person": 22,
+            "Case": 4
+          }
+        },
+        "5_hop": {
+          "total_nodes": 30,
+          "label_breakdown": {
+            "Person": 26,
+            "Case": 4
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 26
+        },
+        {
+          "type": "HAS_ROLE",
+          "src": "Person",
+          "tgt": "Case",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "case_id": "12e0fbb8-e44f-fb9b-6ab3-134655c8f345",
+      "case_number": "CIV-2026-019",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 5,
+          "label_breakdown": {
+            "Person": 5
+          }
+        },
+        "2_hop": {
+          "total_nodes": 5,
+          "label_breakdown": {
+            "Person": 5
+          }
+        },
+        "3_hop": {
+          "total_nodes": 5,
+          "label_breakdown": {
+            "Person": 5
+          }
+        },
+        "4_hop": {
+          "total_nodes": 5,
+          "label_breakdown": {
+            "Person": 5
+          }
+        },
+        "5_hop": {
+          "total_nodes": 5,
+          "label_breakdown": {
+            "Person": 5
+          }
+        }
+      },
+      "relationships": [
+        {
+          "type": "HAS_ROLE",
+          "src": "Case",
+          "tgt": "Person",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "case_id": "f1742012-0074-4000-8000-000000000074",
+      "case_number": "FIR-74/2012/SW",
+      "hops": {
+        "0_hop": {
+          "total_nodes": 1,
+          "label_breakdown": {
+            "Case": 1
+          }
+        },
+        "1_hop": {
+          "total_nodes": 0,
+          "label_breakdown": {}
+        },
+        "2_hop": {
+          "total_nodes": 0,
+          "label_breakdown": {}
+        },
+        "3_hop": {
+          "total_nodes": 0,
+          "label_breakdown": {}
+        },
+        "4_hop": {
+          "total_nodes": 0,
+          "label_breakdown": {}
+        },
+        "5_hop": {
+          "total_nodes": 0,
+          "label_breakdown": {}
+        }
+      },
+      "relationships": []
+    }
+  ],
+  "neo4j_global_labels": {
+    "Person": {
+      "global_exists": true,
+      "global_count": 15051,
+      "golden_node_count": 232,
+      "golden_cases_count": 12
+    },
+    "Organization": {
+      "global_exists": true,
+      "global_count": 2018,
+      "golden_node_count": 0,
+      "golden_cases_count": 0
+    },
+    "PhoneNumber": {
+      "global_exists": true,
+      "global_count": 15026,
+      "golden_node_count": 0,
+      "golden_cases_count": 0
+    },
+    "SIM": {
+      "global_exists": true,
+      "global_count": 15000,
+      "golden_node_count": 0,
+      "golden_cases_count": 0
+    },
+    "Device": {
+      "global_exists": true,
+      "global_count": 7500,
+      "golden_node_count": 0,
+      "golden_cases_count": 0
+    },
+    "FinancialAccount": {
+      "global_exists": true,
+      "global_count": 5000,
+      "golden_node_count": 0,
+      "golden_cases_count": 0
+    },
+    "Location": {
+      "global_exists": true,
+      "global_count": 100,
+      "golden_node_count": 0,
+      "golden_cases_count": 0
+    },
+    "Case": {
+      "global_exists": true,
+      "global_count": 267,
+      "golden_node_count": 55,
+      "golden_cases_count": 13
+    },
+    "Vehicle": {
+      "global_exists": true,
+      "global_count": 12,
+      "golden_node_count": 0,
+      "golden_cases_count": 0
+    }
+  },
+  "neo4j_global_relationships": {},
+  "postgres_neo4j_parity": [],
+  "api_parity": [
+    {
+      "case_id": "1346a86d-267a-a635-9d62-e34c76ecd24f",
+      "case_number": "CIV-2012-001",
+      "api_depth_1_nodes": 9,
+      "api_depth_1_rels": 8,
+      "api_depth_2_nodes": 12,
+      "api_depth_2_rels": 11
+    },
+    {
+      "case_id": "5f763ffd-2baf-e71c-d58e-e4452fb29b9c",
+      "case_number": "CIV-2018-036",
+      "api_depth_1_nodes": 5,
+      "api_depth_1_rels": 4,
+      "api_depth_2_nodes": 8,
+      "api_depth_2_rels": 8
+    },
+    {
+      "case_id": "93ef3637-c83c-15f2-ffd2-dac8c1cf836a",
+      "case_number": "CIV-2021-003",
+      "api_depth_1_nodes": 6,
+      "api_depth_1_rels": 5,
+      "api_depth_2_nodes": 8,
+      "api_depth_2_rels": 7
+    },
+    {
+      "case_id": "295b5a65-185e-8012-1c52-62659a346162",
+      "case_number": "CIV-2021-027",
+      "api_depth_1_nodes": 6,
+      "api_depth_1_rels": 5,
+      "api_depth_2_nodes": 8,
+      "api_depth_2_rels": 7
+    },
+    {
+      "case_id": "36fc5955-24b1-6eda-4c7e-22e14a21330b",
+      "case_number": "CIV-2023-032",
+      "api_depth_1_nodes": 5,
+      "api_depth_1_rels": 4,
+      "api_depth_2_nodes": 6,
+      "api_depth_2_rels": 5
+    },
+    {
+      "case_id": "46b0a28e-f3bb-0a31-da68-d79ec87306d8",
+      "case_number": "CIV-2023-044",
+      "api_depth_1_nodes": 7,
+      "api_depth_1_rels": 6,
+      "api_depth_2_nodes": 8,
+      "api_depth_2_rels": 7
+    },
+    {
+      "case_id": "980b70e5-465d-6aeb-a4fe-1c2ddfdb922d",
+      "case_number": "CIV-2024-010",
+      "api_depth_1_nodes": 7,
+      "api_depth_1_rels": 6,
+      "api_depth_2_nodes": 11,
+      "api_depth_2_rels": 10
+    },
+    {
+      "case_id": "3b1fc2ad-efdb-bbd6-cc68-9696dee38912",
+      "case_number": "CIV-2024-038",
+      "api_depth_1_nodes": 5,
+      "api_depth_1_rels": 4,
+      "api_depth_2_nodes": 8,
+      "api_depth_2_rels": 8
+    },
+    {
+      "case_id": "feecb812-7258-c9e9-d653-878bab1057a1",
+      "case_number": "CIV-2024-051",
+      "api_depth_1_nodes": 6,
+      "api_depth_1_rels": 5,
+      "api_depth_2_nodes": 7,
+      "api_depth_2_rels": 6
+    },
+    {
+      "case_id": "e0846c1a-a5e2-b253-7a6e-cc42af8f1031",
+      "case_number": "CIV-2025-022",
+      "api_depth_1_nodes": 5,
+      "api_depth_1_rels": 4,
+      "api_depth_2_nodes": 8,
+      "api_depth_2_rels": 9
+    },
+    {
+      "case_id": "bb1a67a5-525b-48f8-f793-d60c23c514ca",
+      "case_number": "CIV-2026-009",
+      "api_depth_1_nodes": 7,
+      "api_depth_1_rels": 6,
+      "api_depth_2_nodes": 10,
+      "api_depth_2_rels": 9
+    },
+    {
+      "case_id": "12e0fbb8-e44f-fb9b-6ab3-134655c8f345",
+      "case_number": "CIV-2026-019",
+      "api_depth_1_nodes": 6,
+      "api_depth_1_rels": 5,
+      "api_depth_2_nodes": 6,
+      "api_depth_2_rels": 5
+    },
+    {
+      "case_id": "f1742012-0074-4000-8000-000000000074",
+      "case_number": "FIR-74/2012/SW",
+      "api_depth_1_nodes": 1,
+      "api_depth_1_rels": 0,
+      "api_depth_2_nodes": 1,
+      "api_depth_2_rels": 0
+    }
+  ],
+  "evidence_paths": []
+}

@@ -1,10 +1,16 @@
-import psycopg2
-conn = psycopg2.connect("postgresql://postgres:postgres@localhost:5433/civix_test")
-cur = conn.cursor()
-from neo4j import GraphDatabase
-driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "password"))
-session = driver.session()
-print("Identity count:", session.run("MATCH (n:Identity) RETURN count(n)").single())
-print("Assertion count:", session.run("MATCH (n:Assertion) RETURN count(n)").single())
-print("Event count:", session.run("MATCH (n:Event) RETURN count(n)").single())
-print("Edges count:", session.run("MATCH ()-[r]->() RETURN count(r)").single())
+import asyncio
+from sqlalchemy import text
+from civix_api.database import AsyncSessionLocal
+
+async def check_pg():
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema='civix'"))
+        tables = [row[0] for row in result]
+        print('Tables:', tables)
+        for table in ['entity', 'person', 'media', 'evidence', 'case_entity_role', 'evidence_media']:
+            if table in tables:
+                res = await session.execute(text(f"SELECT column_name FROM information_schema.columns WHERE table_name='{table}'"))
+                cols = [row[0] for row in res]
+                print(f'{table} columns:', cols)
+
+asyncio.run(check_pg())

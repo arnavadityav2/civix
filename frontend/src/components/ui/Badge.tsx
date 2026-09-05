@@ -22,27 +22,36 @@ interface BadgeProps {
   className?: string;
 }
 
+// Dark institutional badge styles — NO PURPLE
 const variantStyles: Record<BadgeVariant, string> = {
-  confirmed: 'bg-emerald-50 text-emerald-800 border-emerald-300',
-  active:    'bg-blue-50 text-blue-800 border-blue-300',
-  warning:   'bg-amber-50 text-amber-800 border-amber-300',
-  critical:  'bg-red-50 text-red-800 border-red-300',
-  deferred:  'bg-purple-50 text-purple-800 border-purple-300',
-  closed:    'bg-slate-100 text-slate-700 border-slate-300',
-  person:    'bg-blue-50 text-blue-700 border-blue-200',
-  org:       'bg-amber-50 text-amber-800 border-amber-200',
-  device:    'bg-purple-50 text-purple-700 border-purple-200',
-  phone:     'bg-emerald-50 text-emerald-700 border-emerald-200',
-  financial: 'bg-yellow-50 text-yellow-800 border-yellow-300',
-  vehicle:   'bg-red-50 text-red-700 border-red-200',
-  source:    'bg-slate-50 text-slate-700 border-slate-200',
-  default:   'bg-slate-100 text-slate-800 border-slate-200',
+  // GREEN = verified / confirmed
+  confirmed: 'bg-civix-green-subtle text-civix-green-light border-civix-green-muted',
+  // BLUE = active / operational
+  active:    'bg-civix-blue-subtle text-civix-blue-light border-civix-blue-muted',
+  // GOLD = priority / warning / review
+  warning:   'bg-civix-gold-subtle text-civix-gold border-civix-gold-muted',
+  // RED = critical / urgent
+  critical:  'bg-civix-red-subtle text-civix-red-light border-civix-red-muted',
+  // GOLD = deferred / review (was purple — now gold as priority state)
+  deferred:  'bg-civix-gold-subtle text-civix-gold border-civix-gold-muted',
+  // SLATE = closed / inactive
+  closed:    'bg-civix-surface-3 text-civix-text-muted border-civix-border',
+  // Entity types
+  person:    'bg-civix-blue-subtle text-civix-blue-light border-civix-blue-muted',
+  org:       'bg-civix-gold-subtle text-civix-gold border-civix-gold-muted',
+  // device was purple — now blue (analytical/technical context)
+  device:    'bg-civix-blue-subtle text-civix-blue-light border-civix-blue-muted',
+  phone:     'bg-civix-green-subtle text-civix-green-light border-civix-green-muted',
+  financial: 'bg-civix-gold-subtle text-civix-gold-light border-civix-gold-muted',
+  vehicle:   'bg-civix-red-subtle text-civix-red-light border-civix-red-muted',
+  source:    'bg-civix-surface-2 text-civix-text-secondary border-civix-border',
+  default:   'bg-civix-surface-2 text-civix-text-secondary border-civix-border',
 };
 
 export const Badge: React.FC<BadgeProps> = ({ variant = 'default', children, className = '' }) => {
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border uppercase tracking-wider ${variantStyles[variant]} ${className}`}
+      className={`inline-flex items-center px-1.5 py-0.5 rounded-sm text-[10px] font-bold border uppercase tracking-widest font-mono ${variantStyles[variant]} ${className}`}
     >
       {children}
     </span>

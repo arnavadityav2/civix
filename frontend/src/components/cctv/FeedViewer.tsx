@@ -22,9 +22,9 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
 
   if (!cameraData) {
     return (
-      <div className="w-full h-full min-h-[260px] bg-slate-100 border border-slate-200 rounded flex flex-col items-center justify-center text-slate-500">
-        <Video size={44} className="mb-2 text-slate-300" />
-        <p className="text-xs font-medium text-slate-400">Select a camera pin to inspect feed stream.</p>
+      <div className="w-full h-full min-h-[260px] bg-[#161922] border border-[#1E2430] rounded-lg flex flex-col items-center justify-center text-slate-400">
+        <Video size={40} className="mb-2 text-blue-400 opacity-60" />
+        <p className="text-xs font-semibold text-slate-300">Select a camera pin on the map to inspect live feed stream.</p>
       </div>
     );
   }
@@ -36,29 +36,29 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
 
   if (!isAvailable || !feedUrl) {
     return (
-      <div className="w-full h-full min-h-[260px] bg-slate-100 border border-slate-200 rounded flex flex-col items-center justify-center text-slate-500 relative overflow-hidden">
-        <div className="absolute top-2 right-2 bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-200 uppercase">
+      <div className="w-full h-full min-h-[260px] bg-[#161922] border border-[#1E2430] rounded-lg flex flex-col items-center justify-center text-slate-400 relative overflow-hidden">
+        <div className="absolute top-3 right-3 bg-red-950/80 text-red-400 text-[10px] font-extrabold px-2.5 py-0.5 rounded border border-red-600/40 uppercase">
           Feed Unavailable
         </div>
-        <AlertCircle size={36} className="mb-2 text-amber-400" />
-        <p className="text-xs font-medium">Current feed stream unavailable.</p>
+        <AlertCircle size={36} className="mb-2 text-amber-500" />
+        <p className="text-xs font-bold text-white">Current feed stream unavailable.</p>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full flex-1 min-h-[260px] rounded overflow-hidden border border-slate-800 bg-slate-950 flex items-center justify-center shadow-inner group">
+    <div className="relative w-full flex-1 min-h-[260px] rounded-lg overflow-hidden border border-[#1E2430] bg-black flex items-center justify-center shadow-inner group">
       {isVideo ? (
         loadError ? (
           <div className="flex flex-col items-center justify-center p-4 text-center text-slate-400 z-0">
-            <AlertCircle size={32} className="mb-2 text-amber-400" />
-            <p className="text-xs font-medium text-slate-300">Unable to load feed stream directly</p>
-            <p className="text-[10px] text-slate-500 mt-1 max-w-xs truncate">{feedUrl}</p>
+            <AlertCircle size={32} className="mb-2 text-amber-500" />
+            <p className="text-xs font-bold text-white">Unable to load feed stream directly</p>
+            <p className="text-[10px] text-slate-400 mt-1 max-w-xs truncate">{feedUrl}</p>
             <a 
               href={feedUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="mt-3 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium rounded border border-slate-700 transition-colors z-20"
+              className="mt-3 text-xs font-bold text-white bg-[#161922] border border-[#1E2430] hover:border-slate-500 px-3 py-1.5 rounded-lg transition-colors"
             >
               Open Direct Media Stream
             </a>
@@ -91,16 +91,17 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
         />
       )}
       
-      <div className="absolute top-2.5 left-2.5 flex items-center space-x-2 z-10 pointer-events-none">
-        <div className="bg-black/70 backdrop-blur-sm text-white text-[10px] font-bold px-2 py-0.5 rounded border border-white/20 uppercase tracking-wider flex items-center">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1.5"></span>
-          {isVideo ? 'CURRENT FEED' : 'CURRENT FRAME'}
+      {/* Live Stream HUD Overlay Badges */}
+      <div className="absolute top-3 left-3 flex items-center space-x-2 z-10 pointer-events-none">
+        <div className="bg-black/75 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-0.5 rounded border border-white/15 uppercase tracking-wider flex items-center shadow">
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-1.5"></span>
+          {isVideo ? 'LIVE STREAM' : 'LIVE FRAME'}
         </div>
       </div>
       
-      <div className="absolute bottom-2.5 right-2.5 z-10 pointer-events-none">
-        <div className="bg-black/75 backdrop-blur-sm text-slate-300 text-[10px] px-2 py-0.5 rounded border border-white/10 font-mono">
-          Transport for London
+      <div className="absolute bottom-3 right-3 z-10 pointer-events-none">
+        <div className="bg-black/75 backdrop-blur-md text-slate-300 text-[10px] px-2.5 py-0.5 rounded border border-white/15 font-mono shadow">
+          TfL Open Data Stream
         </div>
       </div>
     </div>
