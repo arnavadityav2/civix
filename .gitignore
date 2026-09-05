@@ -17,6 +17,7 @@ civix_data/
 *.pkl
 !models/**/*.pkl
 *.pt
+!models/**/*.pt
 *.pth
 *.joblib
 *.onnx
