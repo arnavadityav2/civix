@@ -17,7 +17,9 @@ import {
 import { 
   PoliceStations, 
   SYNTHETIC_PCR_UNITS, 
-  getPcrUnitPosition, 
+  getPcrUnitPosition
+} from '../../data/syntheticPcrTelemetry';
+import type { 
   PoliceStationData, 
   PcrUnit,
   PcrStatus

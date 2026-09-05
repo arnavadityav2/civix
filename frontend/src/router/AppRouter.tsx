@@ -18,10 +18,9 @@ import { CivixSplashScreen } from '../components/splash/CivixSplashScreen';
 
 export const AppRouter: React.FC = () => {
   const [showSplash, setShowSplash] = useState<boolean>(() => {
-    // Check URL param ?splash=true or default to showing splash on initial load
+    // Only show splash if explicitly requested via ?splash=true URL query param
     const params = new URLSearchParams(window.location.search);
-    if (params.get('splash') === 'true') return true;
-    return true; // Show splash by default on fresh session
+    return params.get('splash') === 'true';
   });
 
   useEffect(() => {

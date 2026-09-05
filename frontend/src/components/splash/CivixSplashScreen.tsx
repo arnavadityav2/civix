@@ -47,11 +47,17 @@ export const CivixSplashScreen: React.FC<CivixSplashScreenProps> = ({ onComplete
   const handleVideoEnd = () => triggerExit();
   const handleError = () => triggerExit();
 
-  // Safety: if metadata never fires (e.g. slow network), auto-play anyway
+  // Safety: if metadata never fires (e.g. slow network or video error), auto-exit after 1.5s
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
     v.load();
+
+    const fallbackTimer = setTimeout(() => {
+      triggerExit();
+    }, 1500);
+
+    return () => clearTimeout(fallbackTimer);
   }, []);
 
   return (
