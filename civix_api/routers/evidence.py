@@ -307,7 +307,7 @@ async def list_evidence(
     result = await session.execute(text("""
         SELECT ea.artifact_id, ei.instance_id,
                ea.original_filename, ea.mime_type, ea.file_size_bytes,
-               ea.processing_status, ea.created_at,
+               ea.processing_status, ea.created_at, ea.sha256_hash, ea.storage_uri,
                m.evidence_type, m.title as evidence_title
         FROM civix.evidence_artifact ea
         JOIN civix.evidence_instance ei ON ei.artifact_id = ea.artifact_id
@@ -318,6 +318,7 @@ async def list_evidence(
 
     items: List[EvidenceListItem] = []
     for row in result.fetchall():
+        hash_hex = row.sha256_hash.hex() if isinstance(row.sha256_hash, bytes) else (str(row.sha256_hash) if row.sha256_hash else None)
         item = EvidenceListItem(
             artifact_id=row.artifact_id,
             instance_id=row.instance_id,
@@ -328,6 +329,8 @@ async def list_evidence(
             created_at=row.created_at,
             evidence_type=row.evidence_type,
             evidence_title=row.evidence_title,
+            sha256_hash=hash_hex,
+            storage_uri=row.storage_uri,
         )
         items.append(item)
     return items
@@ -351,7 +354,7 @@ async def get_evidence_status(
         SELECT ea.artifact_id, ei.instance_id,
                ea.original_filename, ea.mime_type, ea.file_size_bytes,
                ea.processing_status, ea.processed_at, ea.processing_error,
-               ea.media_metadata, ea.created_at,
+               ea.media_metadata, ea.created_at, ea.sha256_hash,
                ei.case_id, ei.acquired_by, ei.acquisition_method
         FROM civix.evidence_artifact ea
         JOIN civix.evidence_instance ei ON ei.artifact_id = ea.artifact_id
@@ -361,6 +364,8 @@ async def get_evidence_status(
     row = result.first()
     if not row:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Evidence not found.")
+
+    hash_hex = row.sha256_hash.hex() if isinstance(row.sha256_hash, bytes) else (str(row.sha256_hash) if row.sha256_hash else None)
 
     return EvidenceStatusResponse(
         artifact_id=row.artifact_id,
@@ -376,6 +381,7 @@ async def get_evidence_status(
         case_id=row.case_id,
         acquired_by=row.acquired_by,
         acquisition_method=row.acquisition_method,
+        sha256_hash=hash_hex,
     )
 
 
@@ -458,6 +464,12 @@ async def get_artifact_content(
     return FileResponse(
         path=target_path,
         media_type=row.mime_type or "application/octet-stream",
-        filename=row.original_filename or target_path.name
+        filename=row.original_filename or target_path.name,
+        headers={
+            "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+            "Expires": "0"
+        }
     )
+
 

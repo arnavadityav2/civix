@@ -25,6 +25,7 @@ import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import { SpatialIntelligencePage } from './SpatialIntelligencePage';
 import { InvestigativeGraphPage } from './InvestigativeGraphPage';
+import { CaseEvidenceVault } from '../components/domain/CaseEvidenceVault';
 
 const PRIORITY_VARIANTS: Record<string, string> = {
   HIGH: 'critical',
@@ -69,7 +70,7 @@ export const CaseWorkspacePage: React.FC = () => {
   });
 
   // 3. Fetch Case Evidence Instances
-  const { data: evidenceData } = useQuery({
+  const { data: evidenceData, isLoading: isEvidenceLoading, error: evidenceError, refetch: refetchEvidence } = useQuery({
     queryKey: ['case-evidence', caseId],
     queryFn: () => (caseId ? evidenceApi.listEvidence(caseId) : Promise.resolve([])),
     enabled: !!caseId,
@@ -216,7 +217,13 @@ export const CaseWorkspacePage: React.FC = () => {
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as WorkspaceTab)}
+              onClick={() => {
+                if (tab.id === 'GRAPH') {
+                  navigate(`/cases/${caseId}/graph`);
+                } else {
+                  setActiveTab(tab.id as WorkspaceTab);
+                }
+              }}
               className={`px-4 py-3 text-xs font-mono font-semibold flex items-center space-x-2 border-b-2 transition-all whitespace-nowrap ${
                 isActive
                   ? 'border-[#E6B325] text-[#E6B325] bg-[#E6B325]/10'
@@ -319,7 +326,7 @@ export const CaseWorkspacePage: React.FC = () => {
                 ) : (
                   <div className="flex overflow-x-auto space-x-4 pb-4 snap-x">
                     {imageEvidenceList.map((evidence, idx) => {
-                      const contentUrl = `/api/v1/evidence/artifacts/${evidence.artifact_id}/content`;
+                      const contentUrl = `/api/v1/evidence/artifacts/${evidence.artifact_id}/content?v=${new Date(evidence.created_at || Date.now()).getTime()}`;
                       return (
                         <div 
                           key={idx} 
@@ -605,59 +612,13 @@ export const CaseWorkspacePage: React.FC = () => {
             </div>
           </div>
         ) : activeTab === 'EVIDENCE' ? (
-          <div className="bg-civix-surface border border-civix-border rounded-sm shadow-sm">
-            <div className="border-b border-civix-border p-4 bg-civix-surface-2 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-widest font-mono">CASE EVIDENCE STORE</h3>
-                <p className="text-[10px] font-sans text-civix-text-muted mt-1">Total {evidenceList.length} evidence artifacts linked under chain of custody</p>
-              </div>
-              <button onClick={() => navigate('/evidence')} className="civix-btn-primary text-xs py-1 px-3 font-mono">
-                + Upload Evidence
-              </button>
-            </div>
-            <div className="p-0">
-              {evidenceList.length === 0 ? (
-                <div className="py-12 text-center text-xs font-mono text-civix-text-muted">No evidence files stored for this case yet.</div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs font-mono border-collapse">
-                    <thead>
-                      <tr className="bg-civix-surface-2 border-b border-civix-border text-[9px] font-bold text-civix-text-muted uppercase tracking-widest">
-                        <th className="text-left px-4 py-3">ARTIFACT / INSTANCE ID</th>
-                        <th className="text-left px-4 py-3">TITLE / FILENAME</th>
-                        <th className="text-left px-4 py-3">MIME TYPE</th>
-                        <th className="text-left px-4 py-3">STATUS</th>
-                        <th className="text-left px-4 py-3">CREATED AT</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-civix-border-subtle">
-                      {evidenceList.map((item) => (
-                        <tr key={item.instance_id} className="hover:bg-civix-surface-3 transition-colors">
-                          <td className="px-4 py-3 font-bold text-civix-blue-light text-xs">
-                            {item.instance_id.slice(0, 18)}...
-                          </td>
-                          <td className="px-4 py-3 font-sans text-civix-text-primary text-xs">
-                            {item.evidence_title || item.original_filename || 'Evidence File'}
-                          </td>
-                          <td className="px-4 py-3 text-civix-text-muted text-[10px]">
-                            {item.mime_type || 'application/octet-stream'}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="bg-civix-green/20 text-civix-green border border-civix-green/40 text-[9px] font-bold px-2 py-0.5 rounded-xs">
-                              {item.processing_status || 'STORED'}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-civix-text-muted text-xs">
-                            {new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </div>
+          <CaseEvidenceVault
+            caseId={caseId || ''}
+            evidenceList={evidenceList}
+            isLoading={isEvidenceLoading}
+            error={evidenceError}
+            refetch={refetchEvidence}
+          />
         ) : activeTab === 'LEADS' ? (
           <div className="bg-civix-surface border border-civix-border rounded-sm shadow-sm">
             <div className="border-b border-civix-border p-4 bg-civix-surface-2 flex items-center justify-between">
@@ -709,8 +670,18 @@ export const CaseWorkspacePage: React.FC = () => {
             </div>
           </div>
         ) : activeTab === 'GRAPH' ? (
-          <div className="bg-civix-surface border border-civix-border rounded-sm shadow-sm p-4 min-h-[620px]">
-            <InvestigativeGraphPage caseIdProp={caseId} embedded={true} />
+          <div className="bg-civix-surface border border-civix-border rounded-sm shadow-sm p-8 text-center space-y-4">
+            <GitFork className="w-10 h-10 text-cyan-400 mx-auto" />
+            <div>
+              <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">INVESTIGATIVE GRAPH WORKSPACE</h3>
+              <p className="text-xs text-slate-400 font-mono mt-1">Full-screen 5-hop knowledge graph network workspace</p>
+            </div>
+            <button
+              onClick={() => navigate(`/cases/${caseId}/graph`)}
+              className="bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-xs font-bold px-4 py-2 rounded transition-colors inline-flex items-center gap-2"
+            >
+              <span>OPEN FULL GRAPH WORKSPACE →</span>
+            </button>
           </div>
         ) : activeTab === 'SPATIAL' ? (
           <div className="bg-civix-surface border border-civix-border rounded-sm shadow-sm p-4 min-h-[620px]">

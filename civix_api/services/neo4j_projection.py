@@ -112,20 +112,35 @@ class Neo4jProjectionService:
         logger.debug(f"UPSERT_NODE {label} {ident_val} (seq {seq_no})")
 
     def _upsert_assertion(self, session: Session, payload: dict, seq_no: int):
+        """
+        Projects an assertion to Neo4j.
+
+        [B-04 REMEDIATION] Respects assertion_origin and proposal_status:
+        - AI_PIPELINE / SYSTEM_DERIVED: projected as Assertion node with ASSERTED_BY/ASSERTS edges (existing behavior).
+        - INVESTIGATOR_PROPOSED + PROPOSED: SILENTLY SKIPPED. Proposals are PostgreSQL-only until accepted.
+        - INVESTIGATOR_PROPOSED + ACCEPTED_BY_SUPERVISOR: projected as INVESTIGATOR_ASSERTED direct edge.
+          No intermediate Assertion node — the edge itself carries the provenance.
+        - INVESTIGATOR_PROPOSED + REJECTED: SILENTLY SKIPPED. No projection.
+
+        This ensures PROPOSED relationships cannot masquerade as authoritative graph facts.
+        ADR-REM-02.
+        """
         assertion_id = payload.get('assertion_id')
         subject_id = payload.get('subject_entity_id')
         object_id = payload.get('object_entity_id')
         object_type = payload.get('object_entity_type')
-        
+        assertion_origin = payload.get('assertion_origin', 'AI_PIPELINE')
+        proposal_status = payload.get('proposal_status', 'NOT_APPLICABLE')
+
         if not all([assertion_id, subject_id, object_id, object_type]):
             raise ValueError("Missing critical identifiers for assertion")
-            
+
         object_type_lower = object_type.lower()
         if object_type_lower not in ALLOWED_ENTITY_LABELS:
             raise ValueError(f"Unknown object entity type: {object_type}")
-            
+
         object_label = ALLOWED_ENTITY_LABELS[object_type_lower]
-        
+
         _, object_ident_key, _ = self._get_identity_info(object_type, {
             'entity_id': object_id,
             'case_id': object_id,
@@ -135,21 +150,50 @@ class Neo4jProjectionService:
             'hypothesis_id': object_id,
             'lead_id': object_id
         })
-        
+
+        # --- B-04 GATE: Investigator-proposed assertions ---
+        if assertion_origin == 'INVESTIGATOR_PROPOSED':
+            if proposal_status == 'PROPOSED':
+                # PROPOSED: PostgreSQL-only. Do NOT project. This is the epistemic gate.
+                logger.debug(
+                    f"UPSERT_ASSERTION {assertion_id} (seq {seq_no}): INVESTIGATOR_PROPOSED + PROPOSED — "
+                    f"skipping Neo4j projection. Awaiting supervisor review."
+                )
+                return
+            elif proposal_status == 'REJECTED':
+                # REJECTED: Similarly not projected. Tombstone any prior projection if it existed.
+                logger.debug(
+                    f"UPSERT_ASSERTION {assertion_id} (seq {seq_no}): INVESTIGATOR_PROPOSED + REJECTED — "
+                    f"skipping Neo4j projection. Cleaning up any INVESTIGATOR_ASSERTED edge."
+                )
+                self._tombstone_investigator_assertion(session, assertion_id, subject_id, object_id, object_label, object_ident_key, seq_no)
+                return
+            elif proposal_status == 'ACCEPTED_BY_SUPERVISOR':
+                # ACCEPTED: Project as a DIRECT INVESTIGATOR_ASSERTED edge (no intermediate Assertion node).
+                # The edge type INVESTIGATOR_ASSERTED is visually and semantically distinct from AI edges.
+                self._upsert_investigator_asserted_edge(
+                    session, assertion_id, subject_id, object_id, object_label, object_ident_key, payload, seq_no
+                )
+                return
+            else:
+                raise ValueError(f"Unknown proposal_status '{proposal_status}' for INVESTIGATOR_PROPOSED assertion {assertion_id}")
+
+        # --- Default path: AI_PIPELINE / SYSTEM_DERIVED assertions ---
+        # Project as Assertion node with ASSERTED_BY / ASSERTS edges (existing behavior, unchanged).
         query = f"""
         MATCH (i) WHERE (i:Identity OR i:Person OR i:Organization OR i:Vehicle OR i:Location OR i:PhoneNumber OR i:SourceIdentity) AND (i.entity_id = $subject_id OR i.source_identity_id = $subject_id)
         MATCH (o:{object_label} {{{object_ident_key}: $object_id}})
         MERGE (a:Assertion {{assertion_id: $assertion_id}})
         SET a._lock = true
-        
+
         WITH a, i, o, (a.last_seq_no IS NULL OR $seq_no > a.last_seq_no) AS should_apply
-        
+
         OPTIONAL MATCH (a)<-[old_sub:ASSERTED_BY]-()
         WITH a, i, o, should_apply, collect(DISTINCT old_sub) AS old_subs
-        
+
         OPTIONAL MATCH (a)-[old_obj:ASSERTS]->()
         WITH a, i, o, should_apply, old_subs, collect(DISTINCT old_obj) AS old_objs
-        
+
         FOREACH (_ IN CASE WHEN should_apply THEN [1] ELSE [] END |
             FOREACH (sub IN [x IN old_subs WHERE x IS NOT NULL] | DELETE sub)
             FOREACH (obj IN [x IN old_objs WHERE x IS NOT NULL] | DELETE obj)
@@ -163,6 +207,81 @@ class Neo4jProjectionService:
         if not record:
             raise TransientError("Missing endpoints for assertion projection")
         logger.debug(f"UPSERT_ASSERTION {assertion_id} (seq {seq_no})")
+
+    def _upsert_investigator_asserted_edge(
+        self,
+        session: Session,
+        assertion_id: str,
+        subject_id: str,
+        object_id: str,
+        object_label: str,
+        object_ident_key: str,
+        payload: dict,
+        seq_no: int
+    ):
+        """
+        Projects an ACCEPTED investigator assertion as an INVESTIGATOR_ASSERTED edge.
+
+        Uses a DIRECT edge between subject and object rather than an intermediate Assertion node.
+        This keeps the edge visually and semantically distinct from AI ASSERTED_BY/ASSERTS edges.
+        The edge carries provenance: assertion_id, predicate, reviewed_by, reviewed_at, proposal_status.
+
+        Idempotent via MERGE on assertion_id. If replayed, re-applies payload without creating duplicate.
+        """
+        edge_payload = {
+            'assertion_id': str(assertion_id),
+            'predicate': str(payload.get('predicate', '')),
+            'proposal_status': 'ACCEPTED_BY_SUPERVISOR',
+            'reviewed_by': str(payload.get('reviewed_by', '')),
+            'reviewed_at': str(payload.get('reviewed_at', '')),
+            'investigator_justification': str(payload.get('investigator_justification', '')),
+        }
+        query = f"""
+        MATCH (i) WHERE (i:Identity OR i:Person OR i:Organization OR i:Vehicle OR i:Location OR i:PhoneNumber OR i:SourceIdentity) AND (i.entity_id = $subject_id OR i.source_identity_id = $subject_id)
+        MATCH (o:{object_label} {{{object_ident_key}: $object_id}})
+        MERGE (i)-[r:INVESTIGATOR_ASSERTED {{assertion_id: $assertion_id}}]->(o)
+        SET r._lock = true
+        WITH r, (r.last_seq_no IS NULL OR $seq_no > r.last_seq_no) AS should_apply
+        FOREACH (_ IN CASE WHEN should_apply THEN [1] ELSE [] END |
+            SET r += $edge_payload, r.last_seq_no = $seq_no
+        )
+        RETURN true AS projection_processed
+        """
+        record = session.run(
+            query,
+            assertion_id=str(assertion_id),
+            subject_id=str(subject_id),
+            object_id=str(object_id),
+            edge_payload=edge_payload,
+            seq_no=seq_no
+        ).single()
+        if not record:
+            raise TransientError(f"Missing endpoints for INVESTIGATOR_ASSERTED edge projection (assertion {assertion_id})")
+        logger.info(f"UPSERT_INVESTIGATOR_ASSERTED_EDGE {assertion_id} (seq {seq_no}) — supervisor-accepted relationship projected.")
+
+    def _tombstone_investigator_assertion(
+        self,
+        session: Session,
+        assertion_id: str,
+        subject_id: str,
+        object_id: str,
+        object_label: str,
+        object_ident_key: str,
+        seq_no: int
+    ):
+        """
+        Removes any INVESTIGATOR_ASSERTED edge for a REJECTED assertion.
+        This handles the case where an assertion was previously accepted and projected,
+        but was subsequently re-reviewed and rejected. Safe to call even if the edge does not exist.
+        """
+        query = f"""
+        OPTIONAL MATCH (i)-[r:INVESTIGATOR_ASSERTED {{assertion_id: $assertion_id}}]->(o)
+        WHERE r IS NOT NULL AND (r.last_seq_no IS NULL OR $seq_no > r.last_seq_no)
+        DELETE r
+        RETURN true AS tombstone_processed
+        """
+        session.run(query, assertion_id=str(assertion_id), seq_no=seq_no)
+        logger.info(f"TOMBSTONE_INVESTIGATOR_ASSERTED_EDGE {assertion_id} (seq {seq_no}) — rejected proposal removed from Neo4j.")
 
     def _upsert_event_participant(self, session: Session, payload: dict, seq_no: int):
         participant_id = payload.get('participant_id')

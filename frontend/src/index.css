@@ -333,5 +333,14 @@
    ================================================================ */
 
 .civix-graph-canvas {
-  background-color: #0f1623 !important;
+  background-color: #0b0f19 !important;
+}
+
+/* Subtle, low-contrast graph-paper grid for clean workspace canvas */
+.bg-graph-grid {
+  background-color: #0b0f19;
+  background-image: 
+    linear-gradient(to right, rgba(30, 45, 74, 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 45, 74, 0.25) 1px, transparent 1px);
+  background-size: 24px 24px;
 }

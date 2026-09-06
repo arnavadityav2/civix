@@ -206,6 +206,8 @@ export interface EvidenceStatusResponse {
   acquired_by?: string;
   acquisition_method?: string;
   created_at: string;
+  sha256_hash?: string;
+  storage_uri?: string;
 }
 
 export interface EvidenceListItem {
@@ -218,6 +220,8 @@ export interface EvidenceListItem {
   created_at: string;
   evidence_type?: string | null;
   evidence_title?: string | null;
+  sha256_hash?: string;
+  storage_uri?: string;
 }
 
 export interface InvestigativeLeadResponse {

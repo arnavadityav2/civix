@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from .database import engine
 from .dependencies import get_db_session
-from .routers import users, cases, leads, hypotheses, identity, entities, search, ingest, evidence, cctv, spatial, telecom, biometric
+from .routers import users, cases, leads, hypotheses, identity, entities, search, ingest, evidence, cctv, spatial, telecom, biometric, assertions
 from .services.ml_service import MLService
 import logging
 
@@ -45,12 +45,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from fastapi.staticfiles import StaticFiles
 import os
+from fastapi import Request
+from fastapi.staticfiles import StaticFiles
+
+@app.middleware("http")
+async def add_no_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith("/evidence_store") or request.url.path.startswith("/api/v1/evidence"):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
 
 evidence_store_path = r"C:\data\civix_demo\evidence_store"
 if os.path.exists(evidence_store_path):
     app.mount("/evidence_store", StaticFiles(directory=evidence_store_path), name="evidence_store")
+
 
 app.include_router(users.router)
 app.include_router(cases.router)
@@ -67,6 +78,7 @@ app.include_router(spatial.router)
 app.include_router(biometric.router)
 app.include_router(telecom.case_router)
 app.include_router(telecom.telecom_router)
+app.include_router(assertions.router)  # Investigator proposal lifecycle (Graph Workspace Remediation)
 
 @app.exception_handler(IntegrityError)
 async def integrity_error_handler(request: Request, exc: IntegrityError):

@@ -84,7 +84,8 @@ async def get_case_registry(
     where_conditions = []
     query_params: Dict[str, Any] = {
         "limit": page_size,
-        "offset": (page - 1) * page_size
+        "offset": (page - 1) * page_size,
+        "uid": user.user_id
     }
 
     if search:
@@ -204,6 +205,7 @@ async def get_case_registry(
                 CASE WHEN c.case_number LIKE 'SYN-%' THEN 'SYNTHETIC' ELSE 'GOLDEN' END as provenance,
                 CASE WHEN c.case_number LIKE 'SYN-%' THEN 'SYNTHETIC_BENCHMARK' ELSE 'HERO_INVESTIGATION' END as source_type
             FROM civix.investigative_case c
+            JOIN civix.case_access ca ON c.case_id = ca.case_id AND ca.user_id = :uid AND ca.is_revoked = FALSE
             LEFT JOIN case_entities ce ON c.case_id = ce.case_id
             LEFT JOIN case_evidence cev ON c.case_id = cev.case_id
             LEFT JOIN case_events cevt ON c.case_id = cevt.case_id
@@ -217,6 +219,12 @@ async def get_case_registry(
         FROM enriched_cases c
         {where_sql}
         ORDER BY 
+            (CASE 
+                WHEN c.case_number = 'CIV-2012-001' THEN 1
+                WHEN c.case_number = 'CIV-2026-009' THEN 2
+                WHEN c.case_number = 'CIV-2024-010' THEN 3
+                ELSE 4 
+             END) ASC,
             (CASE WHEN c.provenance = 'GOLDEN' THEN 0 ELSE 1 END) ASC,
             {sort_col} {order_dir} {nulls_dir}
         LIMIT :limit OFFSET :offset;
@@ -428,10 +436,13 @@ async def list_cases(
     # RLS enforces visibility automatically
     result = await session.execute(
         text("""
-            SELECT case_id, case_number, title, case_type, status, priority, jurisdiction
-            FROM civix.investigative_case
-            ORDER BY created_at DESC
-        """)
+            SELECT c.case_id, c.case_number, c.title, c.case_type, c.status, c.priority, c.jurisdiction
+            FROM civix.investigative_case c
+            JOIN civix.case_access ca ON c.case_id = ca.case_id
+            WHERE ca.user_id = :uid AND ca.is_revoked = FALSE
+            ORDER BY c.created_at DESC
+        """),
+        {"uid": user.user_id}
     )
     cases = []
     for row in result.fetchall():
@@ -552,12 +563,13 @@ async def get_case(
                    c.investigating_unit, c.opened_at, c.created_at, c.updated_at,
                    f.fir_number, f.police_station, f.district, f.sections_invoked
             FROM civix.investigative_case c
+            JOIN civix.case_access ca ON c.case_id = ca.case_id
             LEFT JOIN civix.fir f ON f.case_id = c.case_id
-            WHERE c.case_id = :cid
+            WHERE c.case_id = :cid AND ca.user_id = :uid AND ca.is_revoked = FALSE
             ORDER BY f.filed_at DESC
             LIMIT 1
         """),
-        {"cid": real_case_id}
+        {"cid": real_case_id, "uid": user.user_id}
     )
     row = result.first()
     if not row:
@@ -803,15 +815,25 @@ async def build_pg_case_graph(
             )
 
     # 3. Assertions (Level 1 & Level 2)
+    # [P1-B FIX] Filter assertions using authorized_case_ids[] overlap with the REQUESTED case.
+    # This enforces BLK-15/ADR-017: an assertion's authorized_case_ids must include the
+    # requested case for it to be returned. Prevents shared-entity cross-case leakage:
+    # Entity X in both Case A and Case B will NOT leak Case B assertions into Case A's graph.
+    # Also excludes PROPOSED investigator assertions (not yet accepted by supervisor).
     if level_1_entity_ids:
         a_res = await session.execute(
             text("""
-                SELECT assertion_id, subject_entity_id, predicate, object_entity_id, epistemic_status, ai_confidence
-                FROM civix.assertion
-                WHERE (subject_entity_id = ANY(:eids) OR object_entity_id = ANY(:eids))
-                  AND (tx_end IS NULL)
+                SELECT assertion_id, subject_entity_id, predicate, object_entity_id,
+                       epistemic_status, ai_confidence,
+                       assertion_origin, proposal_status
+                FROM civix.assertion a
+                WHERE (a.subject_entity_id = ANY(:eids) OR a.object_entity_id = ANY(:eids))
+                  AND (a.tx_end IS NULL)
+                  AND (:requested_case_id = ANY(a.authorized_case_ids))
+                  AND (a.assertion_origin != 'INVESTIGATOR_PROPOSED'
+                       OR a.proposal_status = 'ACCEPTED_BY_SUPERVISOR')
             """),
-            {"eids": list(level_1_entity_ids)}
+            {"eids": list(level_1_entity_ids), "requested_case_id": case_id}
         )
 
         new_entity_ids_to_fetch = set()
@@ -915,13 +937,25 @@ async def build_pg_case_graph(
 async def get_case_graph(
     case_id: str,
     depth: int = Query(2, ge=1, le=5, description="Traversal depth (max 5)"),
-    node_limit: int = Query(100, ge=1, le=500, description="Max nodes to return"),
-    rel_limit: int = Query(200, ge=1, le=1000, description="Max relationships to return"),
+    node_limit: Optional[int] = Query(None, ge=1, le=2000, description="Max nodes to return"),
+    rel_limit: Optional[int] = Query(None, ge=1, le=4000, description="Max relationships to return"),
     user: AuthenticatedCivixUser = Depends(get_current_user_from_token),
     pg_session: AsyncSession = Depends(get_rls_session),
     neo4j_session: Neo4jAsyncSession = Depends(get_neo4j_session)
 ):
     real_case_id = await resolve_case_id(pg_session, case_id)
+
+    # Dynamic depth-scaled limits (ensures 1H, 2H, 3H, 4H, 5H produce expanding graphs)
+    depth_limits = {
+        1: (80, 150),
+        2: (180, 350),
+        3: (350, 700),
+        4: (650, 1300),
+        5: (1000, 2000),
+    }
+    def_node_lim, def_rel_lim = depth_limits.get(depth, (180, 350))
+    eff_node_limit = node_limit if node_limit is not None else def_node_lim
+    eff_rel_limit = rel_limit if rel_limit is not None else def_rel_lim
 
     # 1. Verify root case authorization through PostgreSQL RLS
     verify_result = await pg_session.execute(
@@ -931,11 +965,21 @@ async def get_case_graph(
     if not verify_result.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Case not found")
 
-    # 2. Fetch full ACL (all accessible case_ids) for the user
+    # 2. [P1-A FIX] Fetch ACL using explicit user-scoped case_access query.
     acl_result = await pg_session.execute(
-        text("SELECT case_id FROM civix.investigative_case")
+        text("""
+            SELECT ca.case_id
+            FROM civix.case_access ca
+            WHERE ca.user_id = :uid
+              AND ca.is_revoked = FALSE
+              AND (ca.valid_until IS NULL OR ca.valid_until > now())
+        """),
+        {"uid": user.user_id}
     )
     accessible_case_ids = [str(row[0]) for row in acl_result.fetchall()]
+
+    if str(real_case_id) not in accessible_case_ids:
+        accessible_case_ids.append(str(real_case_id))
 
     # 3. Try Neo4j graph if session is active
     if neo4j_session is not None:
@@ -945,8 +989,8 @@ async def get_case_graph(
                 case_id=str(real_case_id),
                 accessible_case_ids=accessible_case_ids,
                 depth=depth,
-                node_limit=node_limit,
-                rel_limit=rel_limit
+                node_limit=eff_node_limit,
+                rel_limit=eff_rel_limit
             )
             if graph and graph.nodes:
                 return graph
@@ -958,7 +1002,335 @@ async def get_case_graph(
         session=pg_session,
         case_id=str(real_case_id),
         depth=depth,
-        node_limit=node_limit,
-        rel_limit=rel_limit
+        node_limit=eff_node_limit,
+        rel_limit=eff_rel_limit
     )
+
+
+async def build_pg_case_universe(
+    session: AsyncSession,
+    case_id: str,
+    accessible_case_ids: List[str],
+    depth: int = 3,
+    node_limit: int = 250,
+    rel_limit: int = 500
+) -> GraphResponse:
+    nodes: List[GraphNode] = []
+    relationships: List[GraphRelationship] = []
+    node_ids: set = set()
+
+    # 1. Root Case Anchor Node
+    # 1. Active Case Root Anchor
+    c_res = await session.execute(
+        text("SELECT case_id, case_number, title, case_type, status FROM civix.investigative_case WHERE case_id = :cid"),
+        {"cid": case_id}
+    )
+    c_row = c_res.first()
+    if c_row:
+        m = c_row._mapping
+        cid_str = str(m["case_id"])
+        node_ids.add(cid_str)
+        nodes.append(
+            GraphNode(
+                id=cid_str,
+                labels=["Case", "CaseClusterNode"],
+                properties={
+                    "case_id": cid_str,
+                    "case_number": m["case_number"] or "",
+                    "title": m["title"] or "",
+                    "case_type": str(m["case_type"]) if m["case_type"] else "INVESTIGATION",
+                    "status": str(m["status"]) if m["status"] else "ACTIVE",
+                    "name": m["case_number"] or "Active Case",
+                    "display_name": m["title"] or m["case_number"] or "Active Case",
+                    "is_universe_anchor": True,
+                    "node_class": "CASE_CLUSTER"
+                }
+            )
+        )
+
+    rel_ids = set()
+    cid_str = str(case_id)
+    current_case_ids = {cid_str}
+    current_entity_ids = set()
+
+    # Iterative Frontier Traversal across levels 1 to depth
+    for h in range(1, depth + 1):
+        if len(nodes) >= node_limit or len(relationships) >= rel_limit:
+            break
+
+        # A. Expand from Cases to Entities
+        if current_case_ids:
+            e_res = await session.execute(
+                text("""
+                    SELECT 
+                        cer.role_id, cer.case_id, cer.entity_id, cer.role, cer.role_basis,
+                        e.entity_type::text as entity_type,
+                        COALESCE(
+                            p.display_name, o.legal_name, v.registration_number,
+                            d.imei, pn.msisdn, cer.entity_id::text
+                        ) as display_name
+                    FROM civix.case_entity_role cer
+                    JOIN civix.entity e ON cer.entity_id = e.entity_id
+                    LEFT JOIN civix.person p ON e.entity_id = p.entity_id
+                    LEFT JOIN civix.organization o ON e.entity_id = o.entity_id
+                    LEFT JOIN civix.vehicle v ON e.entity_id = v.entity_id
+                    LEFT JOIN civix.device d ON e.entity_id = d.entity_id
+                    LEFT JOIN civix.phone_number pn ON e.entity_id = pn.entity_id
+                    WHERE cer.case_id = ANY(:cids)
+                """),
+                {"cids": list(current_case_ids)}
+            )
+            next_entity_ids = set()
+            for r in e_res.fetchall():
+                m = r._mapping
+                eid_str = str(m["entity_id"])
+                c_owner = str(m["case_id"])
+                next_entity_ids.add(eid_str)
+                if eid_str not in node_ids and len(nodes) < node_limit:
+                    node_ids.add(eid_str)
+                    label = m["entity_type"].title() if m["entity_type"] else "Entity"
+                    nodes.append(
+                        GraphNode(
+                            id=eid_str,
+                            labels=[label],
+                            properties={
+                                "entity_id": eid_str,
+                                "display_name": m["display_name"] or eid_str,
+                                "name": m["display_name"] or eid_str,
+                                "entity_type": m["entity_type"] or "ENTITY",
+                                "role": str(m["role"]) if m["role"] else None
+                            }
+                        )
+                    )
+                role_rel_id = f"cer_{c_owner[:8]}_{eid_str[:8]}"
+                if role_rel_id not in rel_ids and len(relationships) < rel_limit:
+                    rel_ids.add(role_rel_id)
+                    relationships.append(
+                        GraphRelationship(
+                            id=str(m["role_id"]),
+                            type=str(m["role"]) if m["role"] else "ASSOCIATED_WITH",
+                            start_node=c_owner,
+                            end_node=eid_str,
+                            properties={"role_basis": m["role_basis"] or ""}
+                        )
+                    )
+            current_entity_ids.update(next_entity_ids)
+
+        # B. Expand from Entities to Connected Authorized Cases
+        if current_entity_ids:
+            related_cases_res = await session.execute(
+                text("""
+                    SELECT DISTINCT
+                        c.case_id, c.case_number, c.title, c.case_type, c.status,
+                        cer.entity_id, cer.role
+                    FROM civix.case_entity_role cer
+                    JOIN civix.investigative_case c ON cer.case_id = c.case_id
+                    WHERE cer.entity_id = ANY(:eids)
+                      AND c.case_id = ANY(:acc_cids)
+                """),
+                {"eids": list(current_entity_ids), "acc_cids": accessible_case_ids}
+            )
+            next_case_ids = set()
+            for r in related_cases_res.fetchall():
+                m = r._mapping
+                rcase_id = str(m["case_id"])
+                eid_str = str(m["entity_id"])
+                if rcase_id not in current_case_ids:
+                    next_case_ids.add(rcase_id)
+
+                for n in nodes:
+                    if n.id == eid_str:
+                        n.properties["node_class"] = "BRIDGE_HUB"
+                        n.properties["is_cross_case_bridge"] = True
+                        if "BridgeEntityNode" not in n.labels:
+                            n.labels.append("BridgeEntityNode")
+
+                if rcase_id not in node_ids and len(nodes) < node_limit:
+                    node_ids.add(rcase_id)
+                    nodes.append(
+                        GraphNode(
+                            id=rcase_id,
+                            labels=["Case", "CaseClusterNode"],
+                            properties={
+                                "case_id": rcase_id,
+                                "case_number": m["case_number"] or "",
+                                "title": m["title"] or "",
+                                "case_type": str(m["case_type"]) if m["case_type"] else "INVESTIGATION",
+                                "status": str(m["status"]) if m["status"] else "ACTIVE",
+                                "name": m["case_number"] or "Related Case",
+                                "display_name": m["title"] or m["case_number"] or "Related Case",
+                                "is_universe_anchor": (rcase_id == cid_str),
+                                "node_class": "CASE_CLUSTER"
+                            }
+                        )
+                    )
+
+                bridge_rel_key = f"rel_case_bridge_{eid_str[:8]}_{rcase_id[:8]}"
+                if bridge_rel_key not in rel_ids and len(relationships) < rel_limit:
+                    rel_ids.add(bridge_rel_key)
+                    relationships.append(
+                        GraphRelationship(
+                            id=bridge_rel_key,
+                            type="SHARED_IN_CASE",
+                            start_node=eid_str,
+                            end_node=rcase_id,
+                            properties={"role": str(m["role"]) if m["role"] else "ASSOCIATED"}
+                        )
+                    )
+            current_case_ids.update(next_case_ids)
+
+        # C. Expand Assertions connecting known frontier entities
+        if current_entity_ids:
+            a_res = await session.execute(
+                text("""
+                    SELECT assertion_id, subject_entity_id, predicate, object_entity_id,
+                           epistemic_status, ai_confidence, assertion_origin, proposal_status
+                    FROM civix.assertion a
+                    WHERE (a.subject_entity_id = ANY(:eids) OR a.object_entity_id = ANY(:eids))
+                      AND (a.tx_end IS NULL)
+                      AND (a.authorized_case_ids && :acc_cids)
+                      AND (a.assertion_origin != 'INVESTIGATOR_PROPOSED' OR a.proposal_status = 'ACCEPTED_BY_SUPERVISOR')
+                """),
+                {"eids": list(current_entity_ids), "acc_cids": accessible_case_ids}
+            )
+
+            for r in a_res.fetchall():
+                m = r._mapping
+                sub_id = str(m["subject_entity_id"]) if m["subject_entity_id"] else None
+                obj_id = str(m["object_entity_id"]) if m["object_entity_id"] else None
+                ass_id = str(m["assertion_id"])
+
+                # Expand missing subject or object entity
+                for end_id in (sub_id, obj_id):
+                    if end_id and end_id not in node_ids and len(nodes) < node_limit:
+                        current_entity_ids.add(end_id)
+                        node_ids.add(end_id)
+                        e_detail = await session.execute(
+                            text("""
+                                SELECT e.entity_type::text, COALESCE(p.display_name, o.legal_name, v.registration_number, d.imei, pn.msisdn, e.entity_id::text) as display_name
+                                FROM civix.entity e
+                                LEFT JOIN civix.person p ON e.entity_id = p.entity_id
+                                LEFT JOIN civix.organization o ON e.entity_id = o.entity_id
+                                LEFT JOIN civix.vehicle v ON e.entity_id = v.entity_id
+                                LEFT JOIN civix.device d ON e.entity_id = d.entity_id
+                                LEFT JOIN civix.phone_number pn ON e.entity_id = pn.entity_id
+                                WHERE e.entity_id = :eid
+                            """),
+                            {"eid": end_id}
+                        )
+                        ed_row = e_detail.first()
+                        if ed_row:
+                            label = ed_row[0].title() if ed_row[0] else "Entity"
+                            nodes.append(GraphNode(
+                                id=end_id,
+                                labels=[label],
+                                properties={
+                                    "entity_id": end_id,
+                                    "display_name": ed_row[1] or end_id,
+                                    "name": ed_row[1] or end_id,
+                                    "entity_type": ed_row[0] or "ENTITY"
+                                }
+                            ))
+
+                if sub_id in node_ids and obj_id in node_ids and ass_id not in rel_ids and len(relationships) < rel_limit:
+                    rel_ids.add(ass_id)
+                    relationships.append(
+                        GraphRelationship(
+                            id=ass_id,
+                            type=str(m["predicate"]),
+                            start_node=sub_id,
+                            end_node=obj_id,
+                            properties={
+                                "confidence": float(m["ai_confidence"]) if m["ai_confidence"] is not None else 1.0,
+                                "epistemic_status": str(m["epistemic_status"]) if m["epistemic_status"] else "VERIFIED"
+                            }
+                        )
+                    )
+
+    meta = GraphMetadata(
+        requested_depth=depth,
+        max_depth=5,
+        node_limit=node_limit,
+        relationship_limit=rel_limit,
+        nodes_returned=len(nodes),
+        relationships_returned=len(relationships),
+        truncated=(len(nodes) >= node_limit or len(relationships) >= rel_limit)
+    )
+
+    return GraphResponse(nodes=nodes, relationships=relationships, metadata=meta)
+
+
+@router.get("/{case_id}/universe", response_model=GraphResponse)
+async def get_case_universe(
+    case_id: str,
+    depth: int = Query(3, ge=1, le=5, description="Universe expansion depth (1 to 5 hops)"),
+    node_limit: Optional[int] = Query(None, description="Max universe nodes ceiling"),
+    rel_limit: Optional[int] = Query(None, description="Max universe relationships ceiling"),
+    user: AuthenticatedCivixUser = Depends(get_current_user_from_token),
+    pg_session: AsyncSession = Depends(get_rls_session),
+    neo4j_session: Neo4jAsyncSession = Depends(get_neo4j_session)
+):
+    real_case_id = await resolve_case_id(pg_session, case_id)
+
+    # Dynamic depth safety limit defaults
+    depth_limits = {
+        1: (60, 120),
+        2: (150, 300),
+        3: (250, 500),
+        4: (400, 800),
+        5: (600, 1200),
+    }
+    default_n_lim, default_r_lim = depth_limits.get(depth, (250, 500))
+    eff_node_limit = node_limit if node_limit is not None else default_n_lim
+    eff_rel_limit = rel_limit if rel_limit is not None else default_r_lim
+
+    # 1. Verify root case authorization through PostgreSQL RLS
+    verify_result = await pg_session.execute(
+        text("SELECT 1 FROM civix.investigative_case WHERE case_id = :cid"),
+        {"cid": real_case_id}
+    )
+    if not verify_result.first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Case not found")
+
+    # 2. Server-Side ACL Resolution
+    acl_result = await pg_session.execute(
+        text("""
+            SELECT ca.case_id
+            FROM civix.case_access ca
+            WHERE ca.user_id = :uid
+              AND ca.is_revoked = FALSE
+              AND (ca.valid_until IS NULL OR ca.valid_until > now())
+        """),
+        {"uid": user.user_id}
+    )
+    accessible_case_ids = [str(row[0]) for row in acl_result.fetchall()]
+    if str(real_case_id) not in accessible_case_ids:
+        accessible_case_ids.append(str(real_case_id))
+
+    # 3. Primary Engine: Neo4j Case-Anchored Universe
+    if neo4j_session is not None:
+        try:
+            graph = await Neo4jQueryService.get_case_universe(
+                session=neo4j_session,
+                case_id=str(real_case_id),
+                accessible_case_ids=accessible_case_ids,
+                depth=depth,
+                node_limit=eff_node_limit,
+                rel_limit=eff_rel_limit
+            )
+            if graph and graph.nodes:
+                return graph
+        except Exception as e:
+            logger.warning(f"Neo4j universe query failed ({e}), using PostgreSQL fallback builder.")
+
+    # 4. Fallback Engine: PostgreSQL Case Universe Builder
+    return await build_pg_case_universe(
+        session=pg_session,
+        case_id=str(real_case_id),
+        accessible_case_ids=accessible_case_ids,
+        depth=depth,
+        node_limit=eff_node_limit,
+        rel_limit=eff_rel_limit
+    )
+
 

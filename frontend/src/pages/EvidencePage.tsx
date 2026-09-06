@@ -18,6 +18,7 @@ import {
   Copy
 } from 'lucide-react';
 import { authAdapter } from '../api/authAdapter';
+import { useAuthenticatedMedia, downloadAuthenticatedEvidence } from '../hooks/useAuthenticatedMedia';
 
 interface EvidenceItem {
   artifact_id: string;
@@ -33,6 +34,32 @@ interface EvidenceItem {
   evidence_type: string;
   artifact_title: string;
 }
+
+const GlobalEvidenceImageCanvas: React.FC<{ artifactId: string; title: string }> = ({ artifactId, title }) => {
+  const { objectUrl, loading, error } = useAuthenticatedMedia(artifactId);
+
+  if (loading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-civix-text-muted text-[10px] font-mono">
+        <Loader2 className="w-4 h-4 animate-spin text-civix-blue-light mr-1" />
+        <span>Loading...</span>
+      </div>
+    );
+  }
+
+  if (error || !objectUrl) {
+    return <div className="text-civix-text-muted font-mono text-[10px]">No visual asset preview</div>;
+  }
+
+  return (
+    <img
+      src={objectUrl}
+      alt={title}
+      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+      loading="lazy"
+    />
+  );
+};
 
 export const EvidencePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -217,10 +244,6 @@ export const EvidencePage: React.FC = () => {
         /* Evidence Cards Grid */
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredEvidence.map((item) => {
-            const imageUrl = item.storage_uri
-              ? `http://localhost:8000/evidence_store/${item.storage_uri}`
-              : null;
-
             return (
               <div
                 key={item.artifact_id}
@@ -229,16 +252,7 @@ export const EvidencePage: React.FC = () => {
               >
                 {/* Image Container */}
                 <div className="relative aspect-4/3 bg-civix-bg overflow-hidden flex items-center justify-center">
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={item.artifact_title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="text-civix-text-muted font-mono text-[10px]">No image asset</div>
-                  )}
+                  <GlobalEvidenceImageCanvas artifactId={item.artifact_id} title={item.artifact_title} />
 
                   {/* Top Badges Overlay */}
                   <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
@@ -316,11 +330,7 @@ export const EvidencePage: React.FC = () => {
             <div className="p-6 overflow-y-auto space-y-6 flex-1">
               {/* Image Preview Canvas */}
               <div className="bg-civix-bg rounded-sm p-2 flex items-center justify-center border border-civix-border max-h-[480px]">
-                <img
-                  src={`http://localhost:8000/evidence_store/${selectedArtifact.storage_uri}`}
-                  alt={selectedArtifact.artifact_title}
-                  className="max-h-[440px] w-auto object-contain rounded-sm"
-                />
+                <GlobalEvidenceImageCanvas artifactId={selectedArtifact.artifact_id} title={selectedArtifact.artifact_title} />
               </div>
 
               {/* Technical Verification Details */}
@@ -370,18 +380,16 @@ export const EvidencePage: React.FC = () => {
             {/* Modal Footer Actions */}
             <div className="px-5 py-3 bg-civix-surface-2 border-t border-civix-border flex items-center justify-between">
               <span className="text-[10px] font-mono text-civix-text-muted">
-                Stored at: <code className="text-civix-text-mono font-bold">{selectedArtifact.storage_uri}</code>
+                Artifact ID: <code className="text-civix-text-mono font-bold">{selectedArtifact.artifact_id}</code>
               </span>
               <div className="flex items-center space-x-2">
-                <a
-                  href={`http://localhost:8000/evidence_store/${selectedArtifact.storage_uri}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="civix-btn-primary flex items-center space-x-1.5"
+                <button
+                  onClick={() => downloadAuthenticatedEvidence(selectedArtifact.artifact_id, selectedArtifact.artifact_title || 'evidence')}
+                  className="civix-btn-primary flex items-center space-x-1.5 cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5 text-civix-gold" />
                   <span>Download High-Res Asset</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>

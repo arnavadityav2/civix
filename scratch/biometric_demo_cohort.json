@@ -1,0 +1,180 @@
+{
+  "generated_at": "2026-09-05T11:07:11.821341Z",
+  "selection_rules": {
+    "investigative_subject_roles": [
+      "SUSPECT",
+      "ACCUSED",
+      "PERSON_OF_INTEREST"
+    ],
+    "civilian_roles": [
+      "VICTIM",
+      "COMPLAINANT",
+      "WITNESS",
+      "INFORMANT",
+      "RELATED_PERSON"
+    ],
+    "precedence": "INVESTIGATIVE_SUBJECT takes precedence if any role matches",
+    "target": "5 investigative subjects + 5 civilians",
+    "ranking": "case_count*3 + evidence_count*2 + event_count + lead_count + hero*5"
+  },
+  "investigative_subjects": [
+    {
+      "entity_id": "f5c4a848-1c97-4b39-cc96-bb0b4775f8e3",
+      "display_name": "Tariq Hussain",
+      "avatar_url": "/assets/avatars/f5c4a848-1c97-4b39-cc96-bb0b4775f8e3.webp",
+      "gender": "MALE",
+      "classification": "INVESTIGATIVE_SUBJECT",
+      "primary_role": "SUSPECT",
+      "case_count": 4,
+      "evidence_count": 136,
+      "event_count": 2,
+      "lead_count": 9,
+      "is_hero_person": true,
+      "richness_score": 300,
+      "selection_reason": "Top investigative subject. 4 cases, 136 evidence, 2 events. Hero case."
+    },
+    {
+      "entity_id": "637038f4-633f-8457-6de9-b7142bc10381",
+      "display_name": "Suresh Valmiki",
+      "avatar_url": "/assets/avatars/637038f4-633f-8457-6de9-b7142bc10381.webp",
+      "gender": "MALE",
+      "classification": "INVESTIGATIVE_SUBJECT",
+      "primary_role": "SUSPECT",
+      "case_count": 3,
+      "evidence_count": 102,
+      "event_count": 7,
+      "lead_count": 15,
+      "is_hero_person": true,
+      "richness_score": 240,
+      "selection_reason": "Top investigative subject. 3 cases, 102 evidence, 7 events. Hero case."
+    },
+    {
+      "entity_id": "7bfb4b76-8bee-ccaf-10a6-009a09e6fc04",
+      "display_name": "Vikram Sharma",
+      "avatar_url": "/assets/avatars/7bfb4b76-8bee-ccaf-10a6-009a09e6fc04.webp",
+      "gender": "MALE",
+      "classification": "INVESTIGATIVE_SUBJECT",
+      "primary_role": "SUSPECT",
+      "case_count": 2,
+      "evidence_count": 68,
+      "event_count": 1,
+      "lead_count": 11,
+      "is_hero_person": true,
+      "richness_score": 159,
+      "selection_reason": "Top investigative subject. 2 cases, 68 evidence, 1 events. Hero case."
+    },
+    {
+      "entity_id": "52cc467a-a55d-bbcb-fde9-985e251570de",
+      "display_name": "Aakash Verma",
+      "avatar_url": "/assets/avatars/52cc467a-a55d-bbcb-fde9-985e251570de.webp",
+      "gender": "male",
+      "classification": "INVESTIGATIVE_SUBJECT",
+      "primary_role": "SUSPECT",
+      "case_count": 2,
+      "evidence_count": 8,
+      "event_count": 5,
+      "lead_count": 3,
+      "is_hero_person": true,
+      "richness_score": 27,
+      "selection_reason": "Hero replacement - SUSPECT with avatar, 2 Hero cases"
+    },
+    {
+      "entity_id": "d5104adc-27e6-2c80-0166-c8d673715d46",
+      "display_name": "Dinesh Yadav",
+      "avatar_url": "/assets/avatars/d5104adc-27e6-2c80-0166-c8d673715d46.webp",
+      "gender": "male",
+      "classification": "INVESTIGATIVE_SUBJECT",
+      "primary_role": "PERSON_OF_INTEREST",
+      "case_count": 2,
+      "evidence_count": 5,
+      "event_count": 3,
+      "lead_count": 2,
+      "is_hero_person": true,
+      "richness_score": 19,
+      "selection_reason": "Hero replacement - PERSON_OF_INTEREST with avatar, 2 Hero cases"
+    }
+  ],
+  "civilians": [
+    {
+      "entity_id": "263f32c4-30fd-40a8-b01b-6def1b47e90c",
+      "display_name": "Anita Mehta",
+      "avatar_url": "/assets/avatars/263f32c4-30fd-40a8-b01b-6def1b47e90c.webp",
+      "gender": "FEMALE",
+      "classification": "CIVILIAN",
+      "primary_role": "VICTIM",
+      "case_count": 1,
+      "evidence_count": 34,
+      "event_count": 1,
+      "lead_count": 10,
+      "is_hero_person": true,
+      "richness_score": 87,
+      "selection_reason": "Top civilian. 1 cases, 34 evidence, 1 events. Hero case."
+    },
+    {
+      "entity_id": "09d7a50a-82dd-4acf-1c8c-ed1d70f5b332",
+      "display_name": "Ram Karan Singh",
+      "avatar_url": "/assets/avatars/09d7a50a-82dd-4acf-1c8c-ed1d70f5b332.webp",
+      "gender": "MALE",
+      "classification": "CIVILIAN",
+      "primary_role": "VICTIM",
+      "case_count": 1,
+      "evidence_count": 34,
+      "event_count": 0,
+      "lead_count": 10,
+      "is_hero_person": true,
+      "richness_score": 86,
+      "selection_reason": "Top civilian. 1 cases, 34 evidence, 0 events. Hero case."
+    },
+    {
+      "entity_id": "d747317f-ea1d-8e98-bc65-6f29f10d54f9",
+      "display_name": "Sudhir Prasad",
+      "avatar_url": "/assets/avatars/d747317f-ea1d-8e98-bc65-6f29f10d54f9.webp",
+      "gender": "MALE",
+      "classification": "CIVILIAN",
+      "primary_role": "VICTIM",
+      "case_count": 1,
+      "evidence_count": 34,
+      "event_count": 1,
+      "lead_count": 3,
+      "is_hero_person": true,
+      "richness_score": 80,
+      "selection_reason": "Top civilian. 1 cases, 34 evidence, 1 events. Hero case."
+    },
+    {
+      "entity_id": "2e13da11-9613-34c3-cff3-6fdcc99038ee",
+      "display_name": "Dr. Ramesh Kapoor",
+      "avatar_url": "/assets/avatars/2e13da11-9613-34c3-cff3-6fdcc99038ee.webp",
+      "gender": "male",
+      "classification": "CIVILIAN",
+      "primary_role": "VICTIM",
+      "case_count": 1,
+      "evidence_count": 4,
+      "event_count": 2,
+      "lead_count": 1,
+      "is_hero_person": true,
+      "richness_score": 16,
+      "selection_reason": "Hero replacement - VICTIM with avatar, Hero case"
+    },
+    {
+      "entity_id": "4b2aa1e0-3847-82ce-663d-dba144184ab6",
+      "display_name": "Imran Khan",
+      "avatar_url": "/assets/avatars/4b2aa1e0-3847-82ce-663d-dba144184ab6.webp",
+      "gender": "male",
+      "classification": "CIVILIAN",
+      "primary_role": "WITNESS",
+      "case_count": 1,
+      "evidence_count": 3,
+      "event_count": 2,
+      "lead_count": 1,
+      "is_hero_person": true,
+      "richness_score": 14,
+      "selection_reason": "Hero replacement - WITNESS with avatar, Hero case"
+    }
+  ],
+  "summary": {
+    "total_selected": 10,
+    "investigative_subjects": 5,
+    "civilians": 5,
+    "hero_persons": 10
+  }
+}

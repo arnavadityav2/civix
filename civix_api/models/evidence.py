@@ -45,6 +45,7 @@ class EvidenceStatusResponse(BaseModel):
     acquired_by: Optional[UUID]
     acquisition_method: Optional[str]
     created_at: datetime
+    sha256_hash: Optional[str] = None
 
 
 # ---------------------------------------------------------------------------
@@ -60,6 +61,9 @@ class EvidenceListItem(BaseModel):
     created_at: datetime
     evidence_type: Optional[str] = None
     evidence_title: Optional[str] = None
+    sha256_hash: Optional[str] = None
+    storage_uri: Optional[str] = None
+
 
 
 # ---------------------------------------------------------------------------

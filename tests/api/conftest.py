@@ -98,14 +98,15 @@ async def create_test_user():
                 "AND case_id NOT IN (SELECT case_id FROM civix.hypothesis)"
             ), {"uid": uid})
             
-            # Delete mutable entities safely. Skip cases that have hypotheses since hypotheses are immutable and block case deletion.
-            await session.execute(text(
-                "DELETE FROM civix.investigative_case WHERE case_id IN (SELECT case_id FROM civix.case_access WHERE user_id = :uid) "
-                "AND case_id NOT IN (SELECT case_id FROM civix.hypothesis)"
-            ), {"uid": uid})
-
+            # Delete case_access before investigative_case to prevent FK violation
             await session.execute(text(
                 "DELETE FROM civix.case_access WHERE user_id = :uid AND case_id NOT IN (SELECT case_id FROM civix.hypothesis)"
+            ), {"uid": uid})
+
+            # Delete mutable entities safely. Skip cases that have hypotheses since hypotheses are immutable and block case deletion.
+            await session.execute(text(
+                "DELETE FROM civix.investigative_case WHERE case_id NOT IN (SELECT case_id FROM civix.case_access) "
+                "AND case_id NOT IN (SELECT case_id FROM civix.hypothesis)"
             ), {"uid": uid})
             
             # Reset role
@@ -116,3 +117,35 @@ async def create_test_user():
             # We leave them in the test database.
             
         await session.commit()
+
+
+import time
+import jwt
+
+@pytest.fixture
+async def admin_headers(create_test_user):
+    user_id = await create_test_user(role="ADMIN")
+    payload = {"sub": str(user_id), "exp": int(time.time()) + 3600}
+    token = jwt.encode(payload, settings.civix_jwt_secret, algorithm="HS256")
+    return {"Authorization": f"Bearer {token}"}
+
+@pytest.fixture
+async def test_case(admin_headers, db_session):
+    token = admin_headers["Authorization"].split(" ")[1]
+    payload = jwt.decode(token, settings.civix_jwt_secret, algorithms=["HS256"])
+    user_id = payload["sub"]
+
+    case_id = str(uuid4())
+    await db_session.execute(text("""
+        INSERT INTO civix.investigative_case (case_id, case_number, title, case_type, status, priority, jurisdiction, opened_at)
+        VALUES (:cid, :cnum, 'Test Investigation', 'CRIMINAL', 'ACTIVE', 'HIGH', 'Dwarka Sector 23', now())
+    """), {"cid": case_id, "cnum": f"TEST-{uuid4().hex[:6]}"})
+
+    await db_session.execute(text("""
+        INSERT INTO civix.case_access (case_id, user_id, permission_level, granted_by, is_revoked)
+        VALUES (:cid, :uid, 'ADMIN', :uid, false)
+    """), {"cid": case_id, "uid": user_id})
+
+    await db_session.commit()
+    return case_id
+

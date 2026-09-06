@@ -103,13 +103,59 @@ class CDCWorker:
 
 
 
+
+
+def _validate_cdc_worker_safety(pg_dsn: str, neo4j_uri: str) -> None:
+    """
+    [P2-A REMEDIATION] Safety gate for the standalone CDC worker.
+
+    The FastAPI process is protected by civix_api/safety_gate.py. However, the CDC worker
+    runs as a separate process and previously defaulted to 'civix_test' if
+    CIVIX_DATABASE_URL_SYNC was absent — which could project test data into the demo Neo4j.
+
+    This function enforces the same principles:
+    - Refuses to run if no explicit DSN is provided via environment variable.
+    - Refuses to run if the DSN targets the test database ('civix_test').
+    - Refuses to run if NEO4J_URI is not explicitly configured.
+
+    Raises SystemExit on any violation. Does NOT weaken the FastAPI Safety Gate.
+    """
+    import sys
+    errors = []
+
+    if not pg_dsn:
+        errors.append("CIVIX_DATABASE_URL_SYNC is not set. CDC worker requires an explicit PostgreSQL DSN.")
+
+    if pg_dsn and 'civix_test' in pg_dsn:
+        errors.append(
+            f"CIVIX_DATABASE_URL_SYNC targets 'civix_test' ({pg_dsn!r}). "
+            "CDC worker must NOT run against the test database. "
+            "Set CIVIX_DATABASE_URL_SYNC to target 'civix_demo'."
+        )
+
+    if not neo4j_uri:
+        errors.append("NEO4J_URI is not set. CDC worker requires an explicit Neo4j URI.")
+
+    if errors:
+        logger.critical("=== CDC WORKER SAFETY GATE TRIGGERED ===")
+        for err in errors:
+            logger.critical(f"  VIOLATION: {err}")
+        logger.critical("CDC worker is aborting to protect demo data integrity.")
+        sys.exit(1)
+
+    logger.info(f"CDC Worker safety validation passed. DSN target: {pg_dsn.split('@')[-1] if '@' in pg_dsn else '[hidden]'}")
+
+
 if __name__ == "__main__":
     import os
-    pg_dsn = os.getenv("CIVIX_DATABASE_URL_SYNC", "postgresql://civix_cdc_worker:cdc_worker_pass_123@localhost:5433/civix_test")
-    neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+    pg_dsn = os.getenv("CIVIX_DATABASE_URL_SYNC", "")
+    neo4j_uri = os.getenv("NEO4J_URI", "")
     neo4j_user = os.getenv("NEO4J_USER", "neo4j")
     neo4j_pass = os.getenv("NEO4J_PASSWORD", "password")
-    
+
+    # [P2-A] Safety gate must pass before any connection attempt
+    _validate_cdc_worker_safety(pg_dsn, neo4j_uri)
+
     worker = CDCWorker(pg_dsn, neo4j_uri, neo4j_user, neo4j_pass)
     try:
         worker.start()

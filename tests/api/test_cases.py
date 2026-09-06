@@ -53,8 +53,8 @@ async def test_create_case(db_session, create_test_user):
     
     # Cleanup
     await db_session.execute(text("SELECT set_config('civix.current_user_id', :uid, true), set_config('app.current_user_id', :uid, true)"), {"uid": str(user_id)})
-    await db_session.execute(text("DELETE FROM civix.investigative_case WHERE case_id = :cid"), {"cid": case_id})
     await db_session.execute(text("DELETE FROM civix.case_access WHERE case_id = :cid"), {"cid": case_id})
+    await db_session.execute(text("DELETE FROM civix.investigative_case WHERE case_id = :cid"), {"cid": case_id})
     await db_session.commit()
 
 @pytest.mark.asyncio
@@ -99,13 +99,13 @@ async def test_case_list_and_get_isolated(db_session, create_test_user):
     # Cleanup
     # Case A cleanup
     await db_session.execute(text("SELECT set_config('civix.current_user_id', :uid, true), set_config('app.current_user_id', :uid, true)"), {"uid": str(user_a)})
-    await db_session.execute(text("DELETE FROM civix.investigative_case WHERE case_id = :ca"), {"ca": case_a_id})
     await db_session.execute(text("DELETE FROM civix.case_access WHERE case_id = :ca"), {"ca": case_a_id})
+    await db_session.execute(text("DELETE FROM civix.investigative_case WHERE case_id = :ca"), {"ca": case_a_id})
     
     # Case B cleanup
     await db_session.execute(text("SELECT set_config('civix.current_user_id', :uid, true), set_config('app.current_user_id', :uid, true)"), {"uid": str(user_b)})
-    await db_session.execute(text("DELETE FROM civix.investigative_case WHERE case_id = :cb"), {"cb": case_b_id})
     await db_session.execute(text("DELETE FROM civix.case_access WHERE case_id = :cb"), {"cb": case_b_id})
+    await db_session.execute(text("DELETE FROM civix.investigative_case WHERE case_id = :cb"), {"cb": case_b_id})
     await db_session.commit()
 
 @pytest.mark.asyncio
@@ -145,6 +145,6 @@ async def test_case_creation_failure_rollback(db_session, create_test_user):
 
     # Cleanup
     await db_session.execute(text("SELECT set_config('civix.current_user_id', :uid, true), set_config('app.current_user_id', :uid, true)"), {"uid": str(user_id)})
-    await db_session.execute(text("DELETE FROM civix.investigative_case WHERE case_id = :cid"), {"cid": case_1_id})
     await db_session.execute(text("DELETE FROM civix.case_access WHERE case_id = :cid"), {"cid": case_1_id})
+    await db_session.execute(text("DELETE FROM civix.investigative_case WHERE case_id = :cid"), {"cid": case_1_id})
     await db_session.commit()

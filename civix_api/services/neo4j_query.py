@@ -162,3 +162,147 @@ class Neo4jQueryService:
             logger.error(f"Neo4j Unexpected Error: {str(e)}")
             # Do not leak stack traces or raw Cypher
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An internal graph database error occurred")
+
+    @staticmethod
+    async def get_case_universe(
+        session: AsyncSession,
+        case_id: str,
+        accessible_case_ids: List[str],
+        depth: int = 3,
+        node_limit: int = 250,
+        rel_limit: int = 500
+    ) -> GraphResponse:
+        """
+        Executes a case-anchored expansive universe traversal outward from root case_id.
+        Strictly bounds traversal to authorized_case_ids in accessible_case_ids.
+        Surfaces macro case clusters and cross-case bridge hub entities.
+        """
+        query = f"""
+        MATCH path = (c:Case {{case_id: $case_id}})-[*0..{depth}]-(n)
+        WHERE all(node IN nodes(path) WHERE 
+            node.tx_end IS NULL
+            AND coalesce(node.visibility_status, 'ACTIVE') = 'ACTIVE'
+            AND (
+                (node.case_id IS NULL AND node.authorized_case_ids IS NULL)
+                OR (node.case_id IS NOT NULL AND node.case_id IN $accessible_case_ids)
+                OR (node.authorized_case_ids IS NOT NULL AND any(cid IN node.authorized_case_ids WHERE cid IN $accessible_case_ids))
+            )
+        )
+        AND all(rel IN relationships(path) WHERE
+            rel.tx_end IS NULL AND rel.superseded_by IS NULL
+        )
+        WITH collect(path) AS paths
+
+        UNWIND (CASE WHEN size(paths) > 0 THEN paths ELSE [null] END) AS p
+        UNWIND (CASE WHEN p IS NOT NULL THEN nodes(p) ELSE [] END) AS node
+        WITH collect(DISTINCT node)[0..$node_limit] AS valid_nodes, paths
+
+        UNWIND (CASE WHEN size(paths) > 0 THEN paths ELSE [null] END) AS p
+        UNWIND (CASE WHEN p IS NOT NULL THEN relationships(p) ELSE [] END) AS rel
+        WITH valid_nodes, collect(DISTINCT rel) AS raw_rels
+        WITH valid_nodes, [r IN raw_rels WHERE r IS NOT NULL AND startNode(r) IN valid_nodes AND endNode(r) IN valid_nodes][0..$rel_limit] AS valid_rels
+
+        RETURN valid_nodes, valid_rels
+        """
+
+        parameters = {
+            "case_id": str(case_id),
+            "accessible_case_ids": [str(c) for c in accessible_case_ids],
+            "node_limit": node_limit,
+            "rel_limit": rel_limit
+        }
+
+        def sanitize_properties(props: dict) -> dict:
+            sanitized = {}
+            for k, v in props.items():
+                if hasattr(v, "iso_format"):
+                    sanitized[k] = v.iso_format()
+                elif hasattr(v, "to_native"):
+                    sanitized[k] = str(v)
+                else:
+                    sanitized[k] = v
+            return sanitized
+
+        try:
+            result = await session.run(query, parameters, timeout=5.0)
+            record = await result.single()
+
+            if not record:
+                return GraphResponse(
+                    nodes=[], 
+                    relationships=[],
+                    metadata=GraphMetadata(
+                        requested_depth=depth,
+                        max_depth=5,
+                        node_limit=node_limit,
+                        relationship_limit=rel_limit,
+                        nodes_returned=0,
+                        relationships_returned=0,
+                        truncated=False
+                    )
+                )
+
+            valid_nodes = record.get("valid_nodes", [])
+            valid_rels = record.get("valid_rels", [])
+
+            element_to_domain = {}
+            graph_nodes = []
+            for n in valid_nodes:
+                if not n:
+                    continue
+                n_id = n.element_id
+                domain_id = n.get("entity_id") or n.get("case_id") or n.get("fir_id") or n_id
+                element_to_domain[n_id] = str(domain_id)
+                
+                props = sanitize_properties(dict(n.items()))
+
+                # Surfacing CaseClusterNode and BridgeEntityNode view-model metadata
+                labels = list(n.labels)
+                if "Case" in labels:
+                    props["is_universe_anchor"] = (str(domain_id) == str(case_id))
+                    props["node_class"] = "CASE_CLUSTER"
+                elif props.get("authorized_case_ids") and len(props["authorized_case_ids"]) > 1:
+                    props["node_class"] = "BRIDGE_HUB"
+                    labels.append("BridgeEntityNode")
+
+                graph_nodes.append(GraphNode(
+                    id=str(domain_id),
+                    labels=labels,
+                    properties=props
+                ))
+
+            graph_relationships = []
+            for r in valid_rels:
+                if not r:
+                    continue
+                r_id = r.element_id
+                start_n = r.nodes[0]
+                end_n = r.nodes[1]
+                
+                start_domain_id = element_to_domain.get(start_n.element_id, start_n.element_id)
+                end_domain_id = element_to_domain.get(end_n.element_id, end_n.element_id)
+                
+                graph_relationships.append(GraphRelationship(
+                    id=str(r_id),
+                    type=r.type,
+                    start_node=str(start_domain_id),
+                    end_node=str(end_domain_id),
+                    properties=sanitize_properties(dict(r.items()))
+                ))
+
+            meta = GraphMetadata(
+                requested_depth=depth,
+                max_depth=5,
+                node_limit=node_limit,
+                relationship_limit=rel_limit,
+                nodes_returned=len(graph_nodes),
+                relationships_returned=len(graph_relationships),
+                truncated=(len(graph_nodes) >= node_limit or len(graph_relationships) >= rel_limit)
+            )
+
+            return GraphResponse(nodes=graph_nodes, relationships=graph_relationships, metadata=meta)
+
+        except Exception as e:
+            logger.error(f"Neo4j get_case_universe Error: {str(e)}")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An internal graph database error occurred")
+

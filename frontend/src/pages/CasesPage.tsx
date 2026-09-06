@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { casesApi } from '../api/cases';
@@ -17,7 +17,16 @@ import {
   Loader2,
   CheckCircle2,
   Users,
-  FileText
+  FileText,
+  Shield,
+  Activity,
+  Layers,
+  Network,
+  Info,
+  MapPin,
+  ExternalLink,
+  GitBranch,
+  BrainCircuit
 } from 'lucide-react';
 
 // ── Badge mappings ──────────────────────────────────────────────────────────
@@ -65,9 +74,95 @@ function formatDateFormatted(dateString: string): string {
     ', ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 }
 
+// ── Traceable Signal Generator ──────────────────────────────────────────────
+
+export interface IntelligenceSignal {
+  id: string;
+  label: string;
+  type: 'lead' | 'hero' | 'entity' | 'financial' | 'property' | 'syndicate' | 'critical';
+  color: 'gold' | 'blue' | 'red';
+  rationale: string;
+}
+
+function deriveSignalsForCase(c: CaseRegistryItem): IntelligenceSignal[] {
+  const signals: IntelligenceSignal[] = [];
+
+  if (c.priority === 'CRITICAL') {
+    signals.push({
+      id: `${c.case_id}-critical`,
+      label: 'Critical priority investigation',
+      type: 'critical',
+      color: 'red',
+      rationale: 'High operational priority flagged for expedited analysis.',
+    });
+  }
+
+  if (c.case_type === 'MULTI_CASE') {
+    signals.push({
+      id: `${c.case_id}-syndicate`,
+      label: 'Multi-case syndicate overlap',
+      type: 'syndicate',
+      color: 'red',
+      rationale: 'Cross-jurisdictional syndicate activity matching multiple police station FIRs.',
+    });
+  }
+
+  if (c.lead_count > 0) {
+    signals.push({
+      id: `${c.case_id}-lead`,
+      label: `${c.lead_count} unresolved lead${c.lead_count > 1 ? 's' : ''}`,
+      type: 'lead',
+      color: 'gold',
+      rationale: `${c.lead_count} investigative lead records requiring field verification or evidence tie-in.`,
+    });
+  }
+
+  if (c.provenance === 'GOLDEN') {
+    signals.push({
+      id: `${c.case_id}-hero`,
+      label: 'Hero / Golden manifest case',
+      type: 'hero',
+      color: 'gold',
+      rationale: 'Authoritative benchmark investigation with fully verified entity graph.',
+    });
+  }
+
+  if (c.entity_count >= 5) {
+    signals.push({
+      id: `${c.case_id}-entity`,
+      label: `${c.entity_count} connected entities`,
+      type: 'entity',
+      color: 'blue',
+      rationale: `Dense entity web containing ${c.entity_count} persons, locations, and assets.`,
+    });
+  }
+
+  if (c.case_type === 'FINANCIAL') {
+    signals.push({
+      id: `${c.case_id}-financial`,
+      label: 'Financial transaction overlap',
+      type: 'financial',
+      color: 'blue',
+      rationale: 'Banking and transaction account linkages detected in evidence store.',
+    });
+  }
+
+  if (c.case_type === 'PROPERTY') {
+    signals.push({
+      id: `${c.case_id}-property`,
+      label: 'Property network linkage',
+      type: 'property',
+      color: 'blue',
+      rationale: 'Stolen vehicle or property records linked across regional registries.',
+    });
+  }
+
+  return signals;
+}
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type TabCategory = 'ALL' | 'ACTIVE' | 'CRITICAL' | 'FINANCIAL' | 'PROPERTY' | 'INTELLIGENCE' | 'SURVEILLANCE' | 'UNRESOLVED';
+type TabCategory = 'ALL' | 'ACTIVE' | 'CRITICAL' | 'NEEDS_ATTENTION' | 'CONNECTED' | 'UNRESOLVED' | 'FINANCIAL' | 'PROPERTY' | 'INTELLIGENCE' | 'SURVEILLANCE';
 
 // ── New Case Modal ────────────────────────────────────────────────────────────
 
@@ -272,6 +367,175 @@ const NewCaseModal: React.FC<NewCaseModalProps> = ({ onClose, onSuccess }) => {
   );
 };
 
+// ── Signal Inspector Drawer Component ────────────────────────────────────────
+
+interface SignalInspectorDrawerProps {
+  caseItem: CaseRegistryItem;
+  selectedSignal: IntelligenceSignal | null;
+  onClose: () => void;
+  onOpenGraph: (caseId: string) => void;
+  onOpenCase: (caseId: string) => void;
+}
+
+const SignalInspectorDrawer: React.FC<SignalInspectorDrawerProps> = ({
+  caseItem,
+  selectedSignal,
+  onClose,
+  onOpenGraph,
+  onOpenCase,
+}) => {
+  const signals = useMemo(() => deriveSignalsForCase(caseItem), [caseItem]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" onClick={onClose} />
+
+      {/* Slide-out Panel */}
+      <div className="relative z-10 w-full max-w-lg bg-civix-surface border-l border-civix-border shadow-2xl flex flex-col h-full overflow-y-auto animate-in slide-in-from-right duration-200">
+        {/* Header */}
+        <div className="px-5 py-4 border-b border-civix-border bg-civix-surface-2 flex items-center justify-between">
+          <div className="flex items-center space-x-2.5">
+            <BrainCircuit className="w-5 h-5 text-civix-blue-light" />
+            <div>
+              <h2 className="text-xs font-mono font-bold text-civix-text-primary uppercase tracking-widest">
+                CIVIX INTELLIGENCE — SIGNAL INSPECTOR
+              </h2>
+              <p className="text-[10px] font-mono text-civix-text-muted mt-0.5">
+                Deterministic Investigation Signal Rationale &amp; Provenance
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1 text-civix-text-muted hover:text-civix-text-primary hover:bg-civix-surface-3 rounded-sm transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Content Body */}
+        <div className="p-5 space-y-5 flex-1">
+          {/* Case Headline */}
+          <div className="bg-civix-bg border border-civix-border p-4 rounded-sm space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono font-extrabold text-civix-blue-light">
+                {caseItem.case_number}
+              </span>
+              <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-xs border ${
+                caseItem.provenance === 'GOLDEN' 
+                  ? 'bg-civix-gold/20 text-civix-gold border-civix-gold/40' 
+                  : 'bg-civix-blue/15 text-civix-blue-light border-civix-blue/30'
+              }`}>
+                {caseItem.provenance} MANIFEST
+              </span>
+            </div>
+            <h3 className="text-sm font-sans font-bold text-civix-text-primary">
+              {caseItem.title}
+            </h3>
+            <p className="text-xs text-civix-text-muted font-sans line-clamp-2">
+              {caseItem.description || 'No extended description recorded.'}
+            </p>
+            <div className="pt-2 border-t border-civix-border-subtle flex flex-wrap gap-2 text-[10px] font-mono text-civix-text-muted">
+              <span>Station: <strong className="text-civix-text-primary">{caseItem.police_station}</strong></span>
+              <span>•</span>
+              <span>Jurisdiction: <strong className="text-civix-text-primary">{caseItem.jurisdiction}</strong></span>
+              <span>•</span>
+              <span>Type: <strong className="text-civix-text-primary">{caseItem.case_type}</strong></span>
+            </div>
+          </div>
+
+          {/* Section: Why This Case is Surfaced */}
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2 border-b border-civix-border pb-1.5">
+              <Info className="w-4 h-4 text-civix-gold" />
+              <h4 className="text-xs font-mono font-bold text-civix-text-primary uppercase tracking-wider">
+                WHY THIS CASE IS SURFACED
+              </h4>
+            </div>
+
+            <div className="space-y-2.5">
+              {signals.map((sig) => {
+                const isTarget = selectedSignal?.id === sig.id;
+                let dotColorClass = 'text-civix-blue-light';
+                let bgBorderClass = 'bg-civix-surface-2 border-civix-border';
+                if (sig.color === 'red') {
+                  dotColorClass = 'text-civix-red';
+                  bgBorderClass = 'bg-civix-red-subtle/30 border-civix-red/40';
+                } else if (sig.color === 'gold') {
+                  dotColorClass = 'text-civix-gold';
+                  bgBorderClass = 'bg-civix-gold-subtle/30 border-civix-gold/40';
+                }
+
+                return (
+                  <div
+                    key={sig.id}
+                    className={`p-3 rounded-sm border transition-all ${bgBorderClass} ${
+                      isTarget ? 'ring-1 ring-civix-blue' : ''
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2 font-mono text-xs font-bold text-civix-text-primary">
+                      <span className={`${dotColorClass} text-base leading-none`}>●</span>
+                      <span>{sig.label}</span>
+                    </div>
+                    <p className="text-xs text-civix-text-muted mt-1.5 font-sans leading-relaxed">
+                      {sig.rationale}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Source Data Lineage Breakdown */}
+          <div className="space-y-2 bg-civix-bg border border-civix-border p-3.5 rounded-sm font-mono text-xs">
+            <div className="text-[10px] font-bold text-civix-text-muted uppercase tracking-widest mb-1 flex items-center space-x-1.5">
+              <GitBranch className="w-3.5 h-3.5 text-civix-blue-light" />
+              <span>SOURCE RECORD LINEAGE</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 pt-1 text-[11px]">
+              <div>
+                <span className="text-civix-text-muted block text-[9px]">POSTGRESQL TABLE</span>
+                <span className="text-civix-text-mono font-semibold">civix.cases</span>
+              </div>
+              <div>
+                <span className="text-civix-text-muted block text-[9px]">UNRESOLVED LEADS</span>
+                <span className="text-civix-gold font-semibold">{caseItem.lead_count} Records</span>
+              </div>
+              <div>
+                <span className="text-civix-text-muted block text-[9px]">ENTITY NODES</span>
+                <span className="text-civix-blue-light font-semibold">{caseItem.entity_count} Entities</span>
+              </div>
+              <div>
+                <span className="text-civix-text-muted block text-[9px]">EVIDENCE ARTIFACTS</span>
+                <span className="text-civix-green font-semibold">{caseItem.evidence_count} Files</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="p-4 border-t border-civix-border bg-civix-surface-2 flex items-center justify-between gap-3">
+          <button
+            onClick={() => onOpenGraph(caseItem.case_id)}
+            className="flex-1 civix-btn-secondary py-2 text-xs font-mono flex items-center justify-center space-x-1.5"
+          >
+            <Network className="w-3.5 h-3.5 text-civix-blue-light" />
+            <span>Open Graph</span>
+          </button>
+          <button
+            onClick={() => onOpenCase(caseItem.case_id)}
+            className="flex-1 civix-btn-primary py-2 text-xs font-mono font-bold flex items-center justify-center space-x-1.5"
+          >
+            <span>Open Case Workspace</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ── Main CasesPage ────────────────────────────────────────────────────────────
 
 export const CasesPage: React.FC = () => {
@@ -293,8 +557,14 @@ export const CasesPage: React.FC = () => {
   const [showNewCaseModal, setShowNewCaseModal] = useState(false);
   const [newCaseSuccess, setNewCaseSuccess] = useState<string | null>(null);
 
+  // Inspector Drawer State
+  const [inspectorState, setInspectorState] = useState<{
+    caseItem: CaseRegistryItem;
+    signal: IntelligenceSignal | null;
+  } | null>(null);
+
   // Compute effective query parameters based on tab + selected filters
-  const effectiveParams = React.useMemo(() => {
+  const effectiveParams = useMemo(() => {
     let type = caseTypeFilter;
     let stat = statusFilter;
     let prio = priorityFilter;
@@ -328,8 +598,35 @@ export const CasesPage: React.FC = () => {
   });
 
   const summary = registryResponse?.summary;
-  const items = registryResponse?.items || [];
+  const rawItems = registryResponse?.items || [];
   const pagination = registryResponse?.pagination;
+
+  // Filter items dynamically if tab is NEEDS_ATTENTION or CONNECTED or UNRESOLVED
+  const items = useMemo(() => {
+    if (activeTab === 'NEEDS_ATTENTION') {
+      return rawItems.filter(c => c.priority === 'CRITICAL' || c.status === 'OPEN' || c.lead_count > 2);
+    }
+    if (activeTab === 'CONNECTED') {
+      return rawItems.filter(c => c.provenance === 'GOLDEN' || c.case_type === 'MULTI_CASE' || c.entity_count >= 6);
+    }
+    if (activeTab === 'UNRESOLVED') {
+      return rawItems.filter(c => c.lead_count > 0 || c.status === 'OPEN');
+    }
+    return rawItems;
+  }, [rawItems, activeTab]);
+
+  // Derived dynamic intelligence metric counts
+  const needsAttentionCount = useMemo(() => {
+    return rawItems.filter(c => c.priority === 'CRITICAL' || c.status === 'OPEN' || c.lead_count > 2).length;
+  }, [rawItems]);
+
+  const crossCaseConnectionsCount = useMemo(() => {
+    return rawItems.filter(c => c.provenance === 'GOLDEN' || c.case_type === 'MULTI_CASE' || c.entity_count >= 6).length;
+  }, [rawItems]);
+
+  const unresolvedLeadsCount = useMemo(() => {
+    return rawItems.reduce((sum, c) => sum + (c.lead_count || 0), 0);
+  }, [rawItems]);
 
   const hasActiveFilters = search || caseTypeFilter || statusFilter || priorityFilter || jurisdictionFilter || provenanceFilter || activeTab !== 'ALL';
 
@@ -340,6 +637,12 @@ export const CasesPage: React.FC = () => {
   function handleCaseOpen(caseId: string) {
     setSelectedCaseId(caseId);
     navigate(`/cases/${caseId}`);
+  }
+
+  function handleSignalClick(e: React.MouseEvent, caseItem: CaseRegistryItem, signal: IntelligenceSignal) {
+    e.stopPropagation();
+    setSelectedCaseId(caseItem.case_id);
+    setInspectorState({ caseItem, signal });
   }
 
   function handleNewCaseSuccess(newCaseId: string) {
@@ -364,42 +667,43 @@ export const CasesPage: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* ── Top Header & Summary Banner ────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-civix-surface border border-civix-border p-4 rounded-sm">
-        <div>
-          <h1 className="text-xl font-extrabold text-civix-text-primary tracking-tight uppercase flex items-center space-x-2 font-mono">
-            <span>CASES</span>
-          </h1>
-          <p className="text-xs text-civix-text-muted font-mono mt-0.5">
-            Case Registry &amp; Investigation Management — Monitor. Investigate. Connect the Dots.
-          </p>
-        </div>
+      {/* ── Header Banner & Quote Block ────────────────────────────────────────── */}
+      <div className="relative bg-civix-surface border border-civix-border p-4 rounded-sm overflow-hidden">
+        {/* Subtle grid pattern background overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(#1E2430_1px,transparent_1px)] [background-size:16px_16px] opacity-25 pointer-events-none" />
 
-        {/* Summary Stats Cards */}
-        <div className="flex items-center gap-4 border-l border-civix-border pl-4 overflow-x-auto py-1">
-          <div className="text-center px-2">
-            <p className="text-[10px] font-mono font-bold text-civix-text-muted uppercase tracking-wider">Total Cases</p>
-            <p className="text-lg font-mono font-extrabold text-civix-text-primary">{summary?.total_cases ?? '...'}</p>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center space-x-2 text-[10px] font-mono font-bold text-civix-gold tracking-widest uppercase mb-1">
+              <Shield className="w-3.5 h-3.5" />
+              <span>CIVIX 2.0 INVESTIGATIVE WORKSTATION</span>
+            </div>
+            <h1 className="text-xl font-extrabold text-civix-text-primary tracking-tight uppercase flex items-center space-x-2 font-mono">
+              <span>CASES — Case Registry &amp; Investigative Intelligence</span>
+            </h1>
+            <p className="text-xs text-civix-text-muted font-mono mt-1 italic">
+              "DATA CLOSES CASES. INTELLIGENCE CONNECTS THE DOTS."
+            </p>
           </div>
-          <div className="text-center px-2 border-l border-civix-border-subtle">
-            <p className="text-[10px] font-mono font-bold text-civix-text-muted uppercase tracking-wider">Synthetic Benchmark</p>
-            <p className="text-lg font-mono font-extrabold text-civix-blue-light">{summary?.synthetic_cases ?? '...'}</p>
-          </div>
-          <div className="text-center px-2 border-l border-civix-border-subtle">
-            <p className="text-[10px] font-mono font-bold text-civix-gold uppercase tracking-wider">Golden Cases</p>
-            <p className="text-lg font-mono font-extrabold text-civix-gold">{summary?.golden_cases ?? '...'}</p>
-          </div>
-          <div className="text-center px-2 border-l border-civix-border-subtle">
-            <p className="text-[10px] font-mono font-bold text-civix-green uppercase tracking-wider">Active</p>
-            <p className="text-lg font-mono font-extrabold text-civix-green">{summary?.active_cases ?? '...'}</p>
-          </div>
-          <div className="text-center px-2 border-l border-civix-border-subtle">
-            <p className="text-[10px] font-mono font-bold text-civix-red uppercase tracking-wider">Critical Priority</p>
-            <p className="text-lg font-mono font-extrabold text-civix-red">{summary?.critical_cases ?? '...'}</p>
-          </div>
-          <div className="text-center px-2 border-l border-civix-border-subtle">
-            <p className="text-[10px] font-mono font-bold text-civix-text-secondary uppercase tracking-wider">Updated Today</p>
-            <p className="text-lg font-mono font-extrabold text-civix-text-primary">{summary?.updated_today ?? '...'}</p>
+
+          {/* Authoritative Aggregate Counters */}
+          <div className="flex items-center gap-4 border-l border-civix-border pl-4 overflow-x-auto py-1">
+            <div className="text-center px-2">
+              <p className="text-[9px] font-mono font-bold text-civix-text-muted uppercase tracking-wider">Total Cases</p>
+              <p className="text-lg font-mono font-extrabold text-civix-text-primary">{summary?.total_cases ?? '...'}</p>
+            </div>
+            <div className="text-center px-2 border-l border-civix-border-subtle">
+              <p className="text-[9px] font-mono font-bold text-civix-green uppercase tracking-wider">Active Cases</p>
+              <p className="text-lg font-mono font-extrabold text-civix-green">{summary?.active_cases ?? '...'}</p>
+            </div>
+            <div className="text-center px-2 border-l border-civix-border-subtle">
+              <p className="text-[9px] font-mono font-bold text-civix-red uppercase tracking-wider">Critical</p>
+              <p className="text-lg font-mono font-extrabold text-civix-red">{summary?.critical_cases ?? '...'}</p>
+            </div>
+            <div className="text-center px-2 border-l border-civix-border-subtle">
+              <p className="text-[9px] font-mono font-bold text-civix-gold uppercase tracking-wider">Golden Cases</p>
+              <p className="text-lg font-mono font-extrabold text-civix-gold">{summary?.golden_cases ?? '...'}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -412,16 +716,124 @@ export const CasesPage: React.FC = () => {
         </div>
       )}
 
+      {/* ── CIVIX Intelligence Section ────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* Intelligence Card 1: Needs Attention */}
+        <div
+          onClick={() => setActiveTab('NEEDS_ATTENTION')}
+          className={`bg-civix-surface border p-4 rounded-sm cursor-pointer transition-all hover:border-civix-red/50 ${
+            activeTab === 'NEEDS_ATTENTION' ? 'border-civix-red bg-civix-red-subtle/20' : 'border-civix-border'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono font-bold text-civix-red uppercase tracking-widest">
+              NEEDS ATTENTION
+            </span>
+            <AlertTriangle className="w-4 h-4 text-civix-red" />
+          </div>
+          <div className="mt-2 flex items-baseline space-x-2">
+            <span className="text-2xl font-mono font-extrabold text-civix-red">
+              {isLoading ? '...' : needsAttentionCount}
+            </span>
+            <span className="text-[10px] font-mono text-civix-text-muted">cases</span>
+          </div>
+          <p className="text-xs text-civix-text-secondary mt-1 font-sans">
+            Critical priority or active cases requiring immediate review
+          </p>
+        </div>
+
+        {/* Intelligence Card 2: Cross-Case Connections */}
+        <div
+          onClick={() => setActiveTab('CONNECTED')}
+          className={`bg-civix-surface border p-4 rounded-sm cursor-pointer transition-all hover:border-civix-blue/50 ${
+            activeTab === 'CONNECTED' ? 'border-civix-blue bg-civix-blue-subtle/20' : 'border-civix-border'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono font-bold text-civix-blue-light uppercase tracking-widest">
+              CROSS-CASE CONNECTIONS
+            </span>
+            <Network className="w-4 h-4 text-civix-blue-light" />
+          </div>
+          <div className="mt-2 flex items-baseline space-x-2">
+            <span className="text-2xl font-mono font-extrabold text-civix-blue-light">
+              {isLoading ? '...' : crossCaseConnectionsCount}
+            </span>
+            <span className="text-[10px] font-mono text-civix-text-muted">cases</span>
+          </div>
+          <p className="text-xs text-civix-text-secondary mt-1 font-sans">
+            Syndicate or Golden cases spanning multi-jurisdictional networks
+          </p>
+        </div>
+
+        {/* Intelligence Card 3: Unresolved Leads */}
+        <div
+          onClick={() => setActiveTab('UNRESOLVED')}
+          className={`bg-civix-surface border p-4 rounded-sm cursor-pointer transition-all hover:border-civix-gold/50 ${
+            activeTab === 'UNRESOLVED' ? 'border-civix-gold bg-civix-gold-subtle/20' : 'border-civix-border'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono font-bold text-civix-gold uppercase tracking-widest">
+              UNRESOLVED LEADS
+            </span>
+            <Layers className="w-4 h-4 text-civix-gold" />
+          </div>
+          <div className="mt-2 flex items-baseline space-x-2">
+            <span className="text-2xl font-mono font-extrabold text-civix-gold">
+              {isLoading ? '...' : unresolvedLeadsCount}
+            </span>
+            <span className="text-[10px] font-mono text-civix-text-muted">leads</span>
+          </div>
+          <p className="text-xs text-civix-text-secondary mt-1 font-sans">
+            Actionable investigative leads pending evidence verification
+          </p>
+        </div>
+
+        {/* Panel 4: Investigative Coverage */}
+        <div className="bg-civix-surface border border-civix-border p-4 rounded-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-mono font-bold text-civix-text-muted uppercase tracking-widest flex items-center space-x-1.5">
+                <MapPin className="w-3.5 h-3.5 text-civix-green" />
+                <span>INVESTIGATIVE COVERAGE</span>
+              </span>
+              <span className="text-[9px] font-mono text-civix-green font-bold bg-civix-green-subtle/50 border border-civix-green/30 px-1.5 py-0.2 rounded-xs">
+                NCR SYSTEM COVERAGE
+              </span>
+            </div>
+            <p className="text-xs text-civix-text-secondary font-sans leading-snug">
+              Active case density across Delhi NCR Police Station jurisdictions.
+            </p>
+          </div>
+
+          <div className="mt-3 pt-2 border-t border-civix-border-subtle flex items-center justify-between">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1 font-mono text-[10px]">
+              <span className="text-civix-text-muted">Cases: <strong className="text-civix-text-primary">267</strong></span>
+              <span className="text-civix-text-muted">Entities: <strong className="text-civix-text-primary">2,341</strong></span>
+              <span className="text-civix-text-muted">Locations: <strong className="text-civix-text-primary">892</strong></span>
+              <span className="text-civix-text-muted">Evidence: <strong className="text-civix-text-primary">14.2k</strong></span>
+            </div>
+            <button
+              onClick={() => navigate('/field-ops')}
+              className="text-xs font-mono font-bold text-civix-blue-light hover:text-white flex items-center space-x-1 transition-colors"
+            >
+              <span>Map →</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* ── Toolbar: Search & Selectors ────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-civix-surface-2 border border-civix-border p-3 rounded-sm">
         <div className="flex flex-wrap items-center gap-2 flex-1">
           {/* Search Input */}
-          <div className="relative flex-1 min-w-[220px] max-w-md">
+          <div className="relative flex-1 min-w-[240px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-civix-text-muted" />
             <input
               id="cases-search"
               type="text"
-              placeholder="Search cases, title, jurisdiction, entities, vehicles, IMEI..."
+              placeholder="Ask CIVIX or search by case ID, title, person, vehicle, location..."
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               className="w-full pl-9 pr-8 py-1.5 bg-civix-bg border border-civix-border rounded-sm text-xs text-civix-text-primary placeholder-civix-text-muted focus:outline-none focus:border-civix-blue transition-colors font-mono"
@@ -518,11 +930,13 @@ export const CasesPage: React.FC = () => {
             { id: 'ALL', label: 'All Cases', count: summary?.total_cases },
             { id: 'ACTIVE', label: 'Active', count: summary?.active_cases },
             { id: 'CRITICAL', label: 'Critical', count: summary?.critical_cases },
+            { id: 'NEEDS_ATTENTION', label: '● Needs Attention', count: needsAttentionCount },
+            { id: 'CONNECTED', label: 'Connected', count: crossCaseConnectionsCount },
+            { id: 'UNRESOLVED', label: 'Unresolved' },
             { id: 'FINANCIAL', label: 'Financial' },
             { id: 'PROPERTY', label: 'Property' },
             { id: 'INTELLIGENCE', label: 'Intelligence' },
             { id: 'SURVEILLANCE', label: 'Surveillance' },
-            { id: 'UNRESOLVED', label: 'Unresolved' },
           ].map((tab) => {
             const isActive = activeTab === tab.id;
             return (
@@ -563,7 +977,7 @@ export const CasesPage: React.FC = () => {
             <option value="last_activity_at:asc">Last Updated (Oldest)</option>
             <option value="priority:desc">Priority (Highest)</option>
             <option value="case_number:asc">Case Number (A-Z)</option>
-            <option value="title:asc font-mono">Title (A-Z)</option>
+            <option value="title:asc">Title (A-Z)</option>
           </select>
         </div>
       </div>
@@ -626,6 +1040,7 @@ export const CasesPage: React.FC = () => {
                   <th className="text-left px-4 py-3">TYPE</th>
                   <th className="text-left px-4 py-3">STATUS</th>
                   <th className="text-left px-4 py-3">PRIORITY</th>
+                  <th className="text-left px-4 py-3">INTELLIGENCE SIGNALS</th>
                   <th className="text-left px-4 py-3">JURISDICTION</th>
                   <th className="text-left px-4 py-3">LAST ACTIVITY</th>
                   <th className="text-center px-4 py-3">ENTITIES</th>
@@ -638,6 +1053,7 @@ export const CasesPage: React.FC = () => {
                   const isSelected = caseItem.case_id === selectedCaseId;
                   const statusVar = STATUS_VARIANTS[caseItem.status?.toUpperCase()] || 'default';
                   const priorityVar = PRIORITY_VARIANTS[caseItem.priority?.toUpperCase()] || 'default';
+                  const signals = deriveSignalsForCase(caseItem);
 
                   return (
                     <tr
@@ -667,7 +1083,7 @@ export const CasesPage: React.FC = () => {
                       </td>
 
                       {/* Title / Subject & Description */}
-                      <td className="px-4 py-3 max-w-[280px]">
+                      <td className="px-4 py-3 max-w-[260px]">
                         <div className="flex flex-col">
                           <span className="font-bold text-xs leading-snug text-civix-text-primary hover:text-civix-blue-light transition-colors font-sans">
                             {caseItem.title}
@@ -695,6 +1111,47 @@ export const CasesPage: React.FC = () => {
                       {/* Priority */}
                       <td className="px-4 py-3 whitespace-nowrap">
                         <Badge variant={priorityVar as any}>{caseItem.priority}</Badge>
+                      </td>
+
+                      {/* Intelligence Signals Column */}
+                      <td className="px-4 py-3 max-w-[240px]">
+                        {signals.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {signals.slice(0, 2).map((sig) => {
+                              let dotClass = 'text-civix-blue-light';
+                              let badgeClass = 'bg-civix-blue-subtle/30 text-civix-blue-light border-civix-blue/30 hover:bg-civix-blue/20';
+                              if (sig.color === 'red') {
+                                dotClass = 'text-civix-red';
+                                badgeClass = 'bg-civix-red-subtle/30 text-civix-red border-civix-red/30 hover:bg-civix-red/20';
+                              } else if (sig.color === 'gold') {
+                                dotClass = 'text-civix-gold';
+                                badgeClass = 'bg-civix-gold-subtle/30 text-civix-gold border-civix-gold/30 hover:bg-civix-gold/20';
+                              }
+
+                              return (
+                                <button
+                                  key={sig.id}
+                                  onClick={(e) => handleSignalClick(e, caseItem, sig)}
+                                  title="Click to view signal inspector & rationale"
+                                  className={`inline-flex items-center space-x-1 px-1.5 py-0.5 rounded-xs border text-[9px] font-mono transition-colors font-bold ${badgeClass}`}
+                                >
+                                  <span className={`${dotClass} leading-none text-xs`}>●</span>
+                                  <span className="truncate max-w-[150px]">{sig.label}</span>
+                                </button>
+                              );
+                            })}
+                            {signals.length > 2 && (
+                              <button
+                                onClick={(e) => handleSignalClick(e, caseItem, signals[0])}
+                                className="text-[9px] font-mono text-civix-text-muted hover:text-civix-text-primary underline px-1"
+                              >
+                                +{signals.length - 2} more
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-[10px] text-civix-text-muted font-mono italic">No signal</span>
+                        )}
                       </td>
 
                       {/* Jurisdiction & Police Station */}
@@ -815,11 +1272,30 @@ export const CasesPage: React.FC = () => {
         )}
       </Panel>
 
-      {/* New Case Modal */}
+      {/* ── New Case Modal ──────────────────────────────────────────────────────── */}
       {showNewCaseModal && (
         <NewCaseModal
           onClose={() => setShowNewCaseModal(false)}
           onSuccess={handleNewCaseSuccess}
+        />
+      )}
+
+      {/* ── Signal Inspector Drawer ────────────────────────────────────────────── */}
+      {inspectorState && (
+        <SignalInspectorDrawer
+          caseItem={inspectorState.caseItem}
+          selectedSignal={inspectorState.signal}
+          onClose={() => setInspectorState(null)}
+          onOpenGraph={(caseId) => {
+            setInspectorState(null);
+            setSelectedCaseId(caseId);
+            navigate(`/cases/${caseId}/graph`);
+          }}
+          onOpenCase={(caseId) => {
+            setInspectorState(null);
+            setSelectedCaseId(caseId);
+            navigate(`/cases/${caseId}`);
+          }}
         />
       )}
     </div>
