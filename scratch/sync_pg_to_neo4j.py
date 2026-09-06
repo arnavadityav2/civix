@@ -1,11 +1,21 @@
+import os
 import asyncio
 import asyncpg
 from neo4j import GraphDatabase
 
 async def sync_pg_to_neo4j():
-    print("=== SYNCING POSTGRESQL DEMO DATA TO NEO4J (PORT 7688) ===")
-    pg_conn = await asyncpg.connect("postgresql://postgres:postgres@localhost:5432/civix_demo")
-    driver = GraphDatabase.driver("bolt://localhost:7688", auth=("neo4j", "password"))
+    db_url = os.environ.get("CIVIX_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/civix_demo")
+    # Convert asyncpg driver string if needed
+    db_url_clean = db_url.replace("postgresql+asyncpg://", "postgresql://")
+    
+    neo4j_uri = os.environ.get("NEO4J_URI", "bolt://localhost:7688")
+    neo4j_user = os.environ.get("NEO4J_USER", "neo4j")
+    neo4j_pass = os.environ.get("NEO4J_PASSWORD", "password")
+
+    print(f"=== SYNCING POSTGRESQL DATA ({db_url_clean}) TO NEO4J ({neo4j_uri}) ===")
+    pg_conn = await asyncpg.connect(db_url_clean)
+    driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
+
 
     # 1. Sync Cases from civix.investigative_case
     cases = await pg_conn.fetch("""

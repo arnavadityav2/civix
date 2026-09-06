@@ -63,11 +63,9 @@ echo "⏳ Waiting for PostgreSQL and Neo4j databases to initialize..."
 sleep 15
 
 # 5. Execute Automated Database Seeding & Access Setup Pipeline
-echo "🌱 [5/5] Executing 12-Case Golden Universe Seeding Pipeline..."
-docker exec -it civix_backend python database/seed_12case_universe.py
-docker exec -it civix_backend python database/generate_all_visuals_fast.py
-docker exec -it civix_backend python scratch/grant_all_case_access.py
-docker exec -it civix_backend python scratch/cleanup_and_pin_cases.py
+echo "🌱 [5/5] Executing Master Environment Seeding & Graph Sync Pipeline..."
+docker exec civix_backend python scripts/bootstrap_environment.py
+
 
 echo ""
 echo "=========================================================================="
