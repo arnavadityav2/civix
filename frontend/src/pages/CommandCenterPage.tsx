@@ -1,30 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Folder, 
   Network, 
   MapPin, 
   Camera, 
-  Navigation, 
   Box, 
-  Bell, 
-  FileText, 
-  Zap, 
   ArrowRight, 
   LayoutGrid, 
-  AlertTriangle, 
-  Info, 
-  Video, 
-  Search, 
-  Upload, 
   Plus,
   Radio,
   Fingerprint
 } from 'lucide-react';
 import { FieldOperationsMap } from '../components/dashboard/FieldOperationsMap';
+import { NewCaseIntakeModal } from '../components/dashboard/NewCaseIntakeModal';
 
 export const CommandCenterPage: React.FC = () => {
   const navigate = useNavigate();
+  const [isNewCaseModalOpen, setIsNewCaseModalOpen] = useState(false);
 
   return (
     <div className="space-y-4 select-none font-sans">
@@ -93,8 +86,8 @@ export const CommandCenterPage: React.FC = () => {
           </button>
         </div>
 
-        {/* 4x2 Capability Grid with Full h-40 Height & Original Aspect Ratio */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        {/* 3x2 Capability Grid with Full h-40 Height & Original Aspect Ratio */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
 
           {/* Tile 1: Cases */}
           <div 
@@ -200,7 +193,7 @@ export const CommandCenterPage: React.FC = () => {
             {/* Real Background Image — Bright & Vivid */}
             <div 
               className="absolute inset-0 bg-cover bg-center opacity-90 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
-              style={{ backgroundImage: 'url(/assets/tile_leads_bg.jpg)' }}
+              style={{ backgroundImage: 'url(/assets/biometric_intel_bg.png)' }}
             />
             {/* Minimal bottom gradient for text contrast */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#07090E]/95 via-[#07090E]/40 to-transparent pointer-events-none" />
@@ -288,47 +281,43 @@ export const CommandCenterPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Tile 7: Movement Analysis */}
+        </div>
+      </div>
+
+      {/* ── 3. BOTTOM OPERATIONAL GRID (3 COLUMNS, 1:1:1 SPLIT) ───────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
+
+        {/* Field Operations Map (Spans 2 columns on lg screens) */}
+        <div className="lg:col-span-2 min-h-[440px] flex flex-col">
+          <FieldOperationsMap />
+        </div>
+
+        {/* Column 3: Actions & Secondary Modules */}
+        <div className="flex flex-col space-y-4">
+          
+          {/* New Case Button */}
           <div 
-            onClick={() => navigate('/spatial')}
-            className="group relative h-40 rounded-xl border border-[#1E2430] hover:border-emerald-500/80 overflow-hidden p-4 flex flex-col justify-between cursor-pointer transition-all hover:scale-[1.01] shadow-xl bg-[#090C12]"
+            onClick={() => setIsNewCaseModalOpen(true)}
+            className="bg-[#DC2626] border border-red-500 hover:bg-red-700 hover:border-red-400 p-6 rounded-xl cursor-pointer transition-all flex items-center justify-between shadow-lg group"
           >
-            {/* Real Background Image — Bright & Vivid */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center opacity-90 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
-              style={{ backgroundImage: 'url(/assets/tile_movement_bg.jpg)' }}
-            />
-            {/* Minimal bottom gradient for text contrast */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#07090E]/95 via-[#07090E]/40 to-transparent pointer-events-none" />
-
-            <div className="relative z-10 flex items-start justify-between">
-              <div className="p-2.5 bg-emerald-600/40 border border-emerald-500/60 backdrop-blur-md rounded-lg text-emerald-300 shadow-lg">
-                <Navigation className="w-5 h-5" />
-              </div>
+            <div>
+              <div className="text-xl font-black text-white uppercase tracking-widest drop-shadow-md">New Case</div>
+              <div className="text-xs font-semibold text-white/90 mt-1">Start a new investigation</div>
             </div>
-
-            <div className="relative z-10 flex items-end justify-between">
-              <div className="bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-white/10">
-                <h3 className="text-base font-extrabold text-white group-hover:text-emerald-400 transition-colors drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">Movement Analysis</h3>
-                <p className="text-xs text-slate-200 font-medium mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,1)]">Track. Trace. Reconstruct movement patterns.</p>
-              </div>
-              <div className="w-8 h-8 rounded-full bg-black/70 border border-white/30 backdrop-blur-md group-hover:border-emerald-500 group-hover:bg-emerald-600 group-hover:text-white flex items-center justify-center text-white transition-all shadow-lg">
-                <ArrowRight className="w-4 h-4" />
-              </div>
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors">
+              <Plus className="w-6 h-6 text-white" />
             </div>
           </div>
 
-          {/* Tile 8: 3D Forensics */}
+          {/* 3D Forensics Card */}
           <div 
             onClick={() => navigate('/entities')}
-            className="group relative h-40 rounded-xl border border-[#1E2430] hover:border-[#E6B325]/80 overflow-hidden p-4 flex flex-col justify-between cursor-pointer transition-all hover:scale-[1.01] shadow-xl bg-[#090C12]"
+            className="group relative h-40 rounded-xl border border-[#1E2430] hover:border-[#E6B325]/80 overflow-hidden p-4 flex flex-col justify-between cursor-pointer transition-all hover:scale-[1.01] shadow-xl bg-[#090C12] flex-1"
           >
-            {/* Real Background Image — Bright & Vivid */}
             <div 
               className="absolute inset-0 bg-cover bg-center opacity-90 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
               style={{ backgroundImage: 'url(/assets/tile_3d_bg.jpg)' }}
             />
-            {/* Minimal bottom gradient for text contrast */}
             <div className="absolute inset-0 bg-gradient-to-t from-[#07090E]/95 via-[#07090E]/40 to-transparent pointer-events-none" />
 
             <div className="relative z-10 flex items-start justify-between">
@@ -352,81 +341,13 @@ export const CommandCenterPage: React.FC = () => {
           </div>
 
         </div>
-      </div>
-
-      {/* ── 3. BOTTOM OPERATIONAL GRID (3 COLUMNS, 1:1:1 SPLIT) ───────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pt-1">
-
-        {/* Field Operations Map (Spans 2 columns on lg screens) */}
-        <div className="lg:col-span-2 min-h-[440px] flex flex-col">
-          <FieldOperationsMap />
-        </div>
-
-        {/* Column 3: Quick Actions (2x2 Grid) */}
-        <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-4 flex flex-col justify-between shadow-md">
-          <div>
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#1E2430] pb-2.5 mb-3">
-              <div className="flex items-center space-x-2">
-                <Zap className="w-4 h-4 text-amber-400" />
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Quick Actions</h3>
-              </div>
-            </div>
-
-            {/* 2x2 Sub-grid */}
-            <div className="grid grid-cols-2 gap-2.5">
-              {/* Action 1: New Case (Red background) */}
-              <div 
-                onClick={() => navigate('/cases')}
-                className="bg-[#DC2626] hover:bg-red-700 p-3 rounded-lg cursor-pointer transition-colors flex flex-col justify-between h-24 text-white shadow"
-              >
-                <Plus className="w-5 h-5" />
-                <div>
-                  <div className="font-extrabold text-xs">New Case</div>
-                  <div className="text-[9px] text-white/80 leading-none mt-0.5">Create a new investigation</div>
-                </div>
-              </div>
-
-              {/* Action 2: Global Search */}
-              <div 
-                onClick={() => navigate('/search')}
-                className="bg-[#161922] border border-[#1E2430] hover:border-slate-500 p-3 rounded-lg cursor-pointer transition-colors flex flex-col justify-between h-24 text-slate-200"
-              >
-                <Search className="w-5 h-5 text-blue-400" />
-                <div>
-                  <div className="font-extrabold text-xs text-white">Global Search</div>
-                  <div className="text-[9px] text-slate-400 leading-none mt-0.5">Search across all data</div>
-                </div>
-              </div>
-
-              {/* Action 3: Upload Evidence */}
-              <div 
-                onClick={() => navigate('/evidence')}
-                className="bg-[#161922] border border-[#1E2430] hover:border-slate-500 p-3 rounded-lg cursor-pointer transition-colors flex flex-col justify-between h-24 text-slate-200"
-              >
-                <Upload className="w-5 h-5 text-amber-400" />
-                <div>
-                  <div className="font-extrabold text-xs text-white">Upload Evidence</div>
-                  <div className="text-[9px] text-slate-400 leading-none mt-0.5">Add and process evidence</div>
-                </div>
-              </div>
-
-              {/* Action 4: Generate Report */}
-              <div 
-                onClick={() => navigate('/cases')}
-                className="bg-[#161922] border border-[#1E2430] hover:border-slate-500 p-3 rounded-lg cursor-pointer transition-colors flex flex-col justify-between h-24 text-slate-200"
-              >
-                <FileText className="w-5 h-5 text-emerald-400" />
-                <div>
-                  <div className="font-extrabold text-xs text-white">Generate Report</div>
-                  <div className="text-[9px] text-slate-400 leading-none mt-0.5">Create investigation report</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
+
+      <NewCaseIntakeModal 
+        isOpen={isNewCaseModalOpen} 
+        onClose={() => setIsNewCaseModalOpen(false)} 
+      />
 
     </div>
   );

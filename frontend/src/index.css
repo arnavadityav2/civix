@@ -344,3 +344,19 @@
     linear-gradient(to bottom, rgba(30, 45, 74, 0.25) 1px, transparent 1px);
   background-size: 24px 24px;
 }
+
+/* Custom Leaflet Tooltip for Dark Workstation Theme */
+.leaflet-tooltip-pane {
+  z-index: 99999 !important;
+}
+
+.civix-dark-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  z-index: 99999 !important;
+}
+.civix-dark-tooltip::before {
+  display: none !important;
+}

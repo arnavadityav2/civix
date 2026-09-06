@@ -38,8 +38,9 @@ DB_CONFIG = {
     "host":     os.getenv("CIVIX_DB_HOST",     "localhost"),
     "port":     int(os.getenv("CIVIX_DB_PORT", "5432")),
     "dbname":   os.getenv("CIVIX_DB_NAME",     "civix_demo"),
-    "user":     os.getenv("CIVIX_DB_USER",     "civix_admin"),
-    "password": os.getenv("CIVIX_DB_PASSWORD", ""),
+    "user":     os.getenv("CIVIX_DB_USER",     os.getenv("POSTGRES_USER", "postgres")),
+    "password": os.getenv("CIVIX_DB_PASSWORD", os.getenv("POSTGRES_PASSWORD", "postgres")),
+
     "options":  "-c search_path=civix,public",
 }
 

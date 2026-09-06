@@ -1,0 +1,430 @@
+{
+  "total_cases": 268,
+  "total_persons": 15672,
+  "total_case_entity_roles": 1379,
+  "person_columns": [
+    "entity_id",
+    "display_name",
+    "date_of_birth",
+    "gender",
+    "nationality",
+    "is_deceased",
+    "deceased_at",
+    "notes",
+    "avatar_url"
+  ],
+  "has_avatar_url": true,
+  "sample_cases": [
+    {
+      "number": "12345",
+      "title": "muj food ",
+      "status": "OPEN"
+    },
+    {
+      "number": "2025",
+      "title": "muj food scam",
+      "status": "OPEN"
+    },
+    {
+      "number": "CIV-2012-001",
+      "title": "Dwarka Sector 23 Cash Van Robbery",
+      "status": "CLOSED_SOLVED"
+    },
+    {
+      "number": "CIV-2018-036",
+      "title": "Nizamuddin Gold Bar Theft",
+      "status": "CLOSED_UNSOLVED"
+    },
+    {
+      "number": "CIV-2021-003",
+      "title": "NH-48 Dacoity with Truck Heist",
+      "status": "SUSPENDED"
+    },
+    {
+      "number": "CIV-2021-027",
+      "title": "KYC Phishing Ring \u2014 Shahdara",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "CIV-2023-032",
+      "title": "Digital Arrest Call Center \u2014 Rohini",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "CIV-2023-044",
+      "title": "Gurugram Benami Land Fraud",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "CIV-2024-010",
+      "title": "Arham Bullion GST Fraud & SAR Intelligence",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "CIV-2024-038",
+      "title": "IGI Cargo Smuggling & Interpol Overlap",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "CIV-2024-051",
+      "title": "Ghost Vendor PWD Procurement Fraud",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "CIV-2025-022",
+      "title": "Gold Bar Concealment \u2014 Okhla Warehouse",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "CIV-2026-009",
+      "title": "Najafgarh Robbery & Suresh Valmiki Arrest",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "CIV-2026-019",
+      "title": "Plate Cloning Ring \u2014 Spatial Paradox",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "SYN-2025-001",
+      "title": "Highway Hijacking near Rohini Corridor",
+      "status": "OPEN"
+    },
+    {
+      "number": "SYN-2025-002",
+      "title": "Commercial Burglary at Rohini Complex",
+      "status": "OPEN"
+    },
+    {
+      "number": "SYN-2025-003",
+      "title": "Land Encroachment & Forged Land Mutation",
+      "status": "OPEN"
+    },
+    {
+      "number": "SYN-2025-004",
+      "title": "Benami Property Transaction in Rohini",
+      "status": "CLOSED_SOLVED"
+    },
+    {
+      "number": "SYN-2025-005",
+      "title": "Nighttime Vehicle Theft Ring in Rohini",
+      "status": "ACTIVE"
+    },
+    {
+      "number": "SYN-2025-006",
+      "title": "POI Counter-Surveillance Movement Alert",
+      "status": "ACTIVE"
+    }
+  ],
+  "indexed_persons_in_db": [
+    {
+      "id": "09d7a50a-82dd-4acf-1c8c-ed1d70f5b332",
+      "name": "Ram Karan Singh"
+    },
+    {
+      "id": "263f32c4-30fd-40a8-b01b-6def1b47e90c",
+      "name": "Anita Mehta"
+    },
+    {
+      "id": "2e13da11-9613-34c3-cff3-6fdcc99038ee",
+      "name": "Dr. Ramesh Kapoor"
+    },
+    {
+      "id": "4b2aa1e0-3847-82ce-663d-dba144184ab6",
+      "name": "Imran Khan"
+    },
+    {
+      "id": "52cc467a-a55d-bbcb-fde9-985e251570de",
+      "name": "Aakash Verma"
+    },
+    {
+      "id": "637038f4-633f-8457-6de9-b7142bc10381",
+      "name": "Suresh Valmiki"
+    },
+    {
+      "id": "7bfb4b76-8bee-ccaf-10a6-009a09e6fc04",
+      "name": "Vikram Sharma"
+    },
+    {
+      "id": "d5104adc-27e6-2c80-0166-c8d673715d46",
+      "name": "Dinesh Yadav"
+    },
+    {
+      "id": "d747317f-ea1d-8e98-bc65-6f29f10d54f9",
+      "name": "Sudhir Prasad"
+    },
+    {
+      "id": "f5c4a848-1c97-4b39-cc96-bb0b4775f8e3",
+      "name": "Tariq Hussain"
+    }
+  ],
+  "indexed_persons_case_roles": [
+    {
+      "person_id": "52cc467a-a55d-bbcb-fde9-985e251570de",
+      "name": "Aakash Verma",
+      "role": "SUSPECT",
+      "case_number": "CIV-2021-027",
+      "case_title": "KYC Phishing Ring \u2014 Shahdara"
+    },
+    {
+      "person_id": "52cc467a-a55d-bbcb-fde9-985e251570de",
+      "name": "Aakash Verma",
+      "role": "SUSPECT",
+      "case_number": "CIV-2023-032",
+      "case_title": "Digital Arrest Call Center \u2014 Rohini"
+    },
+    {
+      "person_id": "263f32c4-30fd-40a8-b01b-6def1b47e90c",
+      "name": "Anita Mehta",
+      "role": "VICTIM",
+      "case_number": "CIV-2012-001",
+      "case_title": "Dwarka Sector 23 Cash Van Robbery"
+    },
+    {
+      "person_id": "d5104adc-27e6-2c80-0166-c8d673715d46",
+      "name": "Dinesh Yadav",
+      "role": "PERSON_OF_INTEREST",
+      "case_number": "CIV-2026-009",
+      "case_title": "Najafgarh Robbery & Suresh Valmiki Arrest"
+    },
+    {
+      "person_id": "d5104adc-27e6-2c80-0166-c8d673715d46",
+      "name": "Dinesh Yadav",
+      "role": "PERSON_OF_INTEREST",
+      "case_number": "CIV-2023-044",
+      "case_title": "Gurugram Benami Land Fraud"
+    },
+    {
+      "person_id": "2e13da11-9613-34c3-cff3-6fdcc99038ee",
+      "name": "Dr. Ramesh Kapoor",
+      "role": "VICTIM",
+      "case_number": "CIV-2023-032",
+      "case_title": "Digital Arrest Call Center \u2014 Rohini"
+    },
+    {
+      "person_id": "4b2aa1e0-3847-82ce-663d-dba144184ab6",
+      "name": "Imran Khan",
+      "role": "WITNESS",
+      "case_number": "CIV-2018-036",
+      "case_title": "Nizamuddin Gold Bar Theft"
+    },
+    {
+      "person_id": "09d7a50a-82dd-4acf-1c8c-ed1d70f5b332",
+      "name": "Ram Karan Singh",
+      "role": "VICTIM",
+      "case_number": "CIV-2012-001",
+      "case_title": "Dwarka Sector 23 Cash Van Robbery"
+    },
+    {
+      "person_id": "d747317f-ea1d-8e98-bc65-6f29f10d54f9",
+      "name": "Sudhir Prasad",
+      "role": "VICTIM",
+      "case_number": "CIV-2026-009",
+      "case_title": "Najafgarh Robbery & Suresh Valmiki Arrest"
+    },
+    {
+      "person_id": "637038f4-633f-8457-6de9-b7142bc10381",
+      "name": "Suresh Valmiki",
+      "role": "SUSPECT",
+      "case_number": "CIV-2012-001",
+      "case_title": "Dwarka Sector 23 Cash Van Robbery"
+    },
+    {
+      "person_id": "637038f4-633f-8457-6de9-b7142bc10381",
+      "name": "Suresh Valmiki",
+      "role": "SUSPECT",
+      "case_number": "CIV-2021-003",
+      "case_title": "NH-48 Dacoity with Truck Heist"
+    },
+    {
+      "person_id": "637038f4-633f-8457-6de9-b7142bc10381",
+      "name": "Suresh Valmiki",
+      "role": "ACCUSED",
+      "case_number": "CIV-2026-009",
+      "case_title": "Najafgarh Robbery & Suresh Valmiki Arrest"
+    },
+    {
+      "person_id": "f5c4a848-1c97-4b39-cc96-bb0b4775f8e3",
+      "name": "Tariq Hussain",
+      "role": "SUSPECT",
+      "case_number": "CIV-2025-022",
+      "case_title": "Gold Bar Concealment \u2014 Okhla Warehouse"
+    },
+    {
+      "person_id": "f5c4a848-1c97-4b39-cc96-bb0b4775f8e3",
+      "name": "Tariq Hussain",
+      "role": "SUSPECT",
+      "case_number": "CIV-2018-036",
+      "case_title": "Nizamuddin Gold Bar Theft"
+    },
+    {
+      "person_id": "f5c4a848-1c97-4b39-cc96-bb0b4775f8e3",
+      "name": "Tariq Hussain",
+      "role": "SUSPECT",
+      "case_number": "CIV-2024-010",
+      "case_title": "Arham Bullion GST Fraud & SAR Intelligence"
+    },
+    {
+      "person_id": "f5c4a848-1c97-4b39-cc96-bb0b4775f8e3",
+      "name": "Tariq Hussain",
+      "role": "SUSPECT",
+      "case_number": "CIV-2024-038",
+      "case_title": "IGI Cargo Smuggling & Interpol Overlap"
+    },
+    {
+      "person_id": "7bfb4b76-8bee-ccaf-10a6-009a09e6fc04",
+      "name": "Vikram Sharma",
+      "role": "SUSPECT",
+      "case_number": "CIV-2021-027",
+      "case_title": "KYC Phishing Ring \u2014 Shahdara"
+    },
+    {
+      "person_id": "7bfb4b76-8bee-ccaf-10a6-009a09e6fc04",
+      "name": "Vikram Sharma",
+      "role": "SUSPECT",
+      "case_number": "CIV-2012-001",
+      "case_title": "Dwarka Sector 23 Cash Van Robbery"
+    }
+  ],
+  "golden_case_civ2012001": {
+    "id": "1346a86d-267a-a635-9d62-e34c76ecd24f",
+    "number": "CIV-2012-001",
+    "title": "Dwarka Sector 23 Cash Van Robbery",
+    "status": "CLOSED_SOLVED"
+  },
+  "cctv_observation_columns": [
+    "observation_id",
+    "candidate_id",
+    "case_id",
+    "camera_id",
+    "track_id",
+    "instance_id",
+    "signal_class",
+    "reviewed_by",
+    "reviewed_at",
+    "investigator_notes",
+    "generation_run_id"
+  ],
+  "cctv_observation_count": 0,
+  "cctv_camera_count": 25,
+  "sample_cameras": [
+    {
+      "code": "CAM-DEL-01",
+      "name": "Connaught Place Inner Circle Junction",
+      "city": "Delhi",
+      "region": "Central Delhi"
+    },
+    {
+      "code": "CAM-DEL-02",
+      "name": "Dwarka Sector 23 Flyover Junction",
+      "city": "Delhi",
+      "region": "South West Delhi"
+    },
+    {
+      "code": "CAM-DEL-03",
+      "name": "DND Flyway Toll Plaza Gate 4",
+      "city": "Delhi / Noida",
+      "region": "South East Delhi"
+    },
+    {
+      "code": "CAM-DEL-04",
+      "name": "Gurugram Cyber Hub Rapid Metro Station",
+      "city": "Gurugram",
+      "region": "NCR"
+    },
+    {
+      "code": "CAM-DEL-05",
+      "name": "Anand Vihar ISBT Main Entry Gate",
+      "city": "Delhi",
+      "region": "East Delhi"
+    }
+  ],
+  "all_civix_tables": [
+    "account_holder",
+    "analysis_run",
+    "assertion",
+    "audit_event",
+    "case_access",
+    "case_entity_role",
+    "case_link",
+    "cctv_camera",
+    "cctv_detection",
+    "cctv_feed",
+    "cctv_match_candidate",
+    "cctv_observation",
+    "cctv_plate_detection",
+    "cctv_search_job",
+    "cctv_source",
+    "cctv_track",
+    "civix_user",
+    "data_quality_issue",
+    "dataset",
+    "device",
+    "entity",
+    "event",
+    "event_location",
+    "event_participant",
+    "evidence_artifact",
+    "evidence_generation_manifest",
+    "evidence_instance",
+    "extraction",
+    "financial_account",
+    "fir",
+    "forensic_report",
+    "generation_run",
+    "hypothesis",
+    "hypothesis_support",
+    "identity_candidate",
+    "identity_merge_event",
+    "identity_resolution",
+    "identity_split_event",
+    "investigation_task",
+    "investigative_case",
+    "investigative_finding",
+    "investigative_lead",
+    "legal_restriction",
+    "location",
+    "medical_report",
+    "network",
+    "observation",
+    "organization",
+    "outbox",
+    "person",
+    "person_alias",
+    "person_device_use",
+    "person_sim_ownership",
+    "phone_number",
+    "property",
+    "provenance",
+    "scenario",
+    "sim",
+    "sim_in_device",
+    "sim_number_assignment",
+    "source",
+    "source_identity",
+    "source_record",
+    "vehicle"
+  ],
+  "location_columns": [
+    "entity_id",
+    "location_name",
+    "geometry",
+    "location_type",
+    "uncertainty_radius_meters",
+    "altitude_meters",
+    "azimuth_degrees",
+    "beamwidth_degrees",
+    "source_record_id"
+  ],
+  "event_location_columns": [
+    "event_location_id",
+    "event_id",
+    "location_id",
+    "location_predicate",
+    "epistemic_status",
+    "case_id",
+    "source_record_id",
+    "generation_run_id",
+    "created_at"
+  ]
+}

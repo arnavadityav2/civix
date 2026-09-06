@@ -36,7 +36,11 @@ import {
   Zap,
   ExternalLink,
   ShieldAlert,
+  Network,
+  Sparkles
 } from 'lucide-react';
+import { EntityRegistryList, type RegistryEntity } from '../components/domain/EntityRegistryList';
+import { EntityConnectionsView } from '../components/domain/EntityConnectionsView';
 
 // ── Entity type display config ───────────────────────────────────────────────
 
@@ -381,41 +385,57 @@ function deriveDisplayIdentity(entityType: string, subtypeData: Record<string, a
 export const EntityDossierPage: React.FC = () => {
   const { entityId } = useParams<{ entityId: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
   const { selectedCaseId } = useCaseSelection();
+  const [viewConnectionsMode, setViewConnectionsMode] = useState(false);
 
-  const [expandedLeadId, setExpandedLeadId] = useState<string | null>(null);
-
-  // Navigation back
-  const canGoBack = !!location.key && location.key !== 'default';
-  function handleBack() {
-    if (canGoBack) navigate(-1);
-    else navigate('/search');
-  }
-
-  // 1. Fetch Entity Base + Subtype Data
-  const {
-    data: entityResponse,
-    isLoading: entityLoading,
-    error: entityError,
-    refetch: refetchEntity,
-  } = useQuery({
+  // 1. Identity Base + Subtype API
+  const { data: entityResponse, isLoading: entityLoading, error: entityError, refetch: refetchEntity } = useQuery({
     queryKey: ['entity', entityId],
-    queryFn: () => (entityId ? entitiesApi.getEntity(entityId) : Promise.reject(new Error('No entity ID'))),
-    enabled: !!entityId,
-    staleTime: 60_000,
+    queryFn: () => entitiesApi.getEntity(entityId!)
   });
 
-  // 2. Fetch C2 Identity Candidates
+  // 2. Fetch Case Entities (for the left column)
+  const { data: caseEntitiesData, isLoading: caseEntitiesLoading } = useQuery({
+    queryKey: ['caseEntities', selectedCaseId],
+    queryFn: () => (selectedCaseId ? casesApi.getCaseEntities(selectedCaseId) : Promise.resolve([])),
+    enabled: !!selectedCaseId
+  });
+
+  const mappedCaseEntities: RegistryEntity[] = React.useMemo(() => {
+    const rawData = caseEntitiesData as any;
+    const arrayData = Array.isArray(rawData) ? rawData : (rawData?.items || rawData?.entities || []);
+    return arrayData.map((e: any) => ({
+      entity: {
+        entity_id: e.entity_id,
+        entity_type: e.entity_type,
+        created_at: '',
+        visibility_status: 'ACTIVE',
+        role: e.role,
+        case_count: 1
+      },
+      subtype_data: {
+        display_name: e.display_name,
+        avatar_url: e.avatar_url,
+        legal_name: e.display_name,
+        model: e.display_name,
+        msisdn: e.display_name,
+        registration_number: e.display_name,
+        raw_identifier: e.display_name,
+        notes: e.role_basis
+      }
+    }));
+  }, [caseEntitiesData]);
+
+  // 3. Identity Resolution (Candidates) API
   const { data: candidatesData } = useQuery({
     queryKey: ['identityCandidates'],
     queryFn: () => identityApi.getCandidates(),
     staleTime: 60_000,
   });
 
-  // Filter candidates relevant to this entity
-  const matchingCandidates = (candidatesData?.candidates || []).filter(
-    (c) => c.proposed_person_id === entityId || c.source_identity_id === entityId
+  const matchingCandidates = (Array.isArray(candidatesData) ? candidatesData : (candidatesData?.candidates || [])).filter(
+    (c: any) => c.proposed_person_id === entityId || c.source_identity_id === entityId
   );
 
   // 3. Fetch Case List (to map case names for case involvement)
@@ -442,7 +462,8 @@ export const EntityDossierPage: React.FC = () => {
   });
 
   // Filter leads targeting this entity
-  const targetLeads = (leadsData || []).filter((l) => l.target_entity_id === entityId);
+  const leadsArray = Array.isArray(leadsData) ? leadsData : ((leadsData as any)?.items || (leadsData as any)?.leads || []);
+  const targetLeads = leadsArray.filter((l: any) => l.target_entity_id === entityId);
 
   // 6. Fetch Evidence for Active Case Context
   const { data: evidenceData } = useQuery({
@@ -458,7 +479,8 @@ export const EntityDossierPage: React.FC = () => {
     const entityNodes = graphData.nodes.filter(
       (n) => n.id === entityId || n.properties.entity_id === entityId
     );
-    const caseMap = new Map<string, CaseListItem>(casesList?.map((c: CaseListItem) => [c.case_id, c]));
+    const casesArray = Array.isArray(casesList) ? casesList : ((casesList as any)?.items || (casesList as any)?.cases || []);
+    const caseMap = new Map<string, CaseListItem>(casesArray.map((c: any) => [c.case_id, c]));
 
     const result: Array<{
       case_id: string;
@@ -631,7 +653,7 @@ export const EntityDossierPage: React.FC = () => {
             <span>Retry Query</span>
           </button>
           <button
-            onClick={handleBack}
+            onClick={() => setViewConnectionsMode(false)}
             className="civix-btn-secondary"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
@@ -642,14 +664,37 @@ export const EntityDossierPage: React.FC = () => {
     );
   }
 
+  // Pre-process connections for the graph
+  const connectionsForGraph = React.useMemo(() => {
+    const rels = graphData?.relationships;
+    const relsArray = Array.isArray(rels) ? rels : [];
+    return relsArray.map((r: any) => {
+      const isOutgoing = r.source === entityId;
+      const neighborId = isOutgoing ? r.target : r.source;
+      const nodes = graphData?.nodes;
+      const nodesArray = Array.isArray(nodes) ? nodes : [];
+      const neighborNode = nodesArray.find((n: any) => n.id === neighborId);
+      return {
+        id: r.id,
+        targetId: neighborId,
+        targetName: (neighborNode as any)?.label || neighborId,
+        targetType: (neighborNode as any)?.type || "Unknown",
+        predicate: formatPredicate(r.predicate),
+        rawPredicate: r.predicate,
+        epistemicStatus: r.epistemic_status,
+        isCandidate: r.is_candidate
+      };
+    });
+  }, [graphData, entityId]);
+
   // ── Data Extracted Truthfully ──────────────────────────────────────────────
-  const { entity, subtype_data } = entityResponse;
-  const entityType = entity.entity_type?.toUpperCase();
+  const { entity, subtype_data } = entityResponse || { entity: null, subtype_data: null };
+  const entityType = entity?.entity_type?.toUpperCase() || 'UNKNOWN';
   const displayIdentity = deriveDisplayIdentity(entityType, subtype_data);
   const EntityIcon = getEntityIcon(entityType);
-  const typeBadgeClass = ENTITY_COLOR_CLASS[entityType] || 'bg-civix-surface-2 border-civix-border text-civix-text-secondary';
-  const iconBorderClass = ENTITY_ICON_BORDER[entityType] || 'bg-civix-surface-2 border-civix-border';
-  const iconColorClass = ENTITY_ICON_COLOR[entityType] || 'text-civix-text-secondary';
+  const typeBadgeClass = ENTITY_COLOR_CLASS[entityType] || "bg-civix-surface-2 border-civix-border text-civix-text-secondary";
+  const iconBorderClass = ENTITY_ICON_BORDER[entityType] || "bg-civix-surface-2 border-civix-border";
+  const iconColorClass = ENTITY_ICON_COLOR[entityType] || "text-civix-text-secondary";
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-12">
@@ -659,7 +704,7 @@ export const EntityDossierPage: React.FC = () => {
         <div>
           <div className="flex items-center space-x-2 mb-2">
             <button
-              onClick={handleBack}
+              onClick={() => setViewConnectionsMode(false)}
               className="flex items-center space-x-1.5 text-xs font-semibold text-civix-text-muted hover:text-civix-text-main transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
@@ -720,455 +765,332 @@ export const EntityDossierPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Main 2-Column Dossier Workspace ───────────────────────────────────── */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      {/* ── Main 3-Column Dossier Workspace ───────────────────────────────────── */}
+      <div className="flex flex-col xl:flex-row gap-6 h-[800px]">
 
-        {/* Left Column (2/3 width): Core Attributes, C2 Resolution, Relationships, Leads */}
-        <div className="xl:col-span-2 space-y-6">
+        {/* Left Column (1/4 width): Entity Registry List */}
+        <div className="w-full xl:w-1/4 h-full hidden xl:block overflow-hidden flex-shrink-0">
+          <EntityRegistryList 
+            entities={mappedCaseEntities} 
+            isLoading={caseEntitiesLoading} 
+            selectedEntityId={entityId} 
+          />
+        </div>
 
-          {/* 1. ENTITY IDENTITY / CORE FACTS */}
-          <SectionPanel
-            title="Entity Base Record"
-            subtitle="Canonical attributes from PostgreSQL civix.entity"
-            headerRight={
-              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border ${typeBadgeClass}`}>
-                {entityType.replace('_', ' ')}
-              </span>
-            }
-          >
-            <div className="space-y-1">
-              <AttributeRow label="Entity ID" value={entity.entity_id} icon={Hash} mono />
-              <AttributeRow label="Entity Type" value={entityType.replace('_', ' ')} icon={ShieldCheck} />
-              <AttributeRow
-                label="Registered At"
-                value={new Date(entity.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}
-                icon={Clock}
-                mono
-              />
-              <AttributeRow
-                label="Visibility Status"
-                value={
-                  <span className="inline-flex items-center space-x-1 font-mono font-bold text-civix-green-400">
-                    <Eye className="w-3 h-3 text-civix-green-400" />
-                    <span>{entity.visibility_status}</span>
-                  </span>
-                }
-              />
-            </div>
-          </SectionPanel>
+        {/* Center & Right Column Container */}
+        <div className="w-full xl:w-3/4 h-full relative border border-civix-border rounded-sm bg-civix-surface">
+          {viewConnectionsMode ? (
+            <EntityConnectionsView 
+              entityId={entity.entity_id}
+              entityName={displayIdentity}
+              entityType={entityType}
+              relationships={connectionsForGraph}
+              onBack={() => setViewConnectionsMode(false)}
+            />
+          ) : (
+            <div className="w-full h-full overflow-y-auto p-6 custom-scrollbar">
+              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-          {/* Subtype Attributes */}
-          <SectionPanel
-            title="Subtype Attributes"
-            subtitle={`Structured fields from civix.${entityType.toLowerCase()} — backend-provided only`}
-          >
-            {renderSubtypeSection(entityType, subtype_data)}
-          </SectionPanel>
+                {/* Main Dossier Panels (2/3) */}
+                <div className="xl:col-span-2 space-y-6">
 
-          {/* 2. C2 IDENTITY RESOLUTION */}
-          <SectionPanel
-            title="C2 Identity Resolution"
-            subtitle="Deterministic identity candidate links & proposed resolution signals"
-            headerRight={
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-gold-950/40 border-civix-gold-600/40 text-civix-gold-400">
-                {matchingCandidates.length} CANDIDATES
-              </span>
-            }
-          >
-            {matchingCandidates.length > 0 ? (
-              <div className="space-y-4">
-                {/* Mandatory Disclaimer */}
-                <div className="bg-civix-gold-950/40 border border-civix-gold-600/40 rounded-sm p-3 space-y-1">
-                  <div className="flex items-center space-x-1.5 text-civix-gold-400 font-bold text-xs">
-                    <ShieldAlert className="w-4 h-4 text-civix-gold-500 flex-shrink-0" />
-                    <span>INSTITUTIONAL RESOLUTION DISCLAIMER</span>
-                  </div>
-                  <p className="text-[11px] text-civix-text-secondary leading-relaxed font-medium">
-                    Identity candidate relationships are proposed deterministic matches. They are <strong>NOT CONFIRMED RESOLUTIONS</strong>.
-                    CIVIX strictly enforces that candidate links do not auto-merge entities into a single identity profile without manual supervisor review.
-                  </p>
-                </div>
-
-                {/* Candidate List */}
-                <div className="space-y-3">
-                  {matchingCandidates.map((cand) => (
-                    <div key={cand.candidate_id} className="border border-civix-border rounded-sm bg-civix-surface p-3 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-gold-950/60 border-civix-gold-600/50 text-civix-gold-400">
-                            POSSIBLE / CANDIDATE
+                  {/* 1. ENTITY IDENTITY / CORE FACTS */}
+                  <SectionPanel
+                    title="Entity Base Record"
+                    subtitle="Canonical attributes from PostgreSQL civix.entity"
+                    headerRight={
+                      <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border ${typeBadgeClass}`}>
+                        {entityType.replace('_', ' ')}
+                      </span>
+                    }
+                  >
+                    <div className="space-y-1">
+                      <AttributeRow label="Entity ID" value={entity.entity_id} icon={Hash} mono />
+                      <AttributeRow label="Entity Type" value={entityType.replace('_', ' ')} icon={ShieldCheck} />
+                      <AttributeRow
+                        label="Registered At"
+                        value={new Date(entity.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}
+                        icon={Clock}
+                        mono
+                      />
+                      <AttributeRow
+                        label="Visibility Status"
+                        value={
+                          <span className="inline-flex items-center space-x-1 font-mono font-bold text-civix-green-400">
+                            <Eye className="w-3 h-3 text-civix-green-400" />
+                            <span>{entity.visibility_status}</span>
                           </span>
-                          <span className="text-xs font-mono font-bold text-civix-text-main">{cand.matching_rule_id}</span>
-                        </div>
-                        <span className="text-[10px] font-mono text-civix-text-muted">
-                          {new Date(cand.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'short', timeStyle: 'short' })}
-                        </span>
-                      </div>
+                        }
+                      />
+                    </div>
+                  </SectionPanel>
 
-                      <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
-                        <div>
-                          <p className="text-[9px] font-bold text-civix-text-muted uppercase">Candidate ID</p>
-                          <p className="text-[10px] text-civix-text-secondary truncate">{cand.candidate_id}</p>
-                        </div>
-                        <div>
-                          <p className="text-[9px] font-bold text-civix-text-muted uppercase">Source Identity ID</p>
-                          <p className="text-[10px] text-civix-text-secondary truncate">{cand.source_identity_id}</p>
-                        </div>
-                      </div>
+                  {/* Subtype Attributes */}
+                  <SectionPanel
+                    title="Subtype Attributes"
+                    subtitle={`Structured fields from civix.${entityType.toLowerCase()} — backend-provided only`}
+                  >
+                    {renderSubtypeSection(entityType, subtype_data)}
+                  </SectionPanel>
 
-                      <div>
-                        <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mb-1">Deterministic Matching Signals</p>
-                        <div className="flex flex-wrap gap-1">
-                          {cand.deterministic_signals.map((sig) => (
-                            <span key={sig} className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-surface-2 border-civix-border text-civix-text-secondary">
-                              {sig}
-                            </span>
+                  {/* 2. C2 IDENTITY RESOLUTION */}
+                  <SectionPanel
+                    title="C2 Identity Resolution"
+                    subtitle="Deterministic identity candidate links & proposed resolution signals"
+                    headerRight={
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-gold-950/40 border-civix-gold-600/40 text-civix-gold-400">
+                        {matchingCandidates.length} CANDIDATES
+                      </span>
+                    }
+                  >
+                    {matchingCandidates.length > 0 ? (
+                      <div className="space-y-4">
+                        <div className="bg-civix-gold-950/40 border border-civix-gold-600/40 rounded-sm p-3 space-y-1">
+                          <div className="flex items-center space-x-1.5 text-civix-gold-400 font-bold text-xs">
+                            <ShieldAlert className="w-4 h-4 text-civix-gold-500 flex-shrink-0" />
+                            <span>INSTITUTIONAL RESOLUTION DISCLAIMER</span>
+                          </div>
+                          <p className="text-[11px] text-civix-text-secondary leading-relaxed font-medium">
+                            Identity candidate relationships are proposed deterministic matches. They are <strong>NOT CONFIRMED RESOLUTIONS</strong>.
+                            CIVIX strictly enforces that candidate links do not auto-merge entities into a single identity profile without manual supervisor review.
+                          </p>
+                        </div>
+
+                        <div className="space-y-3">
+                          {matchingCandidates.map((cand) => (
+                            <div key={cand.candidate_id} className="border border-civix-border rounded-sm bg-civix-surface p-3 space-y-2">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-gold-950/60 border-civix-gold-600/50 text-civix-gold-400">
+                                    POSSIBLE / CANDIDATE
+                                  </span>
+                                  <span className="text-xs font-mono font-bold text-civix-text-main">{cand.matching_rule_id}</span>
+                                </div>
+                                <span className="text-[10px] font-mono text-civix-text-muted">
+                                  {new Date(cand.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'short', timeStyle: 'short' })}
+                                </span>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
+                                <div>
+                                  <p className="text-[9px] font-bold text-civix-text-muted uppercase">Candidate ID</p>
+                                  <p className="text-[10px] text-civix-text-secondary truncate">{cand.candidate_id}</p>
+                                </div>
+                                <div>
+                                  <p className="text-[9px] font-bold text-civix-text-muted uppercase">Source Identity ID</p>
+                                  <p className="text-[10px] text-civix-text-secondary truncate">{cand.source_identity_id}</p>
+                                </div>
+                              </div>
+
+                              <div>
+                                <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mb-1">Deterministic Matching Signals</p>
+                                <div className="flex flex-wrap gap-1">
+                                  {cand.deterministic_signals.map((sig) => (
+                                    <span key={sig} className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-surface-2 border-civix-border text-civix-text-secondary">
+                                      {sig}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {cand.supporting_evidence_ids && cand.supporting_evidence_ids.length > 0 && (
+                                <div className="pt-1">
+                                  <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mb-1">Supporting Evidence IDs</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {cand.supporting_evidence_ids.map((eid) => (
+                                      <span key={eid} className="text-[9px] font-mono px-1.5 py-0.5 rounded-sm bg-civix-surface-2 text-civix-text-muted">
+                                        {eid.substring(0, 8)}...
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           ))}
                         </div>
                       </div>
-
-                      {cand.supporting_evidence_ids && cand.supporting_evidence_ids.length > 0 && (
-                        <div className="pt-1">
-                          <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mb-1">Supporting Evidence IDs</p>
-                          <div className="flex flex-wrap gap-1">
-                            {cand.supporting_evidence_ids.map((eid) => (
-                              <span key={eid} className="text-[9px] font-mono px-1.5 py-0.5 rounded-sm bg-civix-surface-2 text-civix-text-muted">
-                                {eid.substring(0, 8)}...
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                    ) : (
+                      <TruthfulEmptyState
+                        title="NO IDENTITY CANDIDATES"
+                        description="No C2 identity candidate matching records exist for this entity in the identity candidate repository."
+                      />
+                    )}
+                  </SectionPanel>
                 </div>
-              </div>
-            ) : (
-              <TruthfulEmptyState
-                title="NO IDENTITY CANDIDATES"
-                description="No C2 identity candidate matching records exist for this entity in the identity candidate repository."
-              />
-            )}
-          </SectionPanel>
 
-          {/* 3. RELATIONSHIPS */}
-          <SectionPanel
-            title="Entity Relationships"
-            subtitle={selectedCaseId ? `Traversed relationships in Case ${selectedCaseId.substring(0, 8)}...` : 'Graph traversal requires an active case context'}
-            headerRight={
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400">
-                {entityRelationships.length} LINKS
-              </span>
-            }
-          >
-            {!selectedCaseId ? (
-              <TruthfulEmptyState
-                title="CASE CONTEXT REQUIRED"
-                description="Relationship graph traversal is ACL-bounded by case context. Select an active case to view projected relationships for this entity."
-                icon={GitFork}
-              />
-            ) : entityRelationships.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="civix-table">
-                  <thead>
-                    <tr>
-                      <th className="civix-table-th">Connected Entity</th>
-                      <th className="civix-table-th">Relationship</th>
-                      <th className="civix-table-th">Status / Epistemic</th>
-                      <th className="civix-table-th">Provenance</th>
-                      <th className="civix-table-th text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {entityRelationships.map((rel) => (
-                      <tr key={rel.id} className="civix-table-tr">
-                        <td className="civix-table-td">
-                          <div className="flex items-center space-x-2">
-                            <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm border ${ENTITY_COLOR_CLASS[rel.targetType] || 'bg-civix-surface-2 border-civix-border text-civix-text-secondary'}`}>
-                              {rel.targetType}
-                            </span>
-                            <span className="font-bold text-civix-text-main">{rel.targetName}</span>
-                          </div>
-                        </td>
-                        <td className="civix-table-td">
-                          <div>
-                            <span className="font-semibold text-civix-text-main">{rel.predicate}</span>
-                            <span className="text-[10px] font-mono text-civix-text-muted block">{rel.rawPredicate}</span>
-                          </div>
-                        </td>
-                        <td className="civix-table-td">
-                          {rel.isCandidate ? (
-                            <span className="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm border bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400">
-                              CANDIDATE
-                            </span>
-                          ) : rel.epistemicStatus ? (
-                            <span className="inline-flex items-center text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm border bg-civix-green-950 border-civix-green-600/50 text-civix-green-400">
-                              {rel.epistemicStatus}
-                            </span>
-                          ) : (
-                            <span className="text-[10px] font-mono text-civix-text-muted">EVIDENCE-BACKED</span>
-                          )}
-                        </td>
-                        <td className="civix-table-td font-mono text-[10px] text-civix-text-muted">
-                          {rel.assertionId ? `Assertion: ${rel.assertionId.substring(0, 8)}...` : 'Neo4j Projection'}
-                        </td>
-                        <td className="civix-table-td text-right">
-                          <button
-                            onClick={() => navigate(`/entities/${rel.targetId}`)}
-                            className="inline-flex items-center space-x-1 text-[11px] font-semibold text-civix-blue-400 hover:text-civix-blue-300 transition-colors"
-                          >
-                            <span>Dossier</span>
-                            <ChevronRight className="w-3 h-3" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <TruthfulEmptyState
-                title="NO PROJECTED RELATIONSHIPS"
-                description="No relationships are projected for this entity in the active case graph."
-              />
-            )}
-          </SectionPanel>
+                {/* Right Column (1/3 width): Intelligence & Leads */}
+                <div className="space-y-6">
 
-          {/* 4. INVESTIGATIVE LEADS & MODEL SIGNALS */}
-          <SectionPanel
-            title="Investigative Lead Signals (C3 Engine)"
-            subtitle="Automated findings, behavioral model signals, and explanation trace"
-            headerRight={
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400">
-                {targetLeads.length} LEADS
-              </span>
-            }
-          >
-            {!selectedCaseId ? (
-              <TruthfulEmptyState
-                title="CASE CONTEXT REQUIRED"
-                description="Lead analysis is case-scoped. Select an active case context to surface investigative leads for this entity."
-                icon={Zap}
-              />
-            ) : targetLeads.length > 0 ? (
-              <div className="space-y-4">
-                {targetLeads.map((lead) => {
-                  const isExpanded = expandedLeadId === lead.lead_id;
-                  const scoreFormatted = lead.ai_confidence != null ? (lead.ai_confidence * 100).toFixed(1) + '%' : 'N/A';
+                  {/* NETWORK / CONNECTIONS BUTTON PANEL */}
+                  <div className="civix-panel rounded-sm overflow-hidden p-6 bg-gradient-to-b from-civix-surface-2 to-civix-surface border-civix-blue-900/40">
+                    <h3 className="text-sm font-bold text-white uppercase tracking-widest font-mono flex items-center mb-2">
+                      <Network className="w-4 h-4 mr-2 text-civix-blue-400" />
+                      ENTITY GRAPH
+                    </h3>
+                    <p className="text-[11px] text-civix-text-muted mb-4 leading-relaxed">
+                      Visualize 1-hop connections, authoritative links, and ML-generated identity leads directly connected to this entity.
+                    </p>
+                    <button 
+                      onClick={() => setViewConnectionsMode(true)}
+                      className="w-full civix-btn-primary py-2.5 flex justify-center bg-civix-blue-600 hover:bg-civix-blue-500 border-civix-blue-400 text-white shadow-lg"
+                    >
+                      <GitFork className="w-4 h-4 mr-2" />
+                      <span>OPEN CONNECTIONS VIEW</span>
+                    </button>
+                    <div className="mt-3 text-center">
+                      <span className="text-[10px] font-mono text-civix-text-secondary uppercase">
+                        {graphData?.nodes?.length || 0} Nodes • {graphData?.relationships?.length || 0} Relationships
+                      </span>
+                    </div>
+                  </div>
 
-                  return (
-                    <div key={lead.lead_id} className="border border-civix-border rounded-sm bg-civix-surface overflow-hidden">
-                      {/* Lead Summary Bar */}
-                      <div className="p-3.5 bg-civix-surface-2 border-b border-civix-border flex flex-col md:flex-row md:items-center justify-between gap-2">
-                        <div className="space-y-1">
-                          <div className="flex items-center space-x-2">
-                            <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border ${
-                              lead.priority === 'HIGH' ? 'bg-civix-red-950 border-civix-red-600/50 text-civix-red-400' :
-                              lead.priority === 'MEDIUM' ? 'bg-civix-gold-950 border-civix-gold-600/50 text-civix-gold-400' :
-                              'bg-civix-surface border-civix-border text-civix-text-secondary'
-                            }`}>
-                              {lead.priority} PRIORITY
-                            </span>
-                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-surface border-civix-border text-civix-text-secondary">
-                              STATUS: {lead.status}
-                            </span>
-                            <span className="text-[10px] font-mono text-civix-text-muted">ID: {lead.lead_id.substring(0, 8)}...</span>
-                          </div>
-                          <p className="text-xs font-bold text-civix-text-main leading-snug">{lead.lead_text}</p>
-                        </div>
-
-                        {/* Model Signal Badge (STRICT TERMINOLOGY: NOT 'CONFIDENCE') */}
-                        <div className="flex items-center space-x-3 flex-shrink-0">
-                          <div className="text-right">
-                            <p className="text-[9px] font-bold text-civix-blue-400 uppercase tracking-wider">MODEL SIGNAL</p>
-                            <p className="text-sm font-extrabold font-mono text-civix-blue-300">{scoreFormatted}</p>
-                          </div>
-                          <button
-                            onClick={() => setExpandedLeadId(isExpanded ? null : lead.lead_id)}
-                            className="p-1.5 text-civix-text-muted hover:text-civix-text-main bg-civix-surface border border-civix-border rounded-sm transition-colors"
-                          >
-                            {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* CIVIX Canonical Intelligence Hierarchy */}
-                      <div className="p-3.5 bg-civix-surface text-xs space-y-3">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] font-mono border-b border-civix-border/40 pb-2.5">
-                          <div>
-                            <span className="text-civix-text-muted block uppercase">1. Source Evidence</span>
-                            <span className="font-bold text-civix-text-secondary">CDR / Case Registry</span>
-                          </div>
-                          <div>
-                            <span className="text-civix-text-muted block uppercase">2. Findings Count</span>
-                            <span className="font-bold text-civix-text-secondary">{lead.finding_count ?? 0} Deterministic</span>
-                          </div>
-                          <div>
-                            <span className="text-civix-text-muted block uppercase">3. Model Signal</span>
-                            <span className="font-bold text-civix-blue-400">Behavioral Score</span>
-                          </div>
-                          <div>
-                            <span className="text-civix-text-muted block uppercase">4. Explanation</span>
-                            <span className="font-bold text-civix-text-secondary">{lead.explanation_status || 'NOT_RUN'}</span>
-                          </div>
-                        </div>
-
-                        {/* Detailed findings trace if expanded */}
-                        {isExpanded && (
-                          <div className="pt-1 space-y-2 bg-civix-surface-2 p-3 rounded-sm border border-civix-border text-[11px]">
-                            <p className="font-bold text-civix-text-main uppercase tracking-wider text-[10px]">C3 Lead Trace Details</p>
-                            <p className="text-civix-text-secondary leading-relaxed font-sans">
-                              Feature Vector Version: <span className="font-mono text-civix-text-main">{lead.feature_vector_version || 'v1.0'}</span>
-                            </p>
-                            <div className="pt-2 flex items-center space-x-2">
+                  {/* 3. CASE INVOLVEMENT */}
+                  <SectionPanel
+                    title="Case Involvement"
+                    subtitle="Officially linked investigatory records via entity roles"
+                    headerRight={
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-surface-2 border-civix-border text-civix-text-secondary">
+                        {casesList?.length || 0} CASES
+                      </span>
+                    }
+                  >
+                    {casesList && casesList.length > 0 ? (
+                      <div className="divide-y divide-civix-border">
+                        {casesList.map((c) => (
+                          <div key={(c as any).case_id} className="py-3 first:pt-0 last:pb-0">
+                            <div className="flex justify-between items-start mb-1">
+                              <span className="text-xs font-mono font-bold text-civix-blue-400 tracking-wider">
+                                {(c as any).case_number}
+                              </span>
+                              <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm border uppercase ${
+                                (c as any).status.includes('CLOSED') ? 'bg-civix-surface-3 border-civix-border text-civix-text-muted'
+                                : 'bg-civix-green-950/40 border-civix-green-600/40 text-civix-green-400'
+                              }`}>
+                                {(c as any).status.replace('_', ' ')}
+                              </span>
+                            </div>
+                            <h4 className="text-xs font-sans text-civix-text-main font-semibold mb-2">{(c as any).title}</h4>
+                            <div className="flex items-center justify-between mt-2">
+                              <span className="text-[10px] font-mono px-2 py-0.5 bg-civix-gold/20 text-civix-gold border border-civix-gold/40 rounded-xs uppercase">
+                                {(c as any).role || 'SUBJECT'}
+                              </span>
                               <button
-                                onClick={() => navigate(`/cases/${selectedCaseId}`)}
-                                className="civix-btn-primary"
+                                onClick={() => navigate(`/cases/${(c as any).case_id}`)}
+                                className="flex items-center space-x-1 text-[10px] font-mono text-civix-text-secondary hover:text-white transition-colors"
                               >
-                                <ExternalLink className="w-3 h-3 text-civix-gold" />
-                                <span>Inspect in Case Workspace</span>
+                                <span>VIEW CASE</span>
+                                <ExternalLink className="w-3 h-3" />
                               </button>
                             </div>
                           </div>
-                        )}
+                        ))}
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <TruthfulEmptyState
-                title="NO TARGETED LEADS"
-                description="No C3 automated investigative leads target this entity in the active case file."
-              />
-            )}
-          </SectionPanel>
-
-        </div>
-
-        {/* Right Column (1/3 width): Case Involvement, Evidence, Registry Actions & Provenance */}
-        <div className="space-y-6">
-
-          {/* 5. CASE INVOLVEMENT */}
-          <SectionPanel
-            title="Case Involvement"
-            subtitle="Case files where this entity holds an assigned role"
-          >
-            {caseInvolvementList.length > 0 ? (
-              <div className="space-y-3">
-                {caseInvolvementList.map((c) => (
-                  <div key={c.case_id} className="border border-civix-border rounded-sm p-3 bg-civix-surface space-y-2">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <span className="civix-id">
-                          {c.case_number}
-                        </span>
-                        <h4 className="text-xs font-bold text-civix-text-main mt-1 leading-snug">{c.title}</h4>
-                      </div>
-                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-red-950 border-civix-red-600/50 text-civix-red-400">
-                        {c.role}
-                      </span>
-                    </div>
-
-                    {c.role_basis && (
-                      <p className="text-[11px] text-civix-text-secondary font-sans italic leading-tight">
-                        "{c.role_basis}"
-                      </p>
+                    ) : (
+                      <TruthfulEmptyState
+                        title="NO CASE LINKS"
+                        description="This entity is not actively linked to any cases in the registry."
+                        icon={Briefcase}
+                      />
                     )}
+                  </SectionPanel>
 
-                    <div className="pt-1 flex items-center justify-between border-t border-civix-border/40 text-[10px] font-mono text-civix-text-muted">
-                      <span>Jurisdiction: {c.jurisdiction}</span>
-                      <button
-                        onClick={() => navigate(`/cases/${c.case_id}`)}
-                        className="font-bold text-civix-blue-400 hover:text-civix-blue-300 transition-colors flex items-center space-x-1"
-                      >
-                        <span>Open Case</span>
-                        <ChevronRight className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <TruthfulEmptyState
-                title="NO CASE ASSIGNMENTS"
-                description="This entity is not explicitly linked to any active case file via case_entity_role."
-              />
-            )}
-          </SectionPanel>
-
-          {/* 6. EVIDENCE ARTIFACTS */}
-          <SectionPanel
-            title="Associated Evidence"
-            subtitle={selectedCaseId ? `Evidence files in Case ${selectedCaseId.substring(0, 8)}...` : 'Select a case context to view evidence'}
-          >
-            {!selectedCaseId ? (
-              <TruthfulEmptyState
-                title="CASE CONTEXT REQUIRED"
-                description="Evidence documents are case-scoped. Select a case context to surface evidence artifacts."
-                icon={FileText}
-              />
-            ) : (evidenceData || []).length > 0 ? (
-              <div className="space-y-2">
-                {(evidenceData || []).map((art) => (
-                  <div key={art.artifact_id} className="border border-civix-border rounded-sm p-2.5 bg-civix-surface space-y-1 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-civix-text-main truncate max-w-[180px]" title={art.original_filename}>
-                        {art.original_filename || 'Evidence File'}
+                  {/* 4. EVIDENCE INVOLVEMENT */}
+                  <SectionPanel
+                    title="Evidence Records"
+                    subtitle="Physical, digital, and trace evidence linked directly to this entity"
+                    headerRight={
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-surface-2 border-civix-border text-civix-text-secondary">
+                        {evidenceData?.length || 0} ITEMS
                       </span>
-                      <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm border ${
-                        art.processing_status === 'COMPLETED' ? 'bg-civix-green-950 border-civix-green-600/50 text-civix-green-400' :
-                        art.processing_status === 'FAILED' ? 'bg-civix-red-950 border-civix-red-600/50 text-civix-red-400' :
-                        art.processing_status === 'PROCESSING' ? 'bg-civix-blue-950 border-civix-blue-600/50 text-civix-blue-400' :
-                        'bg-civix-surface-2 border-civix-border text-civix-text-secondary'
-                      }`}>
-                        {art.processing_status}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] font-mono text-civix-text-muted">
-                      <span>{art.mime_type || 'binary/octet-stream'}</span>
-                      <span>{art.file_size_bytes ? (art.file_size_bytes / 1024).toFixed(1) + ' KB' : 'N/A'}</span>
-                    </div>
-
-                    {art.processing_status === 'FAILED' && (
-                      <div className="mt-1 p-1.5 bg-civix-red-950/40 border border-civix-red-600/40 rounded-sm text-[10px] text-civix-red-400 font-mono">
-                        FAILED_NLP: Text extraction failed or mime type unsupported.
+                    }
+                  >
+                    {evidenceData && evidenceData.length > 0 ? (
+                      <div className="grid grid-cols-1 gap-3">
+                        {evidenceData.map((ev) => (
+                          <div key={(ev as any).evidence_id} className="border border-civix-border rounded-sm bg-civix-surface p-3 flex items-start space-x-3">
+                            <div className="w-8 h-8 rounded-sm bg-civix-surface-3 flex items-center justify-center flex-shrink-0 border border-civix-border">
+                              <FileText className="w-4 h-4 text-civix-text-muted" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-semibold text-civix-text-main truncate">{(ev as any).title || (ev as any).original_filename || 'Evidence Record'}</p>
+                              <div className="flex items-center space-x-2 mt-1">
+                                <span className="text-[9px] font-mono text-civix-text-secondary uppercase">{(ev as any).evidence_type}</span>
+                                <span className="text-civix-border">•</span>
+                                <span className="text-[9px] font-mono text-civix-text-muted truncate">{(ev as any).evidence_id.substring(0, 8)}...</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
+                    ) : (
+                      <TruthfulEmptyState
+                        title="NO EVIDENCE"
+                        description="No evidence artifacts are currently linked to this entity."
+                        icon={FileText}
+                      />
                     )}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <TruthfulEmptyState
-                title="NO EVIDENCE ARTIFACTS"
-                description="No evidence documents are uploaded for the active case file."
-              />
-            )}
-          </SectionPanel>
+                  </SectionPanel>
 
-          {/* 7. PROVENANCE & AUDIT TRAIL */}
-          <SectionPanel
-            title="System Provenance"
-            subtitle="Record origin & access control scope"
-          >
-            <div className="space-y-2.5 text-xs">
-              <div className="bg-civix-surface border border-civix-border rounded-sm p-3 space-y-2">
-                <p className="text-[10px] font-bold text-civix-text-muted uppercase tracking-wider">Why does CIVIX know this entity?</p>
-                <p className="text-[11px] text-civix-text-secondary leading-relaxed font-sans">
-                  This entity record exists in PostgreSQL table <code className="font-mono text-civix-text-main bg-civix-surface-2 px-1 py-0.5 rounded-sm">civix.entity</code> and is indexed in the global intelligence network.
-                </p>
-                <div className="space-y-1 pt-1 text-[10px] font-mono text-civix-text-muted border-t border-civix-border/40">
-                  <p>RLS Access: <span className="font-bold text-civix-text-main">READ / WRITE Granted</span></p>
-                  <p>Visibility Status: <span className="font-bold text-civix-green-400">{entity.visibility_status}</span></p>
-                  <p>Ingestion Time: <span>{new Date(entity.created_at).toISOString()}</span></p>
+                  {/* AI INVESTIGATIVE LEADS */}
+                  <SectionPanel
+                    title="Intelligence Leads"
+                    subtitle="ML-surfaced associative signals"
+                    headerRight={
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-gold-950/40 border-civix-gold-600/40 text-civix-gold-400">
+                        {targetLeads.length} LEADS
+                      </span>
+                    }
+                  >
+                    {targetLeads.length > 0 ? (
+                      <div className="space-y-4">
+                        <div className="bg-civix-gold-950/40 border border-civix-gold-600/40 rounded-sm p-3">
+                          <div className="flex items-start space-x-2 text-civix-gold-400 font-bold text-[10px] uppercase tracking-wider mb-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-civix-gold flex-shrink-0 mt-0.5" />
+                            <span>MODEL OUTPUT — NOT CONFIRMATION</span>
+                          </div>
+                          <p className="text-[11px] text-civix-text-secondary leading-relaxed font-medium">
+                            The following leads are generated by the Behavioral Link Prediction Engine.
+                            They require investigator validation and ground truth evidence gathering.
+                          </p>
+                        </div>
+                        <div className="space-y-3">
+                          {targetLeads.map(lead => (
+                            <div key={lead.lead_id} className="border-l-2 border-civix-gold/60 pl-3 py-1 space-y-1.5 bg-civix-surface-2/50 p-2 rounded-r-sm">
+                              <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-mono font-bold text-civix-text-secondary uppercase">LEAD {lead.lead_id.substring(0, 8)}</span>
+                                <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm ${lead.priority === 'HIGH' || lead.priority === 'CRITICAL' ? 'bg-civix-red-950/40 border border-civix-red-600/40 text-civix-red-400' : 'bg-civix-surface-3 border border-civix-border text-civix-text-secondary'}`}>
+                                  {lead.priority || 'MEDIUM'}
+                                </span>
+                              </div>
+                              <p className="text-xs text-civix-text-main font-sans leading-relaxed">{lead.lead_text}</p>
+                              {lead.ai_confidence && (
+                                <div className="flex items-center space-x-2 pt-1">
+                                  <span className="text-[9px] font-mono text-civix-text-muted uppercase">Confidence</span>
+                                  <div className="w-16 h-1 bg-civix-surface-3 rounded-full overflow-hidden">
+                                    <div className="h-full bg-civix-gold" style={{ width: `${lead.ai_confidence * 100}%` }} />
+                                  </div>
+                                  <span className="text-[9px] font-mono text-civix-gold font-bold">{(lead.ai_confidence * 100).toFixed(0)}%</span>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <TruthfulEmptyState
+                        title="NO ML LEADS"
+                        description="The behavioral engine has not surfaced any investigative leads specific to this entity."
+                        icon={Zap}
+                      />
+                    )}
+                  </SectionPanel>
+
                 </div>
               </div>
             </div>
-          </SectionPanel>
-
+          )}
         </div>
       </div>
     </div>
   );
-};
+}

@@ -88,7 +88,7 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
         ? graphApi.getCaseGraph(caseId, depth)
         : Promise.reject(new Error('No case ID')),
     enabled: !!caseId,
-    staleTime: 30_000,
+    staleTime: 300_000,
   });
 
   // Dynamic Intelligence Counts

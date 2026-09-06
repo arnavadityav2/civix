@@ -68,6 +68,7 @@ services:
 
 
   seed:
+    profiles: ["setup"]
     build:
       context: .
       dockerfile: Dockerfile.backend

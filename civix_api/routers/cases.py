@@ -1334,3 +1334,98 @@ async def get_case_universe(
     )
 
 
+@router.get("/{case_id}/biometric-manifest")
+async def get_case_biometric_manifest(
+    case_id: str,
+    user: AuthenticatedCivixUser = Depends(get_current_user_from_token),
+    session: AsyncSession = Depends(get_rls_session)
+):
+    """
+    Returns all PERSON entities in a case along with their biometric enrollment status.
+    
+    This is the primary entry point for the Case → Person → Biometric workflow.
+    The frontend uses this to dynamically determine which persons have biometric
+    enrollment and should show [ANALYZE] vs [NO BIOMETRIC REFERENCE].
+    
+    No person IDs are hardcoded. Works for Golden Cases, synthetic cases, and future cases.
+    """
+    from civix_api.services.cv.biometric_engine import biometric_engine
+    
+    real_case_id = await resolve_case_id(session, case_id)
+    
+    # Load biometric engine if not loaded
+    if not biometric_engine._is_loaded:
+        try:
+            biometric_engine.load()
+        except Exception as e:
+            logger.warning(f"Could not load biometric engine for manifest: {e}")
+    
+    # Fetch all PERSON entities in the case
+    entity_query = text("""
+        SELECT 
+            cer.entity_id::text as entity_id,
+            cer.role::text as role,
+            p.display_name,
+            p.gender::text as gender,
+            p.date_of_birth,
+            p.nationality,
+            p.is_deceased
+        FROM civix.case_entity_role cer
+        JOIN civix.entity e ON cer.entity_id = e.entity_id
+        LEFT JOIN civix.person p ON cer.entity_id = p.entity_id
+        WHERE cer.case_id = :cid AND e.entity_type = 'PERSON'
+        ORDER BY 
+            CASE cer.role::text
+                WHEN 'SUSPECT' THEN 1
+                WHEN 'ACCUSED' THEN 2
+                WHEN 'PERSON_OF_INTEREST' THEN 3
+                WHEN 'WITNESS' THEN 4
+                WHEN 'VICTIM' THEN 5
+                ELSE 6
+            END,
+            p.display_name
+    """)
+    
+    result = await session.execute(entity_query, {"cid": real_case_id})
+    persons = []
+    
+    for row in result.fetchall():
+        m = row._mapping
+        entity_id = m["entity_id"]
+        
+        # Check biometric enrollment
+        enrolled = False
+        ref_count = 0
+        if biometric_engine._is_loaded and entity_id:
+            refs = biometric_engine.get_reference_info(entity_id)
+            enrolled = len(refs) > 0
+            ref_count = len(refs)
+        
+        persons.append({
+            "entity_id": entity_id,
+            "role": m["role"],
+            "display_name": m["display_name"] or "Unknown Person",
+            "gender": m["gender"],
+            "date_of_birth": m["date_of_birth"].isoformat() if m["date_of_birth"] else None,
+            "nationality": m["nationality"],
+            "is_deceased": m["is_deceased"],
+            "biometric_enrolled": enrolled,
+            "biometric_reference_count": ref_count,
+            "biometric_status": "AVAILABLE" if enrolled else "NO_REFERENCE"
+        })
+    
+    case_result = await session.execute(
+        text("SELECT case_number, title, status::text FROM civix.investigative_case WHERE case_id = :cid"),
+        {"cid": real_case_id}
+    )
+    case_row = case_result.fetchone()
+    
+    return {
+        "case_id": str(real_case_id),
+        "case_number": case_row[0] if case_row else None,
+        "case_title": case_row[1] if case_row else None,
+        "case_status": case_row[2] if case_row else None,
+        "persons": persons,
+        "enrolled_count": sum(1 for p in persons if p["biometric_enrolled"]),
+        "total_person_count": len(persons)
+    }

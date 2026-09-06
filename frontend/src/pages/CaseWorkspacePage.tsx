@@ -15,14 +15,13 @@ import {
   FileText,
   Users,
   Sparkles,
-  MapPin,
-  Clock,
-  Link2,
   ShieldCheck,
-  User
+  User,
+  MapPin
 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
+import { EntityRegistryList, type RegistryEntity } from '../components/domain/EntityRegistryList';
 import { SpatialIntelligencePage } from './SpatialIntelligencePage';
 import { InvestigativeGraphPage } from './InvestigativeGraphPage';
 import { CaseEvidenceVault } from '../components/domain/CaseEvidenceVault';
@@ -34,7 +33,7 @@ const PRIORITY_VARIANTS: Record<string, string> = {
   LOW: 'default',
 };
 
-type WorkspaceTab = 'OVERVIEW' | 'ENTITIES' | 'EVIDENCE' | 'LEADS' | 'TIMELINE' | 'SPATIAL' | 'GRAPH' | 'RELATED' | 'AUDIT';
+type WorkspaceTab = 'OVERVIEW' | 'ENTITIES' | 'EVIDENCE' | 'LEADS' | 'SPATIAL' | 'GRAPH';
 
 // Fix leaflet icon
 const markerIcon = new L.Icon({
@@ -63,7 +62,7 @@ export const CaseWorkspacePage: React.FC = () => {
   });
 
   // 2. Fetch Case Linked Entities
-  const { data: entitiesData } = useQuery({
+  const { data: entitiesData, isLoading: isEntitiesLoading } = useQuery({
     queryKey: ['case-entities', caseId],
     queryFn: () => (caseId ? casesApi.getCaseEntities(caseId) : Promise.resolve([])),
     enabled: !!caseId,
@@ -120,6 +119,26 @@ export const CaseWorkspacePage: React.FC = () => {
   const isGolden = !caseData.case_number.startsWith('SYN-');
   const entitiesList = entitiesData || [];
   const evidenceList = evidenceData || [];
+  
+  // Map raw case entities to RegistryEntity format for the new component
+  const mappedEntities: RegistryEntity[] = entitiesList.map((e: any) => ({
+    entity: {
+      entity_id: e.entity_id,
+      entity_type: e.entity_type,
+      created_at: '', // Not strictly needed for list view if absent
+      visibility_status: 'ACTIVE',
+      role: e.role,
+    },
+    subtype_data: {
+      display_name: e.display_name,
+      avatar_url: e.avatar_url,
+      legal_name: e.display_name,
+      model: e.display_name,
+      msisdn: e.display_name,
+      registration_number: e.display_name,
+      raw_identifier: e.display_name
+    }
+  }));
   const imageEvidenceList = evidenceList.filter(evidence => 
     evidence.mime_type?.startsWith('image/') || 
     evidence.original_filename?.match(/\.(png|jpg|jpeg|webp|gif)$/i)
@@ -206,11 +225,8 @@ export const CaseWorkspacePage: React.FC = () => {
           { id: 'ENTITIES', label: 'Entities', icon: Users, count: entitiesList.length },
           { id: 'EVIDENCE', label: 'Evidence', icon: FileText, count: evidenceList.length },
           { id: 'LEADS', label: 'Leads', icon: Sparkles, count: leadsList.length },
-          { id: 'TIMELINE', label: 'Timeline', icon: Clock },
           { id: 'SPATIAL', label: 'Spatial', icon: MapPin },
           { id: 'GRAPH', label: 'Graph', icon: GitFork },
-          { id: 'RELATED', label: 'Related Cases', icon: Link2 },
-          { id: 'AUDIT', label: 'Audit', icon: ShieldCheck },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -554,62 +570,11 @@ export const CaseWorkspacePage: React.FC = () => {
             </div>
           </div>
         ) : activeTab === 'ENTITIES' ? (
-          <div className="bg-civix-surface border border-civix-border rounded-sm shadow-sm">
-            <div className="border-b border-civix-border p-4 bg-civix-surface-2 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-widest font-mono">LINKED ENTITIES & SUSPECT MATRIX</h3>
-                <p className="text-[10px] font-sans text-civix-text-muted mt-1">All persons, organizations, vehicles, and devices linked to this case</p>
-              </div>
-            </div>
-            <div className="p-0">
-              {entitiesList.length === 0 ? (
-                <div className="py-12 text-center text-xs font-mono text-civix-text-muted">No entities linked to this case.</div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs font-mono border-collapse">
-                    <thead>
-                      <tr className="bg-civix-surface-2 border-b border-civix-border text-[9px] font-bold text-civix-text-muted uppercase tracking-widest">
-                        <th className="text-left px-4 py-3">NAME / IDENTIFIER</th>
-                        <th className="text-left px-4 py-3">ENTITY TYPE</th>
-                        <th className="text-left px-4 py-3">ASSIGNED ROLE</th>
-                        <th className="text-left px-4 py-3">ROLE BASIS / EVIDENCE</th>
-                        <th className="text-right px-4 py-3">ACTIONS</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-civix-border-subtle">
-                      {entitiesList.map((item) => (
-                        <tr key={item.role_id} className="hover:bg-civix-surface-3 transition-colors">
-                          <td className="px-4 py-3 font-sans font-bold text-civix-text-primary text-xs">
-                            {item.display_name}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-xs bg-civix-surface-3 border border-civix-border text-civix-text-secondary">
-                              {item.entity_type}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="bg-civix-gold/20 text-civix-gold border border-civix-gold/40 text-[9px] font-bold px-2 py-0.5 rounded-xs">
-                              {item.role}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-civix-text-muted font-sans text-xs max-w-xs truncate">
-                            {item.role_basis || 'Investigative Linking'}
-                          </td>
-                          <td className="px-4 py-3 text-right">
-                            <button
-                              onClick={() => navigate(`/entities/${item.entity_id}`)}
-                              className="civix-btn-secondary py-1 px-2.5 text-[10px] font-mono"
-                            >
-                              View Dossier
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+          <div className="h-[600px]">
+            <EntityRegistryList 
+              entities={mappedEntities} 
+              isLoading={isEntitiesLoading} 
+            />
           </div>
         ) : activeTab === 'EVIDENCE' ? (
           <CaseEvidenceVault

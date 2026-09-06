@@ -342,61 +342,65 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
     const caseCount = cy.nodes('[nodeType = "Case"]').length;
     const hasMultipleCases = caseCount >= 2;
 
-    // Run COSE layout on ALL elements so every node receives pre-computed coordinates.
-    // Expands edge length and node repulsion to naturally fill the full canvas space.
-    const layout = cy.elements().layout({
-      name: 'cose',
-      animate: false,
-      randomize: false,
-      componentSpacing: hasMultipleCases ? 260 : 160,
-      nodeRepulsion: (node: any) => {
-        const type = node.data('nodeType');
-        if (type === 'Case') return hasMultipleCases ? 50000 : 20000;
-        if (type === 'Lead') return 22000;
-        return 16000;
-      },
-      idealEdgeLength: (edge: any) => {
-        const srcType = edge.source().data('nodeType');
-        const tgtType = edge.target().data('nodeType');
-        if (srcType === 'Case' || tgtType === 'Case') {
-          return hasMultipleCases ? 280 : 180;
-        }
-        return 140;
-      },
-      gravity: hasMultipleCases ? 0.05 : 0.12,
-      edgeElasticity: (edge: any) => {
-        const srcType = edge.source().data('nodeType');
-        const tgtType = edge.target().data('nodeType');
-        if (srcType === 'Case' || tgtType === 'Case') return 20;
-        return 80;
-      },
-      numIter: 1800,
-    });
-    layout.run();
-
-    // Apply visibility filter after layout calculation
-    cy.batch(() => {
-      cy.nodes().forEach((nodeEle) => {
-        const type = nodeEle.data('nodeType');
-        if (hiddenEntityTypes && hiddenEntityTypes.has(type)) {
-          nodeEle.style('display', 'none');
-        } else {
-          nodeEle.style('display', 'element');
-        }
+    // Run COSE layout inside setTimeout so the browser UI thread is never blocked
+    setTimeout(() => {
+      if (!cyRef.current) return;
+      const layout = cy.elements().layout({
+        name: 'cose',
+        animate: false,
+        randomize: false,
+        componentSpacing: hasMultipleCases ? 220 : 140,
+        nodeRepulsion: (node: any) => {
+          const type = node.data('nodeType');
+          if (type === 'Case') return hasMultipleCases ? 30000 : 15000;
+          if (type === 'Lead') return 18000;
+          return 12000;
+        },
+        idealEdgeLength: (edge: any) => {
+          const srcType = edge.source().data('nodeType');
+          const tgtType = edge.target().data('nodeType');
+          if (srcType === 'Case' || tgtType === 'Case') {
+            return hasMultipleCases ? 220 : 150;
+          }
+          return 110;
+        },
+        gravity: hasMultipleCases ? 0.05 : 0.12,
+        edgeElasticity: (edge: any) => {
+          const srcType = edge.source().data('nodeType');
+          const tgtType = edge.target().data('nodeType');
+          if (srcType === 'Case' || tgtType === 'Case') return 20;
+          return 80;
+        },
+        numIter: 120,
       });
-      cy.edges().forEach((edgeEle) => {
-        const relType = edgeEle.data('rawRel')?.type;
-        if (hiddenRelTypes && hiddenRelTypes.has(relType)) {
-          edgeEle.style('display', 'none');
-        } else {
-          edgeEle.style('display', 'element');
-        }
-      });
-    });
+      layout.run();
 
-    cy.resize();
-    const visibleElements = cy.elements(':visible');
-    cy.fit(visibleElements.length > 0 ? visibleElements : undefined, 30);
+      // Apply visibility filter after layout calculation
+      cy.batch(() => {
+        cy.nodes().forEach((nodeEle) => {
+          const type = nodeEle.data('nodeType');
+          if (hiddenEntityTypes && hiddenEntityTypes.has(type)) {
+            nodeEle.style('display', 'none');
+          } else {
+            nodeEle.style('display', 'element');
+          }
+        });
+        cy.edges().forEach((edgeEle) => {
+          const relType = edgeEle.data('rawRel')?.type;
+          if (hiddenRelTypes && hiddenRelTypes.has(relType)) {
+            edgeEle.style('display', 'none');
+          } else {
+            edgeEle.style('display', 'element');
+          }
+        });
+      });
+
+      cy.resize();
+      const visibleElements = cy.elements(':visible');
+      if (visibleElements.length > 0) {
+        cy.fit(visibleElements, 30);
+      }
+    }, 0);
   }, [nodes, relationships]);
 
   // Handle Selection Highlights without triggering layout reflow
@@ -597,7 +601,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
         return 140;
       },
       gravity: hasMultipleCases ? 0.05 : 0.12,
-      numIter: 1800,
+      numIter: 300,
     });
     layout.run();
   }, [reLayoutTrigger]);

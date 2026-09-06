@@ -1,0 +1,20 @@
+{
+  "/cases/CIV-2012-001": {
+    "error": "HTTP Error 401: Unauthorized"
+  },
+  "/cases/CIV-2012-001/entities": {
+    "error": "HTTP Error 401: Unauthorized"
+  },
+  "/cases/CIV-2012-001/evidence": {
+    "error": "HTTP Error 401: Unauthorized"
+  },
+  "/cases/CIV-2012-001/events": {
+    "error": "HTTP Error 404: Not Found"
+  },
+  "/cases/CIV-2012-001/assertions": {
+    "error": "HTTP Error 405: Method Not Allowed"
+  },
+  "/cases/CIV-2012-001/graph": {
+    "error": "HTTP Error 401: Unauthorized"
+  }
+}

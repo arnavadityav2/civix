@@ -1,0 +1,28 @@
+{
+  "civix_test": {
+    "status": "CONNECTED",
+    "cases": 0,
+    "persons": 16189,
+    "roles": 0,
+    "person_columns": [
+      "entity_id",
+      "entity_type",
+      "display_name",
+      "date_of_birth",
+      "gender",
+      "nationality",
+      "is_deceased",
+      "deceased_at",
+      "notes",
+      "generation_run_id"
+    ],
+    "indexed_found": [],
+    "sample_cases": []
+  },
+  "civix_demo_5432": {
+    "status": "ERROR: password authentication failed for user \"civix_api\""
+  },
+  "civix_demo_5433": {
+    "status": "ERROR: database \"civix_demo\" does not exist"
+  }
+}

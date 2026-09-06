@@ -1008,23 +1008,23 @@ async def get_case_telecom_towers(
             l.azimuth_degrees,
             l.beamwidth_degrees,
             l.uncertainty_radius_meters,
-            ST_X(ST_Centroid(l.geometry)) as centroid_lon,
-            ST_Y(ST_Centroid(l.geometry)) as centroid_lat,
-            ST_AsGeoJSON(l.geometry) as geojson_geom,
-            COUNT(DISTINCT e.event_id) as hit_count,
-            COUNT(DISTINCT e.event_id) FILTER (WHERE e.event_type = 'CALL') as call_count,
-            COUNT(DISTINCT e.event_id) FILTER (WHERE e.event_type = 'DEVICE_PING') as ping_count,
+            ST_X(ST_Centroid(l.geometry::geometry)) as centroid_lon,
+            ST_Y(ST_Centroid(l.geometry::geometry)) as centroid_lat,
+            ST_AsGeoJSON(l.geometry::geometry) as geojson_geom,
+            COALESCE(COUNT(DISTINCT e.event_id), 0) as hit_count,
+            COALESCE(COUNT(DISTINCT e.event_id) FILTER (WHERE e.event_type = 'CALL'), 0) as call_count,
+            COALESCE(COUNT(DISTINCT e.event_id) FILTER (WHERE e.event_type = 'DEVICE_PING'), 0) as ping_count,
             MIN(lower(e.occurred_at)) as first_observed,
             MAX(lower(e.occurred_at)) as last_observed
         FROM civix.location l
-        JOIN civix.event_location el ON l.entity_id = el.location_id
-        JOIN civix.event e ON el.event_id = e.event_id
-        WHERE el.case_id = :case_id
-          AND l.location_type = 'CELL_SECTOR_POLYGON'
+        LEFT JOIN civix.event_location el ON l.entity_id = el.location_id AND el.case_id = :case_id
+        LEFT JOIN civix.event e ON el.event_id = e.event_id
+        WHERE ST_X(ST_Centroid(l.geometry::geometry)) BETWEEN 76.8 AND 77.6
+          AND ST_Y(ST_Centroid(l.geometry::geometry)) BETWEEN 28.2 AND 28.9
         GROUP BY l.entity_id, l.location_name, l.location_type, 
                  l.azimuth_degrees, l.beamwidth_degrees, l.uncertainty_radius_meters,
                  l.geometry
-        ORDER BY hit_count DESC
+        ORDER BY hit_count DESC, l.location_name ASC
     """)
 
     result = await session.execute(sql, {"case_id": real_case_id})
