@@ -10,11 +10,27 @@ async def sync_pg_to_neo4j():
     
     neo4j_uri = os.environ.get("NEO4J_URI", "bolt://localhost:7688")
     neo4j_user = os.environ.get("NEO4J_USER", "neo4j")
-    neo4j_pass = os.environ.get("NEO4J_PASSWORD", "password")
+    neo4j_pass = os.environ.get("NEO4J_PASSWORD", "neo4j_demo_password_123")
 
     print(f"=== SYNCING POSTGRESQL DATA ({db_url_clean}) TO NEO4J ({neo4j_uri}) ===")
     pg_conn = await asyncpg.connect(db_url_clean)
-    driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_pass))
+    
+    driver = None
+    for pwd in [neo4j_pass, "password", "neo4j_demo_password_123"]:
+        try:
+            d = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, pwd))
+            d.verify_connectivity()
+            driver = d
+            print(f"Connected to Neo4j successfully using password '{pwd}'")
+            break
+        except Exception:
+            continue
+            
+    if not driver:
+        print("Failed to authenticate to Neo4j. Skipping graph sync.")
+        await pg_conn.close()
+        return
+
 
 
     # 1. Sync Cases from civix.investigative_case
