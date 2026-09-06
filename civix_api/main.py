@@ -58,9 +58,11 @@ async def add_no_cache_headers(request: Request, call_next):
         response.headers["Expires"] = "0"
     return response
 
-evidence_store_path = r"C:\data\civix_demo\evidence_store"
+from .config import settings
+evidence_store_path = os.environ.get("CIVIX_EVIDENCE_STORE_PATH", getattr(settings, "civix_evidence_store_path", r"C:\data\civix_demo\evidence_store"))
 if os.path.exists(evidence_store_path):
     app.mount("/evidence_store", StaticFiles(directory=evidence_store_path), name="evidence_store")
+
 
 
 app.include_router(users.router)

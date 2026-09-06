@@ -19,8 +19,11 @@ class BiometricEngine:
     Uses OpenCV YuNet for face detection and SFace for embeddings.
     Operates entirely in-memory using a pre-generated embedding index.
     """
-    def __init__(self, data_dir: str = r"C:\data\civix_demo\biometric_demo"):
+    def __init__(self, data_dir: Optional[str] = None):
+        if data_dir is None:
+            data_dir = os.environ.get("CIVIX_BIOMETRIC_DATA_DIR", r"C:\data\civix_demo\biometric_demo")
         self.data_dir = Path(data_dir)
+
         self.models_dir = self.data_dir / "models"
         self.index_path = self.data_dir / "index.json"
         self.config_path = self.data_dir / "biometric_config.json"

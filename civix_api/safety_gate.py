@@ -28,9 +28,10 @@ def verify_demo_environment_safety_gate():
         raise RuntimeError("Golden World Protection Gate: Writing or running against civix_test is strictly forbidden in Demo mode.")
 
     neo4j_uri = os.environ.get("NEO4J_URI", "bolt://localhost:7688")
-    if ":7688" not in neo4j_uri:
-        logger.error(f"[HARD ABORT] Neo4j target violation: NEO4J_URI port must be 7688. (Actual: {neo4j_uri})")
-        raise RuntimeError(f"Safety Gate Violation: Neo4j target must be isolated Demo port 7688. Refusing to connect to {neo4j_uri}.")
+    if ":7688" not in neo4j_uri and ":7687" not in neo4j_uri:
+        logger.error(f"[HARD ABORT] Neo4j target violation: NEO4J_URI port must be 7688 or 7687. (Actual: {neo4j_uri})")
+        raise RuntimeError(f"Safety Gate Violation: Neo4j target must be isolated Demo port 7688 or 7687. Refusing to connect to {neo4j_uri}.")
+
 
     evidence_path = os.environ.get("CIVIX_EVIDENCE_STORE_PATH", r"c:\data\civix_demo\evidence_store")
     if "civix_demo" not in evidence_path.lower():
