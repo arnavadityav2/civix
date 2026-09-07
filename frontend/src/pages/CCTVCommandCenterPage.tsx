@@ -77,9 +77,14 @@ export const CCTVCommandCenterPage: React.FC = () => {
   const fetchCameras = () => {
     cctvApi.listCameras()
       .then(data => {
-        setCameras(data);
-        if (data.length > 0 && !selectedCameraId) {
-          setSelectedCameraId(data[0].camera_id);
+        // Pin CAM-DEL-15 (Akshardham Temple Flyover Loop with pre-recorded Delhi traffic video) to the very top!
+        const akshardham = data.find(c => c.camera_code === 'CAM-DEL-15' || c.display_name.toLowerCase().includes('akshardham'));
+        const others = data.filter(c => c.camera_code !== 'CAM-DEL-15' && !c.display_name.toLowerCase().includes('akshardham'));
+        const reordered = akshardham ? [akshardham, ...others] : data;
+
+        setCameras(reordered);
+        if (reordered.length > 0) {
+          setSelectedCameraId(reordered[0].camera_id);
         }
       })
       .catch(err => console.error(err));
