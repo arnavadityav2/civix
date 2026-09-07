@@ -14,6 +14,18 @@ async def main():
     print(f"Total cases in DB: {len(all_cases)}")
     
     async with conn.transaction():
+        # Ensure users exist in civix.civix_user first (prevents FK violation)
+        await conn.execute("""
+            INSERT INTO civix.civix_user (user_id, external_auth_id, username, display_name, role, clearance_level)
+            VALUES ($1::uuid, 'vikram.singh@civix.gov.in', 'user_9ac07e01', 'Lead Investigator Vikram Singh', 'ADMIN'::civix.civix_role_enum, 'SECRET'::civix.clearance_enum)
+            ON CONFLICT (user_id) DO UPDATE SET role = 'ADMIN'::civix.civix_role_enum, clearance_level = 'SECRET'::civix.clearance_enum;
+        """, vikram_uid)
+        await conn.execute("""
+            INSERT INTO civix.civix_user (user_id, external_auth_id, username, display_name, role, clearance_level)
+            VALUES ($1::uuid, 'auth_system_admin', 'civix_system', 'CIVIX System Admin', 'ADMIN'::civix.civix_role_enum, 'SECRET'::civix.clearance_enum)
+            ON CONFLICT (user_id) DO UPDATE SET role = 'ADMIN'::civix.civix_role_enum, clearance_level = 'SECRET'::civix.clearance_enum;
+        """, dev_uid)
+
         for uid in [vikram_uid, dev_uid]:
             for row in all_cases:
                 cid = row['case_id']

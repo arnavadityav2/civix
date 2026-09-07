@@ -296,7 +296,7 @@ export interface DeviceSimMatrixItem {
   model: string | null;
   case_count: number;
   event_count: number;
-  sims_observed: Array<{sim_id: string; iccid: string | null; imsi: string | null}>;
+  sims_observed: Array<{ sim_id: string; iccid: string | null; imsi: string | null }>;
   msisdns_observed: string[];
   sim_count: number;
   msisdn_count: number;
@@ -536,4 +536,4 @@ export interface BenchmarkCasesResponse {
   _note: string;
 }
 
-
+export type { TelecomEventsResponse, TelecomEntitiesResponse, TelecomTowersResponse };

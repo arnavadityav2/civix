@@ -33,10 +33,10 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
   const isAvailable = camera.status === 'LIVE' || camera.status === 'REGISTERED_ONLY';
   const rawFeedUrl = feeds && feeds.length > 0 ? feeds[0].feed_url : null;
   const isVideo = Boolean(rawFeedUrl) && (
-    rawFeedUrl!.toLowerCase().includes('.mp4') || 
-    rawFeedUrl!.toLowerCase().includes('.webm') || 
-    rawFeedUrl!.includes(':\\') || 
-    rawFeedUrl!.includes(':/') || 
+    rawFeedUrl!.toLowerCase().includes('.mp4') ||
+    rawFeedUrl!.toLowerCase().includes('.webm') ||
+    rawFeedUrl!.includes(':\\') ||
+    rawFeedUrl!.includes(':/') ||
     rawFeedUrl!.startsWith('file:')
   );
 
@@ -67,9 +67,9 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
             <AlertCircle size={32} className="mb-2 text-amber-500" />
             <p className="text-xs font-bold text-white">Unable to load feed stream directly</p>
             <p className="text-[10px] text-slate-400 mt-1 max-w-xs truncate">{rawFeedUrl}</p>
-            <a 
-              href={mediaSrc || rawFeedUrl} 
-              target="_blank" 
+            <a
+              href={mediaSrc || rawFeedUrl}
+              target="_blank"
               rel="noopener noreferrer"
               className="mt-3 text-xs font-bold text-white bg-[#161922] border border-[#1E2430] hover:border-slate-500 px-3 py-1.5 rounded-lg transition-colors"
             >
@@ -77,14 +77,14 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
             </a>
           </div>
         ) : (
-          <video 
+          <video
             key={mediaSrc || rawFeedUrl}
             ref={videoRef}
-            src={mediaSrc || rawFeedUrl} 
-            controls 
-            autoPlay 
-            muted 
-            loop 
+            src={mediaSrc || rawFeedUrl}
+            controls
+            autoPlay
+            muted
+            loop
             playsInline
             preload="auto"
             className="w-full h-full object-contain z-0"
@@ -92,10 +92,10 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
           />
         )
       ) : (
-        <img 
-          key={mediaSrc || rawFeedUrl}
-          src={mediaSrc || rawFeedUrl} 
-          alt={`${camera.display_name} feed`} 
+        <img
+          key={feedUrl}
+          src={feedUrl}
+          alt={`${camera.display_name} feed`}
           className="w-full h-full object-contain z-0"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
@@ -103,7 +103,7 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
           }}
         />
       )}
-      
+
       {/* Live Stream HUD Overlay Badges */}
       <div className="absolute top-3 left-3 flex items-center space-x-2 z-10 pointer-events-none">
         <div className="bg-black/75 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-0.5 rounded border border-white/15 uppercase tracking-wider flex items-center shadow">
@@ -111,7 +111,7 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
           {isVideo ? 'LIVE STREAM' : 'LIVE FRAME'}
         </div>
       </div>
-      
+
       <div className="absolute bottom-3 right-3 z-10 pointer-events-none">
         <div className="bg-black/75 backdrop-blur-md text-slate-300 text-[10px] px-2.5 py-0.5 rounded border border-white/15 font-mono shadow">
           TfL Open Data Stream
