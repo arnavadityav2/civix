@@ -530,70 +530,7 @@ export const CCTVCommandCenterPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Analysis Tabs */}
-            <div className="mt-3 pt-2.5 border-t border-[#1E2430]">
-              <div className="grid grid-cols-4 gap-1 bg-[#161922] p-1 rounded-lg border border-[#1E2430] text-[10px] font-bold text-center">
-                <button 
-                  onClick={() => setActiveTab('detections')}
-                  className={`py-1 rounded transition-colors ${activeTab === 'detections' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
-                >
-                  Detections
-                </button>
-                <button 
-                  onClick={() => setActiveTab('events')}
-                  className={`py-1 rounded transition-colors ${activeTab === 'events' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
-                >
-                  Events
-                </button>
-                <button 
-                  onClick={() => setActiveTab('map')}
-                  className={`py-1 rounded transition-colors ${activeTab === 'map' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
-                >
-                  Map
-                </button>
-                <button 
-                  onClick={() => setActiveTab('logs')}
-                  className={`py-1 rounded transition-colors ${activeTab === 'logs' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
-                >
-                  Logs
-                </button>
-              </div>
 
-              {/* Tab Content Breakdown */}
-              <div className="mt-2.5 space-y-1.5 text-xs">
-                <div className="bg-[#161922] border border-[#1E2430] rounded p-2 flex justify-between items-center">
-                  <div className="flex items-center space-x-2">
-                    <Users size={14} className="text-red-400" />
-                    <span className="font-bold text-slate-200">12 Persons</span>
-                  </div>
-                  <ChevronRight size={14} className="text-slate-500" />
-                </div>
-
-                <div className="bg-[#161922] border border-[#1E2430] rounded p-2 flex justify-between items-center">
-                  <div className="flex items-center space-x-2">
-                    <Car size={14} className="text-blue-400" />
-                    <span className="font-bold text-slate-200">7 Vehicles</span>
-                  </div>
-                  <ChevronRight size={14} className="text-slate-500" />
-                </div>
-
-                <div className="bg-[#161922] border border-[#1E2430] rounded p-2 flex justify-between items-center">
-                  <div className="flex items-center space-x-2">
-                    <FileText size={14} className="text-[#E6B325]" />
-                    <span className="font-bold text-slate-200">3 Number Plates</span>
-                  </div>
-                  <ChevronRight size={14} className="text-slate-500" />
-                </div>
-
-                <div className="bg-[#161922] border border-[#1E2430] rounded p-2 flex justify-between items-center">
-                  <div className="flex items-center space-x-2">
-                    <Boxes size={14} className="text-purple-400" />
-                    <span className="font-bold text-slate-200">2 Objects</span>
-                  </div>
-                  <ChevronRight size={14} className="text-slate-500" />
-                </div>
-              </div>
-            </div>
 
           </div>
 
