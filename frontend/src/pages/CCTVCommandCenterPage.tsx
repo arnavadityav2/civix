@@ -390,8 +390,8 @@ export const CCTVCommandCenterPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Video Box */}
-            <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-[#1E2430] bg-black shadow-inner">
+            {/* Video Box - Expanded Viewport */}
+            <div className="relative w-full min-h-[460px] lg:min-h-[520px] aspect-video rounded-lg overflow-hidden border border-[#1E2430] bg-black shadow-inner">
               <FeedViewer cameraData={cameraDetail} />
               
               {/* Overlay Watermarks & Bounding Box Simulations matching visual lock */}
@@ -429,78 +429,6 @@ export const CCTVCommandCenterPage: React.FC = () => {
                 </div>
               </div>
 
-            </div>
-
-          </div>
-
-          {/* Detection Timeline Section */}
-          <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-3 shadow">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-xs font-black text-white uppercase tracking-wider">DETECTION TIMELINE</h3>
-              <div className="flex items-center space-x-3 text-[10px] text-slate-400">
-                <span className="flex items-center"><span className="w-2 h-2 rounded-full bg-red-500 mr-1" /> Person</span>
-                <span className="flex items-center"><span className="w-2 h-2 rounded-full bg-blue-500 mr-1" /> Vehicle</span>
-                <span className="flex items-center"><span className="w-2 h-2 rounded-full bg-[#E6B325] mr-1" /> Object</span>
-              </div>
-            </div>
-
-            {/* Timeline Tracks */}
-            <div className="space-y-2 bg-[#161922] p-2.5 rounded-lg border border-[#1E2430] relative">
-              
-              {/* Scrub Line */}
-              <div className="absolute top-0 bottom-0 left-[62%] w-0.5 bg-white z-10">
-                <span className="absolute -top-2 -left-6 bg-blue-600 text-white font-mono text-[9px] px-1 rounded">
-                  19:52:17
-                </span>
-              </div>
-
-              {/* Persons Track */}
-              <div className="flex items-center text-[10px]">
-                <span className="w-24 text-slate-400 font-semibold truncate">Persons (8)</span>
-                <div className="flex-1 h-3 bg-slate-900 rounded relative flex items-center px-2">
-                  <span className="absolute left-[10%] w-1.5 h-1.5 rounded-full bg-red-500" />
-                  <span className="absolute left-[25%] w-1.5 h-1.5 rounded-full bg-red-500" />
-                  <span className="absolute left-[40%] w-1.5 h-1.5 rounded-full bg-red-500" />
-                  <span className="absolute left-[62%] w-2 h-2 rounded-full bg-red-400 ring-2 ring-red-500/50" />
-                  <span className="absolute left-[78%] w-1.5 h-1.5 rounded-full bg-red-500" />
-                  <span className="absolute left-[88%] w-1.5 h-1.5 rounded-full bg-red-500" />
-                </div>
-              </div>
-
-              {/* Vehicles Track */}
-              <div className="flex items-center text-[10px]">
-                <span className="w-24 text-slate-400 font-semibold truncate">Vehicles (5)</span>
-                <div className="flex-1 h-3 bg-slate-900 rounded relative flex items-center px-2">
-                  <span className="absolute left-[15%] w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  <span className="absolute left-[35%] w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  <span className="absolute left-[62%] w-2 h-2 rounded-full bg-blue-400 ring-2 ring-blue-500/50" />
-                  <span className="absolute left-[82%] w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  <span className="absolute left-[92%] w-1.5 h-1.5 rounded-full bg-blue-500" />
-                </div>
-              </div>
-
-              {/* Objects Track */}
-              <div className="flex items-center text-[10px]">
-                <span className="w-24 text-slate-400 font-semibold truncate">Objects (3)</span>
-                <div className="flex-1 h-3 bg-slate-900 rounded relative flex items-center px-2">
-                  <span className="absolute left-[20%] w-1.5 h-1.5 rounded-full bg-[#E6B325]" />
-                  <span className="absolute left-[50%] w-1.5 h-1.5 rounded-full bg-[#E6B325]" />
-                  <span className="absolute left-[75%] w-1.5 h-1.5 rounded-full bg-[#E6B325]" />
-                </div>
-              </div>
-
-              {/* Time axis */}
-              <div className="flex justify-between text-[9px] font-mono text-slate-500 pt-1 border-t border-slate-800">
-                <span>19:30</span>
-                <span>19:35</span>
-                <span>19:40</span>
-                <span>19:45</span>
-                <span>19:50</span>
-                <span>19:55</span>
-                <span>20:00</span>
-                <span>20:05</span>
-                <span>20:10</span>
-              </div>
             </div>
 
           </div>
