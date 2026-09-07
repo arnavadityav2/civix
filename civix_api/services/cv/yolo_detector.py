@@ -1,8 +1,14 @@
 from typing import List
 import cv2
 import numpy as np
-from ultralytics import YOLO
 import logging
+
+try:
+    from ultralytics import YOLO
+    YOLO_AVAILABLE = True
+except ImportError:
+    YOLO = None
+    YOLO_AVAILABLE = False
 
 from .base import BaseObjectDetector, CVDetection
 
@@ -39,6 +45,11 @@ def _enhance_frame(frame: np.ndarray) -> np.ndarray:
 
 class VehicleDetector(BaseObjectDetector):
     def __init__(self, model_path: str = "yolov8n.pt", conf_threshold: float = 0.25):
+        if not YOLO_AVAILABLE:
+            raise RuntimeError(
+                "ultralytics (YOLOv8) is not installed. "
+                "CCTV vehicle detection is unavailable in this deployment."
+            )
         logger.info(f"Loading VehicleDetector with model {model_path}, conf_threshold={conf_threshold}")
         self.model = YOLO(model_path)
         self.conf_threshold = conf_threshold

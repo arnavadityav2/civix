@@ -43,3 +43,6 @@ pyarrow==18.0.0
 # PDF / Evidence Processing
 pypdf2>=3.0.0
 pillow>=10.0.0
+
+# Computer Vision (headless — no GUI/display required on server)
+opencv-python-headless>=4.9.0
