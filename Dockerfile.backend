@@ -20,6 +20,7 @@ COPY civix_api /app/civix_api
 COPY civix_generator /app/civix_generator
 COPY models /app/models
 COPY data /app/data
+COPY database /app/database
 COPY scripts /app/scripts
 COPY scratch /app/scratch
 
