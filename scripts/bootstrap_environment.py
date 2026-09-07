@@ -87,6 +87,7 @@ def main():
     run_step("Granting PostgreSQL Row-Level Security (RLS) Permissions", [py_bin, "scratch/grant_all_case_access.py"])
 
     # 4. Clean & Pin Cases
+    run_step("Enriching Spatial Locations for Van Robbery Case", [py_bin, "scratch/enrich_van_robbery_locations.py"])
     run_step("Cleaning & Pinning Demo Cases", [py_bin, "scratch/cleanup_and_pin_cases.py"])
 
     # 5. Sync PG to Neo4j
