@@ -536,4 +536,4 @@ export interface BenchmarkCasesResponse {
   _note: string;
 }
 
-export type { TelecomEventsResponse, TelecomEntitiesResponse, TelecomTowersResponse };
+

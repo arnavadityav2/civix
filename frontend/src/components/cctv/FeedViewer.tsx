@@ -93,8 +93,8 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
         )
       ) : (
         <img 
-          key={feedUrl}
-          src={feedUrl} 
+          key={mediaSrc || rawFeedUrl}
+          src={mediaSrc || rawFeedUrl} 
           alt={`${camera.display_name} feed`} 
           className="w-full h-full object-contain z-0"
           onError={(e) => {
