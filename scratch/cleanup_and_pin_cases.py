@@ -1,8 +1,11 @@
+import os
 import asyncio
 import asyncpg
 
 async def main():
-    conn = await asyncpg.connect("postgresql://postgres:postgres@localhost:5432/civix_demo")
+    db_url = os.environ.get("CIVIX_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/civix_demo")
+    db_url_clean = db_url.replace("postgresql+asyncpg://", "postgresql://")
+    conn = await asyncpg.connect(db_url_clean)
     
     test_case_numbers = ['TEST-ORDER-001', '20226-055-TEST', '20226-055', 'ACL-446c2c', 'ACL-f27e3e']
     

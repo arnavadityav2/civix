@@ -1,8 +1,11 @@
+import os
 import asyncio
 import asyncpg
 
 async def main():
-    conn = await asyncpg.connect("postgresql://postgres:postgres@localhost:5432/civix_demo")
+    db_url = os.environ.get("CIVIX_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/civix_demo")
+    db_url_clean = db_url.replace("postgresql+asyncpg://", "postgresql://")
+    conn = await asyncpg.connect(db_url_clean)
     
     vikram_uid = '55284c17-1d58-461f-94f5-86c2a5215100'
     dev_uid = '00000000-0000-0000-0000-000000000001'
