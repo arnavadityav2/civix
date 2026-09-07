@@ -1,4 +1,37 @@
-# CIVIX 2.0 Production ML Dependencies
+# CIVIX 2.0 — Backend Runtime Dependencies
+# ─────────────────────────────────────────
+# FastAPI / Web Server
+fastapi>=0.111.0,<0.112.0
+uvicorn[standard]>=0.29.0,<0.30.0
+python-multipart>=0.0.9
+
+# Database — Async PostgreSQL
+asyncpg>=0.29.0,<0.30.0
+psycopg[binary]>=3.1.0,<3.2.0
+SQLAlchemy>=2.0.0,<2.1.0
+alembic>=1.13.0,<1.14.0
+GeoAlchemy2>=0.15.0
+
+# Graph Database — Neo4j
+neo4j>=5.15.0,<6.0.0
+
+# Auth / Security
+PyJWT>=2.8.0
+passlib[bcrypt]>=1.7.4
+bcrypt>=4.0.0
+
+# HTTP / Utilities
+httpx>=0.27.0
+python-dotenv>=1.0.0
+pydantic>=2.0.0,<3.0.0
+pydantic-settings>=2.0.0
+
+# AI / ML
+google-generativeai>=0.7.0
+groq>=0.9.0
+
+# CIVIX ML / Data Science
+joblib>=1.3.0
 duckdb==1.1.2
 xgboost==2.1.2
 pandas==2.2.3
@@ -6,18 +39,6 @@ numpy==2.1.2
 scikit-learn==1.5.2
 pyarrow==18.0.0
 
-# Database Migration Dependencies
-alembic>=1.13.0,<1.14.0
-SQLAlchemy>=2.0.0,<2.1.0
-psycopg[binary]>=3.1.0,<3.2.0
-# ---------------------------------------------------------
-# FROZEN RESEARCH DEPENDENCIES (Graph Neural Networks)
-# ---------------------------------------------------------
-# The following dependencies were used during the Phase 5 GNN
-# research branch (GraphSAGE / PyTorch Geometric).
-# Note: The GNN branch is currently FROZEN. The complete neighborhood
-# sampling stack (pyg-lib, torch-sparse) was UNAVAILABLE in this 
-# Windows CPU environment, preventing full-scale execution.
-#
-# torch==2.11.0+cu128
-# torch_geometric==2.8.0.post1
+# PDF / Evidence Processing
+pypdf2>=3.0.0
+pillow>=10.0.0
