@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
   Bell, 
-  ChevronDown, 
-  PhoneCall
+  ChevronDown
 } from 'lucide-react';
 
 interface AppHeaderProps {
@@ -131,20 +130,6 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ onSearchClick }) => {
             <span>EN</span>
             <ChevronDown className="w-3 h-3 text-slate-400 ml-1" />
           </div>
-
-          {/* Emergency Response Button (112 Red Pill) */}
-          <button 
-            onClick={() => navigate('/cases')}
-            className="flex items-center space-x-2 bg-[#DC2626] hover:bg-red-700 text-white px-3 py-1.5 rounded-md font-sans text-xs font-bold shadow-md transition-colors"
-          >
-            <PhoneCall className="w-4 h-4 fill-white" />
-            <div className="flex flex-col leading-none text-left">
-              <span className="text-sm font-extrabold leading-none">112</span>
-              <span className="text-[8px] font-medium tracking-tight opacity-90 leading-none mt-0.5">
-                Emergency Response
-              </span>
-            </div>
-          </button>
 
         </div>
       </div>
