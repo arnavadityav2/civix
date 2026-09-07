@@ -1,18 +1,18 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  Search, 
-  Filter, 
-  Route, 
-  RotateCcw, 
-  User, 
-  Building2, 
-  Smartphone, 
-  Phone, 
-  Car, 
-  CreditCard, 
-  MapPin, 
-  FileText, 
-  Briefcase, 
+import {
+  Search,
+  Filter,
+  Route,
+  RotateCcw,
+  User,
+  Building2,
+  Smartphone,
+  Phone,
+  Car,
+  CreditCard,
+  MapPin,
+  FileText,
+  Briefcase,
   Shield,
   MousePointerClick,
   CheckCircle2,
@@ -184,33 +184,30 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
         <div className="flex items-center bg-[#131b2e] border border-[#1e2d4a] p-0.5 rounded">
           <button
             onClick={() => handleTabClick('SEARCH')}
-            className={`flex-1 flex items-center justify-center gap-1 py-1 rounded text-[11px] font-semibold transition-colors ${
-              activeTab === 'SEARCH'
+            className={`flex-1 flex items-center justify-center gap-1 py-1 rounded text-[11px] font-semibold transition-colors ${activeTab === 'SEARCH'
                 ? 'bg-cyan-950/80 border border-cyan-500/60 text-cyan-400'
                 : 'text-slate-400 hover:text-slate-200'
-            }`}
+              }`}
           >
             <Search className="w-3 h-3" />
             <span>Search</span>
           </button>
           <button
             onClick={() => handleTabClick('FILTERS')}
-            className={`flex-1 flex items-center justify-center gap-1 py-1 rounded text-[11px] font-semibold transition-colors ${
-              activeTab === 'FILTERS'
+            className={`flex-1 flex items-center justify-center gap-1 py-1 rounded text-[11px] font-semibold transition-colors ${activeTab === 'FILTERS'
                 ? 'bg-cyan-950/80 border border-cyan-500/60 text-cyan-400'
                 : 'text-slate-400 hover:text-slate-200'
-            }`}
+              }`}
           >
             <Filter className="w-3 h-3" />
             <span>Filters</span>
           </button>
           <button
             onClick={() => handleTabClick('PATH')}
-            className={`flex-1 flex items-center justify-center gap-1 py-1 rounded text-[11px] font-semibold transition-colors ${
-              activeTab === 'PATH'
+            className={`flex-1 flex items-center justify-center gap-1 py-1 rounded text-[11px] font-semibold transition-colors ${activeTab === 'PATH'
                 ? 'bg-cyan-950/80 border border-cyan-500/60 text-cyan-400 font-bold'
                 : 'text-slate-400 hover:text-slate-200'
-            }`}
+              }`}
           >
             <Route className="w-3 h-3 text-cyan-400" />
             <span>Path</span>
@@ -257,11 +254,10 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
                   <button
                     key={node.id}
                     onClick={() => onSelectNode(node)}
-                    className={`w-full flex items-center justify-between p-2 rounded text-left border transition-colors ${
-                      isSelected
+                    className={`w-full flex items-center justify-between p-2 rounded text-left border transition-colors ${isSelected
                         ? 'bg-cyan-950/80 border-cyan-500 text-white'
                         : 'bg-[#131b2e]/60 border-[#1e2d4a] hover:bg-[#131b2e] hover:border-slate-600 text-slate-300'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <div className="w-6 h-6 rounded bg-[#0b0f19] border border-[#1e2d4a] flex items-center justify-center shrink-0">
@@ -401,9 +397,8 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
             )}
 
             {/* 1. Source Entity Card */}
-            <div className={`p-2.5 rounded border transition-all ${
-              pathSourceNode ? 'bg-[#131b2e] border-cyan-500/60' : 'bg-[#0b0f19] border-[#1e2d4a] border-dashed'
-            }`}>
+            <div className={`p-2.5 rounded border transition-all ${pathSourceNode ? 'bg-[#131b2e] border-cyan-500/60' : 'bg-[#0b0f19] border-[#1e2d4a] border-dashed'
+              }`}>
               <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                 <span className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 inline-block"></span>
@@ -441,9 +436,8 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
             </div>
 
             {/* 2. Target Entity Card */}
-            <div className={`p-2.5 rounded border transition-all ${
-              pathTargetNode ? 'bg-[#131b2e] border-amber-500/60' : 'bg-[#0b0f19] border-[#1e2d4a] border-dashed'
-            }`}>
+            <div className={`p-2.5 rounded border transition-all ${pathTargetNode ? 'bg-[#131b2e] border-amber-500/60' : 'bg-[#0b0f19] border-[#1e2d4a] border-dashed'
+              }`}>
               <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                 <span className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-amber-400 inline-block"></span>
@@ -500,11 +494,10 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
                 {pathFound && onToggleShowPath && (
                   <button
                     onClick={onToggleShowPath}
-                    className={`w-full py-2 px-3 rounded font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md ${
-                      isPathFiltered
+                    className={`w-full py-2 px-3 rounded font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md ${isPathFiltered
                         ? 'bg-amber-500 text-slate-950 hover:bg-amber-400'
                         : 'bg-cyan-500 text-slate-950 hover:bg-cyan-400'
-                    }`}
+                      }`}
                   >
                     {isPathFiltered ? (
                       <>

@@ -14,6 +14,9 @@ export interface SpatialCaseProperties {
   priority: CasePriority;
   case_type: CaseType;
   event_count: number;
+  provenance?: 'GOLDEN' | 'SYNTHETIC';
+  jurisdiction?: string;
+  police_station?: string;
   spatial_semantic: 'CASE_FOOTPRINT_CENTROID';
 }
 
@@ -68,6 +71,7 @@ export interface SpatialCaseQueryParams {
   status?: string;
   priority?: string;
   case_type?: string;
+  search?: string;
   limit?: number;
 }
 

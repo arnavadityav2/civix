@@ -31,10 +31,23 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
 
   const { camera, feeds } = cameraData;
   const isAvailable = camera.status === 'LIVE' || camera.status === 'REGISTERED_ONLY';
-  const feedUrl = feeds && feeds.length > 0 ? feeds[0].feed_url : null;
-  const isVideo = feedUrl?.toLowerCase().includes('.mp4') || feedUrl?.toLowerCase().includes('.webm');
+  const rawFeedUrl = feeds && feeds.length > 0 ? feeds[0].feed_url : null;
+  const isVideo = Boolean(rawFeedUrl) && (
+    rawFeedUrl!.toLowerCase().includes('.mp4') || 
+    rawFeedUrl!.toLowerCase().includes('.webm') || 
+    rawFeedUrl!.includes(':\\') || 
+    rawFeedUrl!.includes(':/') || 
+    rawFeedUrl!.startsWith('file:')
+  );
 
-  if (!isAvailable || !feedUrl) {
+  // Convert local disk file paths to HTTP streaming media endpoint
+  const mediaSrc = rawFeedUrl
+    ? (rawFeedUrl.startsWith('http://') || rawFeedUrl.startsWith('https://'))
+      ? rawFeedUrl
+      : `/api/v1/cctv/media/${camera.camera_id}`
+    : null;
+
+  if (!isAvailable || !rawFeedUrl) {
     return (
       <div className="w-full h-full min-h-[260px] bg-[#161922] border border-[#1E2430] rounded-lg flex flex-col items-center justify-center text-slate-400 relative overflow-hidden">
         <div className="absolute top-3 right-3 bg-red-950/80 text-red-400 text-[10px] font-extrabold px-2.5 py-0.5 rounded border border-red-600/40 uppercase">
@@ -53,9 +66,9 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
           <div className="flex flex-col items-center justify-center p-4 text-center text-slate-400 z-0">
             <AlertCircle size={32} className="mb-2 text-amber-500" />
             <p className="text-xs font-bold text-white">Unable to load feed stream directly</p>
-            <p className="text-[10px] text-slate-400 mt-1 max-w-xs truncate">{feedUrl}</p>
+            <p className="text-[10px] text-slate-400 mt-1 max-w-xs truncate">{rawFeedUrl}</p>
             <a 
-              href={feedUrl} 
+              href={mediaSrc || rawFeedUrl} 
               target="_blank" 
               rel="noopener noreferrer"
               className="mt-3 text-xs font-bold text-white bg-[#161922] border border-[#1E2430] hover:border-slate-500 px-3 py-1.5 rounded-lg transition-colors"
@@ -65,9 +78,9 @@ export const FeedViewer: React.FC<FeedViewerProps> = ({ cameraData }) => {
           </div>
         ) : (
           <video 
-            key={feedUrl}
+            key={mediaSrc || rawFeedUrl}
             ref={videoRef}
-            src={feedUrl} 
+            src={mediaSrc || rawFeedUrl} 
             controls 
             autoPlay 
             muted 

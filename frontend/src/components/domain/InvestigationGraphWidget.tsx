@@ -23,15 +23,15 @@ const INFRASTRUCTURE_LABELS = new Set(['Assertion', 'Event', 'Case', 'FIR', 'Sou
 // Dark institutional node colors — NO PURPLE
 // Device was #7c3aed (purple) — now uses blue (technical/analytical context)
 const NODE_COLORS: Record<string, { bg: string; border: string }> = {
-  Person:           { bg: '#0d2a4a', border: '#2d7dd2' },  // Blue — investigative subject
-  Organization:     { bg: '#1e1600', border: '#c8a84b' },  // Gold — entity/institution
-  Vehicle:          { bg: '#2d0a0a', border: '#c0392b' },  // Red — high attention
-  PhoneNumber:      { bg: '#001a0d', border: '#1e8449' },  // Green — verified contact
-  Device:           { bg: '#0d2a4a', border: '#2d7dd2' },  // Blue — technical
+  Person: { bg: '#0d2a4a', border: '#2d7dd2' },  // Blue — investigative subject
+  Organization: { bg: '#1e1600', border: '#c8a84b' },  // Gold — entity/institution
+  Vehicle: { bg: '#2d0a0a', border: '#c0392b' },  // Red — high attention
+  PhoneNumber: { bg: '#001a0d', border: '#1e8449' },  // Green — verified contact
+  Device: { bg: '#0d2a4a', border: '#2d7dd2' },  // Blue — technical
   FinancialAccount: { bg: '#1e1600', border: '#c8a84b' },  // Gold — financial entity
-  Location:         { bg: '#001a0d', border: '#1e8449' },  // Green — geographic
-  Evidence:         { bg: '#2a163d', border: '#8b5cf6' },  // Purple — evidence
-  Lead:             { bg: '#3d162a', border: '#ec4899' },  // Pink — lead
+  Location: { bg: '#001a0d', border: '#1e8449' },  // Green — geographic
+  Evidence: { bg: '#2a163d', border: '#8b5cf6' },  // Purple — evidence
+  Lead: { bg: '#3d162a', border: '#ec4899' },  // Pink — lead
 };
 const FALLBACK_COLOR = { bg: '#141c2e', border: '#2a3d62' };
 
@@ -208,7 +208,7 @@ export const InvestigationGraphWidget: React.FC = () => {
     : 0;
   const invEdgeCount = graphData
     ? graphData.nodes.filter((n) => getPrimaryLabel(n.labels) === 'Assertion' &&
-        n.properties.subject_entity_id && n.properties.object_entity_id && n.properties.predicate).length
+      n.properties.subject_entity_id && n.properties.object_entity_id && n.properties.predicate).length
     : 0;
 
   return (

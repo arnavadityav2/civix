@@ -143,7 +143,12 @@ export const VisualAnalysisPage: React.FC = () => {
   };
 
   const camera = cameraDetail?.camera;
-  const feedUrl = cameraDetail?.feeds && cameraDetail.feeds.length > 0 ? cameraDetail.feeds[0].feed_url : null;
+  const rawFeedUrl = cameraDetail?.feeds && cameraDetail.feeds.length > 0 ? cameraDetail.feeds[0].feed_url : null;
+  const mediaSrc = rawFeedUrl
+    ? (rawFeedUrl.startsWith('http://') || rawFeedUrl.startsWith('https://'))
+      ? rawFeedUrl
+      : `/api/v1/cctv/media/${cameraId}`
+    : null;
 
   const getClassColor = (cls: string) => {
     switch (cls.toLowerCase()) {
@@ -317,9 +322,9 @@ export const VisualAnalysisPage: React.FC = () => {
         {/* Large Video Display (8 cols) */}
         <div className="lg:col-span-8 bg-[#11141C] border border-[#1E2430] rounded-xl p-3.5 flex flex-col shadow-lg">
           <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden border border-[#1E2430] flex items-center justify-center">
-            {feedUrl ? (
+            {mediaSrc ? (
               <video
-                src={feedUrl}
+                src={mediaSrc}
                 autoPlay
                 muted
                 loop

@@ -398,7 +398,7 @@ export const EntityDossierPage: React.FC = () => {
   // 2. Fetch Case Entities (for the left column)
   const { data: caseEntitiesData, isLoading: caseEntitiesLoading } = useQuery({
     queryKey: ['caseEntities', selectedCaseId],
-    queryFn: () => (selectedCaseId ? casesApi.getCaseEntities(selectedCaseId) : Promise.resolve([])),
+    queryFn: () => (selectedCaseId ? casesApi.getCaseEntities(selectedCaseId) : Promise.resolve(null)),
     enabled: !!selectedCaseId
   });
 
@@ -473,148 +473,28 @@ export const EntityDossierPage: React.FC = () => {
     staleTime: 30_000,
   });
 
-  // Derive Case Involvement from graph nodes & case list
-  const caseInvolvementList = React.useMemo(() => {
+  // Pre-process connections for the graph
+  const connectionsForGraph = React.useMemo(() => {
     if (!graphData || !entityId) return [];
-    const entityNodes = graphData.nodes.filter(
-      (n) => n.id === entityId || n.properties.entity_id === entityId
-    );
-    const casesArray = Array.isArray(casesList) ? casesList : ((casesList as any)?.items || (casesList as any)?.cases || []);
-    const caseMap = new Map<string, CaseListItem>(casesArray.map((c: any) => [c.case_id, c]));
-
-    const result: Array<{
-      case_id: string;
-      case_number: string;
-      title: string;
-      role: string;
-      role_basis?: string;
-      status: string;
-      jurisdiction: string;
-    }> = [];
-
-    // Find HAS_ROLE edges from Case -> Entity
-    const roleRels = graphData.relationships.filter(
-      (r) => r.type === 'HAS_ROLE' && r.end_node === entityId
-    );
-
-    for (const rel of roleRels) {
-      const caseNode = graphData.nodes.find((n) => n.id === rel.start_node);
-      const caseMeta = caseNode ? caseMap.get(caseNode.id) : null;
-      const cId = caseNode?.id || selectedCaseId || '';
-      const cNum = (caseNode?.properties?.case_number as string | undefined) || caseMeta?.case_number || 'CASE';
-      const cTitle = (caseNode?.properties?.title as string | undefined) || caseMeta?.title || 'Investigative Case';
-      const cStatus = (caseNode?.properties?.status as string | undefined) || caseMeta?.status || 'OPEN';
-      const cJur = (caseNode?.properties?.jurisdiction as string | undefined) || caseMeta?.jurisdiction || 'DELHI NCR';
-      const role = rel.properties?.role || 'SUSPECT';
-      const roleBasis = rel.properties?.role_basis || undefined;
-
-      result.push({
-        case_id: cId,
-        case_number: cNum,
-        title: cTitle,
-        role: String(role),
-        role_basis: roleBasis ? String(roleBasis) : undefined,
-        status: cStatus,
-        jurisdiction: cJur,
-      });
-    }
-
-    // Fallback: if selectedCaseId exists and entity is in graph, but HAS_ROLE wasn't captured directly
-    if (result.length === 0 && entityNodes.length > 0 && selectedCaseId) {
-      const cMeta = caseMap.get(selectedCaseId);
-      if (cMeta) {
-        result.push({
-          case_id: cMeta.case_id,
-          case_number: cMeta.case_number,
-          title: cMeta.title,
-          role: String(entityNodes[0].properties.role || 'SUBJECT_ENTITY'),
-          role_basis: entityNodes[0].properties.role_basis ? String(entityNodes[0].properties.role_basis) : undefined,
-          status: cMeta.status,
-          jurisdiction: cMeta.jurisdiction,
-        });
-      }
-    }
-
-    return result;
-  }, [graphData, entityId, casesList, selectedCaseId]);
-
-  // Derive Graph Relationships connected to this entity
-  const entityRelationships = React.useMemo(() => {
-    if (!graphData || !entityId) return [];
-    const nodeMap = new Map<string, GraphNode>(graphData.nodes.map((n) => [n.id, n]));
-    const rels: Array<{
-      id: string;
-      targetId: string;
-      targetName: string;
-      targetType: string;
-      predicate: string;
-      rawPredicate: string;
-      epistemicStatus?: string;
-      assertionId?: string;
-      isCandidate?: boolean;
-    }> = [];
-
-    // 1. Direct relationships connected to this entity
-    for (const r of graphData.relationships) {
-      if (r.start_node === entityId || r.end_node === entityId) {
-        const otherId = r.start_node === entityId ? r.end_node : r.start_node;
-        const otherNode = nodeMap.get(otherId);
-        if (!otherNode) continue;
-        const targetType = otherNode.labels[0] || 'Entity';
-        if (['Case', 'Assertion', 'Event'].includes(targetType)) continue;
-
-        const targetName =
-          otherNode.properties.display_name ||
-          otherNode.properties.legal_name ||
-          otherNode.properties.registration_number ||
-          otherNode.properties.msisdn ||
-          otherNode.id;
-
-        rels.push({
-          id: r.id,
-          targetId: otherId,
-          targetName: cleanSyntheticSuffix(String(targetName)),
-          targetType,
-          predicate: formatPredicate(r.type),
-          rawPredicate: r.type,
-          epistemicStatus: r.properties?.role || undefined,
-          isCandidate: r.type === 'CANDIDATE_FOR',
-        });
-      }
-    }
-
-    // 2. Assertion-based relationships where subject/object matches entityId
-    const assertionNodes = graphData.nodes.filter((n) => n.labels.includes('Assertion'));
-    for (const a of assertionNodes) {
-      const p = a.properties;
-      const sub = p.subject_entity_id;
-      const obj = p.object_entity_id;
-      const pred = p.predicate;
-      if (!pred || (sub !== entityId && obj !== entityId)) continue;
-
-      const otherId = sub === entityId ? obj : sub;
-      const otherNode = nodeMap.get(otherId);
-      const targetName = otherNode
-        ? otherNode.properties.display_name || otherNode.properties.registration_number || otherId
-        : otherId.slice(0, 12) + '...';
-      const targetType = otherNode ? otherNode.labels[0] : 'Entity';
-
-      // Avoid duplicates
-      if (!rels.some((r) => r.targetId === otherId && r.rawPredicate === pred)) {
-        rels.push({
-          id: a.id,
-          targetId: otherId,
-          targetName: cleanSyntheticSuffix(String(targetName)),
-          targetType,
-          predicate: formatPredicate(String(pred)),
-          rawPredicate: String(pred),
-          epistemicStatus: p.epistemic_status ? String(p.epistemic_status) : undefined,
-          assertionId: a.id,
-        });
-      }
-    }
-
-    return rels;
+    const rels = graphData.relationships;
+    const relsArray = Array.isArray(rels) ? rels : [];
+    return relsArray.map((r: any) => {
+      const isOutgoing = r.source === entityId;
+      const neighborId = isOutgoing ? r.target : r.source;
+      const nodes = graphData?.nodes;
+      const nodesArray = Array.isArray(nodes) ? nodes : [];
+      const neighborNode = nodesArray.find((n: any) => n.id === neighborId);
+      return {
+        id: r.id,
+        targetId: neighborId,
+        targetName: (neighborNode as any)?.label || neighborId,
+        targetType: (neighborNode as any)?.type || "Unknown",
+        predicate: formatPredicate(r.predicate),
+        rawPredicate: r.predicate,
+        epistemicStatus: r.epistemic_status,
+        isCandidate: r.is_candidate
+      };
+    });
   }, [graphData, entityId]);
 
   // ── Loading state ──────────────────────────────────────────────────────────
@@ -663,29 +543,6 @@ export const EntityDossierPage: React.FC = () => {
       </div>
     );
   }
-
-  // Pre-process connections for the graph
-  const connectionsForGraph = React.useMemo(() => {
-    const rels = graphData?.relationships;
-    const relsArray = Array.isArray(rels) ? rels : [];
-    return relsArray.map((r: any) => {
-      const isOutgoing = r.source === entityId;
-      const neighborId = isOutgoing ? r.target : r.source;
-      const nodes = graphData?.nodes;
-      const nodesArray = Array.isArray(nodes) ? nodes : [];
-      const neighborNode = nodesArray.find((n: any) => n.id === neighborId);
-      return {
-        id: r.id,
-        targetId: neighborId,
-        targetName: (neighborNode as any)?.label || neighborId,
-        targetType: (neighborNode as any)?.type || "Unknown",
-        predicate: formatPredicate(r.predicate),
-        rawPredicate: r.predicate,
-        epistemicStatus: r.epistemic_status,
-        isCandidate: r.is_candidate
-      };
-    });
-  }, [graphData, entityId]);
 
   // ── Data Extracted Truthfully ──────────────────────────────────────────────
   const { entity, subtype_data } = entityResponse || { entity: null, subtype_data: null };
@@ -885,7 +742,7 @@ export const EntityDossierPage: React.FC = () => {
                               <div>
                                 <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mb-1">Deterministic Matching Signals</p>
                                 <div className="flex flex-wrap gap-1">
-                                  {cand.deterministic_signals.map((sig) => (
+                                  {cand.deterministic_signals.map((sig: string) => (
                                     <span key={sig} className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-sm border bg-civix-surface-2 border-civix-border text-civix-text-secondary">
                                       {sig}
                                     </span>
@@ -897,7 +754,7 @@ export const EntityDossierPage: React.FC = () => {
                                 <div className="pt-1">
                                   <p className="text-[9px] font-bold text-civix-text-muted uppercase tracking-wider mb-1">Supporting Evidence IDs</p>
                                   <div className="flex flex-wrap gap-1">
-                                    {cand.supporting_evidence_ids.map((eid) => (
+                                    {cand.supporting_evidence_ids.map((eid: string) => (
                                       <span key={eid} className="text-[9px] font-mono px-1.5 py-0.5 rounded-sm bg-civix-surface-2 text-civix-text-muted">
                                         {eid.substring(0, 8)}...
                                       </span>
@@ -1054,7 +911,7 @@ export const EntityDossierPage: React.FC = () => {
                           </p>
                         </div>
                         <div className="space-y-3">
-                          {targetLeads.map(lead => (
+                          {targetLeads.map((lead: any) => (
                             <div key={lead.lead_id} className="border-l-2 border-civix-gold/60 pl-3 py-1 space-y-1.5 bg-civix-surface-2/50 p-2 rounded-r-sm">
                               <div className="flex justify-between items-center">
                                 <span className="text-[10px] font-mono font-bold text-civix-text-secondary uppercase">LEAD {lead.lead_id.substring(0, 8)}</span>

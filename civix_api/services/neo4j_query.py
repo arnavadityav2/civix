@@ -23,33 +23,25 @@ class Neo4jQueryService:
         Strictly enforces that every traversed node satisfies the ACL.
         """
         query = f"""
-        MATCH path = (c:Case {{case_id: $case_id}})-[*0..{depth}]-(n)
-        WHERE all(node IN nodes(path) WHERE 
-            node.tx_end IS NULL
-            AND coalesce(node.visibility_status, 'ACTIVE') = 'ACTIVE'
-            AND (
-                (node.case_id IS NULL AND node.authorized_case_ids IS NULL)
-                OR (node.case_id IS NOT NULL AND node.case_id IN $accessible_case_ids)
-                OR (node.authorized_case_ids IS NOT NULL AND any(cid IN node.authorized_case_ids WHERE cid IN $accessible_case_ids))
-            )
+        MATCH (c:Case {{case_id: $case_id}})
+        OPTIONAL MATCH (c)-[:HAS_ROLE|HAS_EVIDENCE|HAS_FIR|HAS_LEAD|LOCATED_AT|INVESTIGATOR_ASSERTED|ASSERTED_RELATIONSHIP|ASSERTS|ASSERTED_BY|PARTICIPATED_AS|COMMUNICATED_WITH|CONTAINS_EVIDENCE|IDENTIFIES_VEHICLE*1..{depth}]-(n)
+        WHERE NOT ('PhoneNumber' IN labels(n) OR 'SIM' IN labels(n) OR 'Event' IN labels(n))
+        AND n.tx_end IS NULL 
+        AND coalesce(n.visibility_status, 'ACTIVE') = 'ACTIVE'
+        AND (
+            (n.case_id IS NULL AND n.authorized_case_ids IS NULL)
+            OR (n.case_id IS NOT NULL AND n.case_id IN $accessible_case_ids)
+            OR (n.authorized_case_ids IS NOT NULL AND any(cid IN n.authorized_case_ids WHERE cid IN $accessible_case_ids))
         )
-        AND all(rel IN relationships(path) WHERE
-            rel.tx_end IS NULL AND rel.superseded_by IS NULL
-        )
-        WITH collect(path) AS paths
-
-        // 1. Gather distinct valid nodes up to the node_limit
-        UNWIND (CASE WHEN size(paths) > 0 THEN paths ELSE [null] END) AS p
-        UNWIND (CASE WHEN p IS NOT NULL THEN nodes(p) ELSE [] END) AS node
-        WITH collect(DISTINCT node)[0..$node_limit] AS valid_nodes, paths
-
-        // 2. Extract relationships safely without dropping rows if empty
-        UNWIND (CASE WHEN size(paths) > 0 THEN paths ELSE [null] END) AS p
-        UNWIND (CASE WHEN p IS NOT NULL THEN relationships(p) ELSE [] END) AS rel
-        WITH valid_nodes, collect(DISTINCT rel) AS raw_rels
-        WITH valid_nodes, [r IN raw_rels WHERE r IS NOT NULL AND startNode(r) IN valid_nodes AND endNode(r) IN valid_nodes][0..$rel_limit] AS valid_rels
-
-        RETURN valid_nodes, valid_rels
+        WITH c, collect(DISTINCT n)[0..$node_limit] AS valid_nodes
+        WITH [c] + valid_nodes AS all_nodes
+        UNWIND all_nodes AS n1
+        UNWIND all_nodes AS n2
+        WITH all_nodes, n1, n2 WHERE elementId(n1) < elementId(n2)
+        OPTIONAL MATCH (n1)-[r:HAS_ROLE|HAS_EVIDENCE|HAS_FIR|HAS_LEAD|LOCATED_AT|INVESTIGATOR_ASSERTED|ASSERTED_RELATIONSHIP|ASSERTS|ASSERTED_BY|PARTICIPATED_AS|COMMUNICATED_WITH|CONTAINS_EVIDENCE|IDENTIFIES_VEHICLE]-(n2)
+        WHERE r.tx_end IS NULL AND r.superseded_by IS NULL
+        WITH all_nodes, collect(DISTINCT r) AS raw_rels
+        RETURN all_nodes AS valid_nodes, [r IN raw_rels WHERE r IS NOT NULL][0..$rel_limit] AS valid_rels
         """
 
         parameters = {
@@ -178,31 +170,25 @@ class Neo4jQueryService:
         Surfaces macro case clusters and cross-case bridge hub entities.
         """
         query = f"""
-        MATCH path = (c:Case {{case_id: $case_id}})-[*0..{depth}]-(n)
-        WHERE all(node IN nodes(path) WHERE 
-            node.tx_end IS NULL
-            AND coalesce(node.visibility_status, 'ACTIVE') = 'ACTIVE'
-            AND (
-                (node.case_id IS NULL AND node.authorized_case_ids IS NULL)
-                OR (node.case_id IS NOT NULL AND node.case_id IN $accessible_case_ids)
-                OR (node.authorized_case_ids IS NOT NULL AND any(cid IN node.authorized_case_ids WHERE cid IN $accessible_case_ids))
-            )
+        MATCH (c:Case {{case_id: $case_id}})
+        OPTIONAL MATCH (c)-[:HAS_ROLE|HAS_EVIDENCE|HAS_FIR|HAS_LEAD|LOCATED_AT|INVESTIGATOR_ASSERTED|ASSERTED_RELATIONSHIP|ASSERTS|ASSERTED_BY|PARTICIPATED_AS|COMMUNICATED_WITH|CONTAINS_EVIDENCE|IDENTIFIES_VEHICLE*1..{depth}]-(n)
+        WHERE NOT ('PhoneNumber' IN labels(n) OR 'SIM' IN labels(n) OR 'Event' IN labels(n))
+        AND n.tx_end IS NULL 
+        AND coalesce(n.visibility_status, 'ACTIVE') = 'ACTIVE'
+        AND (
+            (n.case_id IS NULL AND n.authorized_case_ids IS NULL)
+            OR (n.case_id IS NOT NULL AND n.case_id IN $accessible_case_ids)
+            OR (n.authorized_case_ids IS NOT NULL AND any(cid IN n.authorized_case_ids WHERE cid IN $accessible_case_ids))
         )
-        AND all(rel IN relationships(path) WHERE
-            rel.tx_end IS NULL AND rel.superseded_by IS NULL
-        )
-        WITH collect(path) AS paths
-
-        UNWIND (CASE WHEN size(paths) > 0 THEN paths ELSE [null] END) AS p
-        UNWIND (CASE WHEN p IS NOT NULL THEN nodes(p) ELSE [] END) AS node
-        WITH collect(DISTINCT node)[0..$node_limit] AS valid_nodes, paths
-
-        UNWIND (CASE WHEN size(paths) > 0 THEN paths ELSE [null] END) AS p
-        UNWIND (CASE WHEN p IS NOT NULL THEN relationships(p) ELSE [] END) AS rel
-        WITH valid_nodes, collect(DISTINCT rel) AS raw_rels
-        WITH valid_nodes, [r IN raw_rels WHERE r IS NOT NULL AND startNode(r) IN valid_nodes AND endNode(r) IN valid_nodes][0..$rel_limit] AS valid_rels
-
-        RETURN valid_nodes, valid_rels
+        WITH c, collect(DISTINCT n)[0..$node_limit] AS valid_nodes
+        WITH [c] + valid_nodes AS all_nodes
+        UNWIND all_nodes AS n1
+        UNWIND all_nodes AS n2
+        WITH all_nodes, n1, n2 WHERE elementId(n1) < elementId(n2)
+        OPTIONAL MATCH (n1)-[r:HAS_ROLE|HAS_EVIDENCE|HAS_FIR|HAS_LEAD|LOCATED_AT|INVESTIGATOR_ASSERTED|ASSERTED_RELATIONSHIP|ASSERTS|ASSERTED_BY|PARTICIPATED_AS|COMMUNICATED_WITH|CONTAINS_EVIDENCE|IDENTIFIES_VEHICLE]-(n2)
+        WHERE r.tx_end IS NULL AND r.superseded_by IS NULL
+        WITH all_nodes, collect(DISTINCT r) AS raw_rels
+        RETURN all_nodes AS valid_nodes, [r IN raw_rels WHERE r IS NOT NULL][0..$rel_limit] AS valid_rels
         """
 
         parameters = {

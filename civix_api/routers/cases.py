@@ -39,7 +39,10 @@ from civix_api.models.cases import (
     CaseRegistryItem,
     CaseRegistryPagination,
     CaseRegistrySummary,
-    CaseRegistryResponse
+    CaseRegistryResponse,
+    EntityCounts,
+    CaseEntityItem,
+    CaseEntitiesResponse
 )
 from neo4j import AsyncSession as Neo4jAsyncSession
 import math
@@ -130,9 +133,15 @@ async def get_case_registry(
     # 3. Query items & pagination total
     items_sql = text(f"""
         WITH case_entities AS (
-            SELECT case_id, COUNT(DISTINCT entity_id) as entity_count
-            FROM civix.case_entity_role
-            GROUP BY case_id
+            SELECT 
+                cer.case_id,
+                COUNT(DISTINCT cer.entity_id) as entity_count,
+                COUNT(DISTINCT CASE WHEN e.entity_type = 'PERSON' THEN cer.entity_id END) as person_count,
+                COUNT(DISTINCT CASE WHEN e.entity_type = 'VEHICLE' THEN cer.entity_id END) as vehicle_count,
+                COUNT(DISTINCT CASE WHEN e.entity_type = 'PHONE_NUMBER' THEN cer.entity_id END) as phone_count
+            FROM civix.case_entity_role cer
+            JOIN civix.entity e ON cer.entity_id = e.entity_id
+            GROUP BY cer.case_id
         ),
         case_evidence AS (
             SELECT case_id, COUNT(DISTINCT instance_id) as evidence_count
@@ -190,6 +199,9 @@ async def get_case_registry(
                 COALESCE(f.district, c.jurisdiction) as jurisdiction,
                 COALESCE(f.police_station, c.jurisdiction) as police_station,
                 COALESCE(ce.entity_count, 0) as entity_count,
+                COALESCE(ce.person_count, 0) as person_count,
+                COALESCE(ce.vehicle_count, 0) as vehicle_count,
+                COALESCE(ce.phone_count, 0) as phone_count,
                 COALESCE(cev.evidence_count, 0) as evidence_count,
                 COALESCE(cevt.event_count, 0) as event_count,
                 COALESCE(cl.lead_count, 0) as lead_count,
@@ -252,6 +264,9 @@ async def get_case_registry(
             provenance=m["provenance"],
             source_type=m["source_type"],
             entity_count=m["entity_count"],
+            person_count=m["person_count"],
+            vehicle_count=m["vehicle_count"],
+            phone_count=m["phone_count"],
             evidence_count=m["evidence_count"],
             event_count=m["event_count"],
             lead_count=m["lead_count"],
@@ -457,96 +472,146 @@ async def list_cases(
         })
     return cases
 
-@router.get("/{case_id}/entities")
+@router.get("/{case_id}/entities", response_model=CaseEntitiesResponse)
 async def get_case_entities(
     case_id: str,
+    entity_type: Optional[str] = Query(None),
+    limit: int = Query(50, ge=1, le=500),
+    offset: int = Query(0, ge=0),
     user: AuthenticatedCivixUser = Depends(get_current_user_from_token),
     session: AsyncSession = Depends(get_rls_session)
-):
+) -> CaseEntitiesResponse:
     real_case_id = await resolve_case_id(session, case_id)
-    query = text("""
-        SELECT 
-            cer.role_id,
-            cer.entity_id,
-            cer.role,
-            cer.role_basis,
-            e.entity_type::text as entity_type,
-            COALESCE(
-                p.display_name,
-                o.legal_name,
-                v.registration_number,
-                d.imei,
-                pn.msisdn,
-                cer.entity_id::text
-            ) as display_name,
-            p.gender::text,
-            p.date_of_birth,
-            p.nationality,
-            p.avatar_url
-        FROM civix.case_entity_role cer
-        JOIN civix.entity e ON cer.entity_id = e.entity_id
-        LEFT JOIN civix.person p ON e.entity_id = p.entity_id
-        LEFT JOIN civix.organization o ON e.entity_id = o.entity_id
-        LEFT JOIN civix.vehicle v ON e.entity_id = v.entity_id
-        LEFT JOIN civix.device d ON e.entity_id = d.entity_id
-        LEFT JOIN civix.phone_number pn ON e.entity_id = pn.entity_id
-        WHERE cer.case_id = :cid;
+
+    # 1. Authoritative entity counts for the entire case
+    counts_query = text("""
+        SELECT
+            COALESCE(COUNT(DISTINCT CASE WHEN e.entity_type = 'PERSON' THEN cer.entity_id END), 0) as person_count,
+            COALESCE(COUNT(DISTINCT CASE WHEN e.entity_type = 'VEHICLE' THEN cer.entity_id END), 0) as vehicle_count,
+            COALESCE(COUNT(DISTINCT CASE WHEN e.entity_type = 'PHONE_NUMBER' THEN cer.entity_id END), 0) as phone_count,
+            COALESCE(COUNT(DISTINCT CASE WHEN e.entity_type = 'ORGANIZATION' THEN cer.entity_id END), 0) as organization_count,
+            COALESCE(COUNT(DISTINCT CASE WHEN e.entity_type = 'DEVICE' THEN cer.entity_id END), 0) as device_count,
+            COALESCE((SELECT COUNT(DISTINCT instance_id) FROM civix.evidence_instance WHERE case_id = :cid), 0) as evidence_count,
+            COALESCE((SELECT COUNT(DISTINCT event_id) FROM civix.event_location WHERE case_id IS NOT NULL AND case_id = :cid), 0) as location_count
+        FROM civix.investigative_case c
+        LEFT JOIN civix.case_entity_role cer ON c.case_id = cer.case_id
+        LEFT JOIN civix.entity e ON cer.entity_id = e.entity_id
+        WHERE c.case_id = :cid
+        GROUP BY c.case_id;
     """)
-    result = await session.execute(query, {"cid": real_case_id})
+    counts_res = await session.execute(counts_query, {"cid": real_case_id})
+    counts_row = counts_res.first()
+    if counts_row:
+        cm = counts_row._mapping
+        entity_counts = EntityCounts(
+            person_count=cm["person_count"],
+            vehicle_count=cm["vehicle_count"],
+            phone_count=cm["phone_count"],
+            organization_count=cm["organization_count"],
+            device_count=cm["device_count"],
+            evidence_count=cm["evidence_count"],
+            location_count=cm["location_count"]
+        )
+    else:
+        entity_counts = EntityCounts()
+
+    # 2. Paginated entity items with optional entity_type filtering at DB level
+    items_query = text("""
+        WITH case_entities AS (
+            SELECT 
+                cer.role_id,
+                cer.entity_id,
+                cer.role::text as role,
+                cer.role_basis,
+                e.entity_type::text as entity_type,
+                COALESCE(
+                    p.display_name,
+                    o.legal_name,
+                    v.registration_number,
+                    d.imei,
+                    pn.msisdn,
+                    cer.entity_id::text
+                ) as display_name,
+                p.gender::text as gender,
+                p.date_of_birth as date_of_birth,
+                p.nationality as nationality,
+                p.avatar_url as avatar_url
+            FROM civix.case_entity_role cer
+            JOIN civix.entity e ON cer.entity_id = e.entity_id
+            LEFT JOIN civix.person p ON e.entity_id = p.entity_id
+            LEFT JOIN civix.organization o ON e.entity_id = o.entity_id
+            LEFT JOIN civix.vehicle v ON e.entity_id = v.entity_id
+            LEFT JOIN civix.device d ON e.entity_id = d.entity_id
+            LEFT JOIN civix.phone_number pn ON e.entity_id = pn.entity_id
+            WHERE cer.case_id = :cid
+            UNION ALL
+            SELECT DISTINCT
+                ca.access_id as role_id,
+                u.user_id as entity_id,
+                CASE WHEN c.lead_investigator_id = u.user_id THEN 'INVESTIGATING_OFFICER' ELSE 'OFFICER_IN_CHARGE' END as role,
+                COALESCE(c.investigating_unit, 'Assigned Investigation Unit') as role_basis,
+                'PERSON' as entity_type,
+                CASE WHEN u.display_name = 'CIVIX System' THEN 'Inspector Vikram S. (IO)' ELSE u.display_name END as display_name,
+                NULL::text as gender,
+                NULL::date as date_of_birth,
+                'IND' as nationality,
+                NULL::text as avatar_url
+            FROM civix.case_access ca
+            JOIN civix.civix_user u ON ca.user_id = u.user_id
+            JOIN civix.investigative_case c ON c.case_id = ca.case_id
+            WHERE ca.case_id = :cid
+              AND NOT EXISTS (
+                  SELECT 1 FROM civix.case_entity_role cer2 WHERE cer2.case_id = :cid AND cer2.entity_id = u.user_id
+              )
+        )
+        SELECT COUNT(*) OVER() as filtered_total, *
+        FROM case_entities
+        WHERE (CAST(:entity_type AS text) IS NULL OR entity_type = CAST(:entity_type AS text))
+        ORDER BY 
+            CASE CAST(entity_type AS text) 
+                WHEN 'PERSON' THEN 1 
+                WHEN 'ORGANIZATION' THEN 2 
+                WHEN 'VEHICLE' THEN 3 
+                WHEN 'DEVICE' THEN 4 
+                ELSE 5 
+            END ASC,
+            display_name ASC
+        LIMIT :limit OFFSET :offset;
+    """)
+
+    param_type = entity_type.upper().strip() if entity_type else None
+    result = await session.execute(items_query, {
+        "cid": real_case_id,
+        "entity_type": param_type,
+        "limit": limit,
+        "offset": offset
+    })
+    rows = result.fetchall()
+    filtered_total = rows[0]._mapping["filtered_total"] if rows else 0
+
     items = [
-        {
-            "role_id": str(r._mapping["role_id"]),
-            "entity_id": str(r._mapping["entity_id"]),
-            "role": r._mapping["role"],
-            "role_basis": r._mapping["role_basis"],
-            "entity_type": r._mapping["entity_type"],
-            "display_name": r._mapping["display_name"],
-            "gender": r._mapping["gender"],
-            "date_of_birth": r._mapping["date_of_birth"].isoformat() if r._mapping["date_of_birth"] else None,
-            "nationality": r._mapping["nationality"],
-            "avatar_url": r._mapping["avatar_url"],
-        }
-        for r in result.fetchall()
+        CaseEntityItem(
+            role_id=str(r._mapping["role_id"]),
+            entity_id=str(r._mapping["entity_id"]),
+            role=r._mapping["role"],
+            role_basis=r._mapping["role_basis"],
+            entity_type=r._mapping["entity_type"],
+            display_name=r._mapping["display_name"],
+            gender=r._mapping["gender"],
+            date_of_birth=r._mapping["date_of_birth"].isoformat() if r._mapping["date_of_birth"] else None,
+            nationality=r._mapping["nationality"],
+            avatar_url=r._mapping["avatar_url"]
+        )
+        for r in rows
     ]
 
-    # Fetch assigned police officers from case_access and lead_investigator_id
-    officer_query = text("""
-        SELECT DISTINCT
-            ca.access_id as role_id,
-            u.user_id as entity_id,
-            CASE WHEN c.lead_investigator_id = u.user_id THEN 'INVESTIGATING_OFFICER' ELSE 'OFFICER_IN_CHARGE' END as role,
-            COALESCE(c.investigating_unit, 'Assigned Investigation Unit') as role_basis,
-            'PERSON' as entity_type,
-            u.display_name,
-            NULL as gender,
-            NULL as date_of_birth,
-            'IND' as nationality
-        FROM civix.case_access ca
-        JOIN civix.civix_user u ON ca.user_id = u.user_id
-        JOIN civix.investigative_case c ON c.case_id = ca.case_id
-        WHERE ca.case_id = :cid
-    """)
-    officer_result = await session.execute(officer_query, {"cid": real_case_id})
-    for r in officer_result.fetchall():
-        m = r._mapping
-        if not any(item["entity_id"] == str(m["entity_id"]) for item in items):
-            disp_name = m["display_name"]
-            if disp_name == "CIVIX System":
-                disp_name = "Inspector Vikram S. (IO)"
-            items.append({
-                "role_id": str(m["role_id"]),
-                "entity_id": str(m["entity_id"]),
-                "role": m["role"],
-                "role_basis": m["role_basis"],
-                "entity_type": m["entity_type"],
-                "display_name": disp_name,
-                "gender": m["gender"],
-                "date_of_birth": m["date_of_birth"],
-                "nationality": m["nationality"],
-                "avatar_url": None,
-            })
-
-    return items
+    return CaseEntitiesResponse(
+        items=items,
+        total_count=filtered_total,
+        limit=limit,
+        offset=offset,
+        entity_counts=entity_counts
+    )
 
 @router.get("/{case_id}")
 async def get_case(

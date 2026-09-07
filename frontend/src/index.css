@@ -345,7 +345,7 @@
   background-size: 24px 24px;
 }
 
-/* Custom Leaflet Tooltip for Dark Workstation Theme */
+/* Custom Leaflet Tooltip & Dark Popup for Workstation Theme */
 .leaflet-tooltip-pane {
   z-index: 99999 !important;
 }
@@ -360,3 +360,104 @@
 .civix-dark-tooltip::before {
   display: none !important;
 }
+
+.civix-map-hud-popup .leaflet-popup-content-wrapper {
+  background: rgba(12, 16, 23, 0.95) !important;
+  border: 1px solid #1e293b !important;
+  border-radius: 4px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.15) !important;
+  color: #f8fafc !important;
+  padding: 2px !important;
+}
+
+.civix-map-hud-popup .leaflet-popup-tip {
+  background: rgba(12, 16, 23, 0.95) !important;
+  border-left: 1px solid #1e293b !important;
+  border-top: 1px solid #1e293b !important;
+}
+
+.civix-map-hud-popup .leaflet-popup-close-button {
+  color: #94a3b8 !important;
+  padding: 4px 8px !important;
+}
+.civix-map-hud-popup .leaflet-popup-close-button:hover {
+  color: #f8fafc !important;
+}
+
+/* Tactical Map Tile Styling - Dark Cybernetic Workstation */
+.civix-tactical-map-tiles {
+  filter: brightness(0.75) contrast(1.35) saturate(0.8) hue-rotate(185deg);
+}
+
+.civix-osm-dark-tiles {
+  filter: invert(100%) hue-rotate(180deg) brightness(85%) contrast(140%);
+}
+
+/* Streaming Constellation Edge Line Animation */
+@keyframes civix-dash-stream {
+  from { stroke-dashoffset: 40; }
+  to   { stroke-dashoffset: 0; }
+}
+
+.civix-animated-polyline path {
+  stroke-dasharray: 6, 8 !important;
+  animation: civix-dash-stream 1.5s linear infinite !important;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.8));
+}
+
+.civix-animated-golden-line path {
+  stroke-dasharray: 8, 8 !important;
+  animation: civix-dash-stream 2s linear infinite !important;
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.85));
+}
+
+/* Radial Sonar Pulse Rings for Nodes */
+@keyframes civix-sonar-ripple {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.civix-sonar-ring-red {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #ef4444;
+  animation: civix-sonar-ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  pointer-events: none;
+}
+
+.civix-sonar-ring-gold {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid #f59e0b;
+  animation: civix-sonar-ripple 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  pointer-events: none;
+}
+
+.civix-sonar-ring-green {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid #10b981;
+  animation: civix-sonar-ripple 2.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes civix-node-pulse {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.1); filter: brightness(1.35); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+.animate-node-pulse {
+  animation: civix-node-pulse 2s ease-in-out infinite;
+}
+
+

@@ -16,6 +16,9 @@ class CaseRegistryItem(BaseModel):
     provenance: str = Field(description="GOLDEN or SYNTHETIC")
     source_type: str
     entity_count: int
+    person_count: int = 0
+    vehicle_count: int = 0
+    phone_count: int = 0
     evidence_count: int
     event_count: int
     lead_count: int
@@ -41,3 +44,32 @@ class CaseRegistryResponse(BaseModel):
     items: List[CaseRegistryItem]
     pagination: CaseRegistryPagination
     summary: CaseRegistrySummary
+
+class EntityCounts(BaseModel):
+    person_count: int = 0
+    vehicle_count: int = 0
+    phone_count: int = 0
+    evidence_count: int = 0
+    location_count: int = 0
+    organization_count: int = 0
+    device_count: int = 0
+
+class CaseEntityItem(BaseModel):
+    role_id: str
+    entity_id: str
+    role: str
+    role_basis: Optional[str] = None
+    entity_type: str
+    display_name: str
+    gender: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    nationality: Optional[str] = None
+    avatar_url: Optional[str] = None
+
+class CaseEntitiesResponse(BaseModel):
+    items: List[CaseEntityItem]
+    total_count: int
+    limit: int
+    offset: int
+    entity_counts: EntityCounts
+

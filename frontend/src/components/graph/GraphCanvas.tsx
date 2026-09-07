@@ -293,9 +293,23 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({
 
     const cyElements: ElementDefinition[] = [];
 
-    // Filter infrastructure nodes (Assertion/Event nodes handled as edges or compact nodes)
+    // Calculate degree of each node in the current relationship list
+    const nodeDegrees: Record<string, number> = {};
+    for (const rel of relationships) {
+      nodeDegrees[rel.start_node] = (nodeDegrees[rel.start_node] || 0) + 1;
+      nodeDegrees[rel.end_node] = (nodeDegrees[rel.end_node] || 0) + 1;
+    }
+
+    // Filter infrastructure nodes & disconnected 0-degree nodes (except Case nodes)
     for (const node of nodes) {
       const primaryType = getPrimaryLabel(node.labels);
+      const degree = nodeDegrees[node.id] || 0;
+
+      // Zero-degree safeguard: suppress disconnected floating nodes except root Case nodes
+      if (degree === 0 && primaryType !== 'Case') {
+        continue;
+      }
+
       const name = deriveNodeDisplayName(node);
       const style = NODE_TYPE_STYLES[primaryType] || DEFAULT_NODE_STYLE;
 

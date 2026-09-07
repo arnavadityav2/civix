@@ -1,5 +1,5 @@
 import { apiClient } from './client';
-import type { CaseListItem, CaseRegistryResponse, CaseRegistryParams, CaseCreateRequest, CaseEntityRoleRequest, CaseEntityRoleResponse, CaseEntityRoleListItem } from '../types/api';
+import type { CaseListItem, CaseRegistryResponse, CaseRegistryParams, CaseCreateRequest, CaseEntityRoleRequest, CaseEntityRoleResponse, CaseEntitiesParams, CaseEntitiesResponse } from '../types/api';
 
 export const casesApi = {
   async listCases(): Promise<CaseListItem[]> {
@@ -27,8 +27,8 @@ export const casesApi = {
     return response.data;
   },
 
-  async getCaseEntities(caseId: string): Promise<CaseEntityRoleListItem[]> {
-    const response = await apiClient.get(`/cases/${caseId}/entities`);
+  async getCaseEntities(caseId: string, params?: CaseEntitiesParams): Promise<CaseEntitiesResponse> {
+    const response = await apiClient.get<CaseEntitiesResponse>(`/cases/${caseId}/entities`, { params });
     return response.data;
   }
 };

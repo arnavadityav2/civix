@@ -65,8 +65,8 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
   const [isProposalDrawerOpen, setIsProposalDrawerOpen] = useState<boolean>(false);
   const [proposalTargetNode, setProposalTargetNode] = useState<GraphNode | null>(null);
 
-  // Zero-Layout-Reflow Filtering States (Evidence hidden by default on first load for clean cluster)
-  const [hiddenEntityTypes, setHiddenEntityTypes] = useState<Set<string>>(new Set(['Evidence']));
+  // Zero-Layout-Reflow Filtering States (PhoneNumber hidden by default to keep real domain entities clean)
+  const [hiddenEntityTypes, setHiddenEntityTypes] = useState<Set<string>>(new Set(['PhoneNumber']));
   const [hiddenRelTypes, setHiddenRelTypes] = useState<Set<string>>(new Set());
 
   // Focus Trigger State
@@ -152,11 +152,11 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
 
   const handleToggleFullscreen = useCallback(() => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
+      document.documentElement.requestFullscreen().catch(() => { });
       setIsFullscreen(true);
     } else {
       if (document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
+        document.exitFullscreen().catch(() => { });
         setIsFullscreen(false);
       }
     }

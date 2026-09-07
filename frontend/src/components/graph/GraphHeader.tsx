@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Shield, 
   Search, 
@@ -11,7 +12,8 @@ import {
   FileText, 
   Layers, 
   Brain, 
-  BarChart3 
+  BarChart3,
+  ArrowLeft
 } from 'lucide-react';
 import type { CaseListItem } from '../../types/api';
 
@@ -39,7 +41,7 @@ export const GraphHeader: React.FC<GraphHeaderProps> = ({
   isEvidenceVisible = false,
   onToggleEvidence,
 }) => {
-  const isGolden = caseData?.case_number?.startsWith('CIV-2012') || caseData?.case_number?.startsWith('CIV-2024') || caseData?.case_number?.startsWith('CIV-2026');
+  const navigate = useNavigate();
 
   return (
     <header className="bg-[#0b0f19] border-b border-[#1e2d4a] flex flex-col shrink-0 text-slate-200">
@@ -47,17 +49,21 @@ export const GraphHeader: React.FC<GraphHeaderProps> = ({
       <div className="flex items-center justify-between px-4 py-2 bg-[#0d1322] border-b border-[#162035]">
         {/* Left: Real Case Metadata */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate(`/cases/${caseData?.case_id || caseData?.case_number || ''}`)}
+            className="flex items-center space-x-1.5 text-xs font-mono text-slate-400 hover:text-cyan-400 transition-colors mr-1 cursor-pointer"
+            title="Return to Case Workspace"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Case Workspace</span>
+          </button>
           <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-800/40 px-2 py-0.5 rounded">
             CASE / {caseData?.case_number || 'CIV-2012-001'}
           </span>
           <h1 className="text-sm font-bold text-white tracking-wide uppercase">
             {caseData?.title || 'DWARKA SECTOR 23 CASH VAN ROBBERY'}
           </h1>
-          {isGolden && (
-            <span className="flex items-center gap-1 text-[10px] font-bold bg-amber-950/80 border border-amber-500/60 text-amber-400 px-2 py-0.5 rounded tracking-wider">
-              <Star className="w-3 h-3 fill-amber-400" /> GOLDEN CASE
-            </span>
-          )}
+          {/* Removed Golden badge per UI governance */}
           <div className="flex items-center gap-2 text-xs text-slate-400 ml-2 font-mono">
             <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
             <span>{caseData?.status || 'Active'}</span>

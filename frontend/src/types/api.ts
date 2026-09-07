@@ -43,6 +43,9 @@ export interface CaseRegistryItem {
   provenance: 'GOLDEN' | 'SYNTHETIC' | string;
   source_type: string;
   entity_count: number;
+  person_count?: number;
+  vehicle_count?: number;
+  phone_count?: number;
   evidence_count: number;
   event_count: number;
   lead_count: number;
@@ -123,6 +126,30 @@ export interface CaseEntityRoleListItem {
   date_of_birth?: string | null;
   nationality?: string | null;
   avatar_url?: string | null;
+}
+
+export interface EntityCounts {
+  person_count: number;
+  vehicle_count: number;
+  phone_count: number;
+  evidence_count: number;
+  location_count: number;
+  organization_count?: number;
+  device_count?: number;
+}
+
+export interface CaseEntitiesParams {
+  entity_type?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface CaseEntitiesResponse {
+  items: CaseEntityRoleListItem[];
+  total_count: number;
+  limit: number;
+  offset: number;
+  entity_counts: EntityCounts;
 }
 
 export interface EntityBase {

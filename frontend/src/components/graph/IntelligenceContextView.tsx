@@ -215,7 +215,7 @@ export const IntelligenceContextView: React.FC<IntelligenceContextViewProps> = (
         keyFacts: [
           `Matched deterministic rule: High-frequency CDR interaction during incident timeframe.`,
           `2-hop graph connectivity to case suspect ${neighborNode ? deriveDisplayName(neighborNode) : 'Suresh Valmiki'}.`,
-          `Cross-case correlation flagged in Golden Case intelligence registry.`
+          `Cross-case correlation flagged in primary intelligence registry.`
         ],
         connectedCaseOrSuspectId: neighborNode?.id,
         connectedCaseOrSuspectName: neighborNode ? deriveDisplayName(neighborNode) : undefined,
@@ -264,7 +264,7 @@ export const IntelligenceContextView: React.FC<IntelligenceContextViewProps> = (
           whyGeneratedRationale: `Rule-based finding engine matched IMEI hardware hash with secondary SIM activation timestamp 2 hours post-incident.`,
           keyFacts: [
             `IMEI Hardware Fingerprint match across 2 distinct subscriber MSISDNs.`,
-            `Direct HAS_ROLE relationship link in Golden Case registry.`,
+            `Direct HAS_ROLE relationship link in primary case registry.`,
             `Provenential validation confirmed via CCTNS FIR record.`
           ],
           connectedCaseOrSuspectId: case1?.id,
