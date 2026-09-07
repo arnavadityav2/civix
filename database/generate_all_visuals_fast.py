@@ -16,7 +16,10 @@ DB_CONFIG = {
     "password": os.getenv("CIVIX_DB_PASSWORD", "postgres"),
 }
 
-EVIDENCE_STORE = r"C:\data\civix_demo\evidence_store"
+EVIDENCE_STORE = os.getenv(
+    "CIVIX_EVIDENCE_STORE_PATH",
+    "/app/civix_evidence_store"   # Linux/Docker default (overrides old Windows path)
+)
 MANIFEST_FILE = os.path.join(os.path.dirname(__file__), "generation_manifest.json")
 
 os.makedirs(EVIDENCE_STORE, exist_ok=True)
