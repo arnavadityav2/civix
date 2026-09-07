@@ -60,7 +60,7 @@ docker compose up --build -d
 
 # Wait for Postgres & Neo4j containers to pass health checks
 echo "⏳ Waiting for PostgreSQL and Neo4j databases to initialize..."
-sleep 15
+sleep 25
 
 # 5. Execute Automated Database Seeding & Access Setup Pipeline
 echo "🌱 [5/5] Executing Master Environment Seeding & Graph Sync Pipeline..."
