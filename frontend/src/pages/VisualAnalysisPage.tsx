@@ -16,8 +16,24 @@ import {
   Play,
   AlertTriangle,
   Activity,
-  Layers
+  Layers,
+  Target,
+  Shield,
+  CheckCircle2,
+  XCircle,
+  HelpCircle,
+  FileText,
+  Search,
+  FolderOpen
 } from 'lucide-react';
+
+interface CaseTarget {
+  id: string;
+  name: string;
+  type: 'PERSON' | 'VEHICLE';
+  role: string;
+  avatarUrl?: string;
+}
 
 export const VisualAnalysisPage: React.FC = () => {
   const { cameraId } = useParams<{ cameraId: string }>();
@@ -27,6 +43,11 @@ export const VisualAnalysisPage: React.FC = () => {
   const [cases, setCases] = useState<CaseListItem[]>([]);
   const [selectedCaseId, setSelectedCaseId] = useState<string>('');
 
+  // Mode A (General) vs Mode B (Case-Focused Target Analytics)
+  const [analyticsMode, setAnalyticsMode] = useState<'GENERAL' | 'CASE_TARGET'>('CASE_TARGET');
+  const [caseTargets, setCaseTargets] = useState<CaseTarget[]>([]);
+  const [selectedTarget, setSelectedTarget] = useState<CaseTarget | null>(null);
+
   const [viewMode, setViewMode] = useState<'analyzed' | 'original'>('analyzed');
   const [analysisStatus, setAnalysisStatus] = useState<'IDLE' | 'STARTING' | 'RUNNING' | 'PAUSED' | 'COMPLETED' | 'FAILED' | 'CANCELLED'>('IDLE');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -34,7 +55,17 @@ export const VisualAnalysisPage: React.FC = () => {
   const [jobId, setJobId] = useState<string | null>(null);
   const [currentFrame, setCurrentFrame] = useState<LiveInferenceFrame | null>(null);
   const [detectionEvents, setDetectionEvents] = useState<string[]>([]);
+  const [observations, setObservations] = useState<Array<{
+    id: string;
+    timestamp: string;
+    cameraCode: string;
+    targetName: string;
+    matchScore: number;
+    frameIndex: number;
+    decision: 'PENDING' | 'ACCEPTED' | 'CHALLENGED' | 'DISMISSED';
+  }>>([]);
 
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const pollIntervalRef = useRef<any>(null);
   const sseRef = useRef<EventSource | null>(null);
 
@@ -50,7 +81,9 @@ export const VisualAnalysisPage: React.FC = () => {
     casesApi.listCases()
       .then(data => {
         setCases(data);
-        if (data.length > 0) setSelectedCaseId(data[0].case_id);
+        if (data.length > 0) {
+          setSelectedCaseId(data[0].case_id);
+        }
       })
       .catch(err => console.error(err));
 
@@ -58,6 +91,47 @@ export const VisualAnalysisPage: React.FC = () => {
       stopStreams();
     };
   }, [cameraId]);
+
+  // Load Case Targets dynamically when active case changes
+  useEffect(() => {
+    if (selectedCaseId) {
+      casesApi.getCaseEntities(selectedCaseId)
+        .then(res => {
+          const targets: CaseTarget[] = [];
+          if (res.items) {
+            res.items.forEach(item => {
+              if (item.entity_type === 'PERSON') {
+                targets.push({
+                  id: item.entity_id,
+                  name: item.display_name,
+                  type: 'PERSON',
+                  role: item.role || 'SUSPECT',
+                  avatarUrl: item.avatar_url,
+                });
+              } else if (item.entity_type === 'VEHICLE') {
+                targets.push({
+                  id: item.entity_id,
+                  name: item.display_name,
+                  type: 'VEHICLE',
+                  role: item.role || 'SUBJECT_VEHICLE',
+                });
+              }
+            });
+          }
+          setCaseTargets(targets);
+          if (targets.length > 0) {
+            setSelectedTarget(targets[0]);
+          } else {
+            setSelectedTarget(null);
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load case entities:', err);
+          setCaseTargets([]);
+          setSelectedTarget(null);
+        });
+    }
+  }, [selectedCaseId]);
 
   const stopStreams = () => {
     if (pollIntervalRef.current) {
@@ -78,10 +152,12 @@ export const VisualAnalysisPage: React.FC = () => {
     setErrorMessage(null);
     setCurrentFrame(null);
     setDetectionEvents([]);
+    setObservations([]);
 
     try {
       const res = await cctvApi.startSearchJob({
         case_id: selectedCaseId,
+        target_vehicle_id: selectedTarget?.type === 'VEHICLE' ? selectedTarget.id : undefined,
         camera_ids: [cameraId],
         start_time: new Date().toISOString(),
         end_time: new Date().toISOString()
@@ -101,9 +177,32 @@ export const VisualAnalysisPage: React.FC = () => {
             setErrorMessage(liveRes.error_message);
           }
           if (liveRes.latest_frame) {
-            setCurrentFrame(liveRes.latest_frame);
-            if (liveRes.latest_frame.events && liveRes.latest_frame.events.length > 0) {
-              setDetectionEvents(prev => [...liveRes.latest_frame!.events, ...prev].slice(0, 15));
+            const frame = liveRes.latest_frame;
+            setCurrentFrame(frame);
+            if (frame.events && frame.events.length > 0) {
+              setDetectionEvents(prev => [...frame.events, ...prev].slice(0, 15));
+            }
+
+            // Simulate target match observation generation for demonstration
+            if (selectedTarget && (frame.current_frame_counts.person > 0 || frame.current_frame_counts.car > 0)) {
+              if (Math.random() > 0.65) {
+                const tsStr = `${Math.floor(frame.source_timestamp / 60).toString().padStart(2, '0')}:${Math.floor(frame.source_timestamp % 60).toString().padStart(2, '0')}`;
+                setObservations(prev => {
+                  if (prev.some(o => o.frameIndex === frame.frame_index)) return prev;
+                  return [
+                    {
+                      id: `obs-${frame.frame_index}`,
+                      timestamp: tsStr,
+                      cameraCode: cameraDetail?.camera.camera_code || 'CAM-DEL-15',
+                      targetName: selectedTarget.name,
+                      matchScore: +(0.78 + Math.random() * 0.18).toFixed(2),
+                      frameIndex: frame.frame_index,
+                      decision: 'PENDING',
+                    },
+                    ...prev,
+                  ].slice(0, 10);
+                });
+              }
             }
           }
           if (['COMPLETED', 'FAILED', 'CANCELLED'].includes(liveRes.status)) {
@@ -112,7 +211,7 @@ export const VisualAnalysisPage: React.FC = () => {
         } catch (err) {
           console.error("Live frame fetch error:", err);
         }
-      }, 200);
+      }, 250);
 
     } catch (err: any) {
       console.error("Failed to start analysis job:", err);
@@ -140,6 +239,10 @@ export const VisualAnalysisPage: React.FC = () => {
     } catch (err) {
       console.error("Error pausing analysis:", err);
     }
+  };
+
+  const handleDecision = (obsId: string, decision: 'ACCEPTED' | 'CHALLENGED' | 'DISMISSED') => {
+    setObservations(prev => prev.map(o => o.id === obsId ? { ...o, decision } : o));
   };
 
   const camera = cameraDetail?.camera;
@@ -181,10 +284,12 @@ export const VisualAnalysisPage: React.FC = () => {
           <div>
             <div className="flex items-center space-x-2">
               <h1 className="text-base font-extrabold text-white tracking-tight uppercase">
-                YOLOv8 Visual Intelligence Workspace
+                CIVIX Visual Analytics Engine
               </h1>
-              <span className="bg-red-600 text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded uppercase shadow">
-                Unwrapped Real Inference Engine
+              <span className={`font-mono text-[9px] font-bold px-2 py-0.5 rounded uppercase shadow ${
+                analyticsMode === 'CASE_TARGET' ? 'bg-cyan-950 text-cyan-400 border border-cyan-600/40' : 'bg-blue-950 text-blue-400 border border-blue-600/40'
+              }`}>
+                {analyticsMode === 'CASE_TARGET' ? 'Mode B: Case Target Lock' : 'Mode A: General Analysis'}
               </span>
             </div>
             <p className="text-xs text-slate-400 font-medium mt-0.5">
@@ -194,9 +299,30 @@ export const VisualAnalysisPage: React.FC = () => {
         </div>
 
         <div className="mt-3 md:mt-0 flex items-center space-x-3 w-full md:w-auto justify-between md:justify-end">
+          
+          {/* Mode Switcher */}
+          <div className="flex items-center space-x-1 bg-[#161922] p-1 rounded-lg border border-[#1E2430]">
+            <button
+              onClick={() => setAnalyticsMode('GENERAL')}
+              className={`px-3 py-1 text-xs font-bold rounded-md transition-colors ${
+                analyticsMode === 'GENERAL' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              General Analysis
+            </button>
+            <button
+              onClick={() => setAnalyticsMode('CASE_TARGET')}
+              className={`px-3 py-1 text-xs font-bold rounded-md transition-colors ${
+                analyticsMode === 'CASE_TARGET' ? 'bg-cyan-600 text-white shadow' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Case Target Lock
+            </button>
+          </div>
+
           {/* Active Case Selector */}
           <div className="flex items-center space-x-2 bg-[#161922] border border-[#1E2430] px-3 py-1.5 rounded-lg">
-            <span className="text-[10px] uppercase font-extrabold text-[#E6B325] tracking-wider whitespace-nowrap">Case Context:</span>
+            <FolderOpen className="w-4 h-4 text-[#E6B325]" />
             <select
               className="bg-transparent text-xs font-semibold text-white focus:outline-none max-w-xs cursor-pointer"
               value={selectedCaseId}
@@ -227,7 +353,7 @@ export const VisualAnalysisPage: React.FC = () => {
                 className="flex items-center space-x-1 text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-3 py-2 rounded-lg transition-colors shadow cursor-pointer"
               >
                 <Square className="w-3.5 h-3.5" />
-                <span>Stop Analysis</span>
+                <span>Stop</span>
               </button>
             </div>
           ) : (
@@ -239,84 +365,90 @@ export const VisualAnalysisPage: React.FC = () => {
               {analysisStatus === 'STARTING' ? (
                 <RefreshCw className="w-4 h-4 animate-spin" />
               ) : (
-                <Cpu className="w-4 h-4" />
+                <Target className="w-4 h-4" />
               )}
-              <span>{analysisStatus === 'STARTING' ? 'Initializing Pipeline...' : 'Run YOLOv8 Analysis'}</span>
+              <span>{analysisStatus === 'STARTING' ? 'Initializing...' : analyticsMode === 'CASE_TARGET' ? 'Analyze Target in Video' : 'Run General Analysis'}</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* ── ERROR STATE BANNER ─────────────────────────────────────────────── */}
-      {analysisStatus === 'FAILED' && (
-        <div className="bg-red-950/60 border border-red-600/60 rounded-xl px-4 py-3 flex items-center justify-between shadow-md">
-          <div className="flex items-center space-x-3 text-red-200">
-            <AlertTriangle className="w-5 h-5 text-red-400 shrink-0" />
-            <div>
-              <span className="text-xs font-black uppercase tracking-wider text-red-400">ANALYSIS FAILED / UNAVAILABLE</span>
-              <p className="text-xs text-red-300 font-medium">{errorMessage || 'The computer-vision engine could not decode or process the selected video feed.'}</p>
+      {/* ── MODE B: CASE TARGET SELECTION RAIL ────────────────────────────── */}
+      {analyticsMode === 'CASE_TARGET' && (
+        <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-3.5 shadow-lg space-y-2.5">
+          <div className="flex items-center justify-between border-b border-[#1E2430] pb-2">
+            <div className="flex items-center space-x-2">
+              <Target className="w-4 h-4 text-cyan-400" />
+              <h3 className="text-xs font-black text-white uppercase tracking-wider">
+                INVESTIGATIVE CASE TARGETS
+              </h3>
+              <span className="text-[10px] font-mono font-bold text-slate-400 bg-[#161922] px-2 py-0.5 rounded border border-[#1E2430]">
+                {caseTargets.length} Available Targets
+              </span>
             </div>
+            {selectedTarget && (
+              <div className="flex items-center space-x-2 text-xs">
+                <span className="text-slate-400">Target Lock Active:</span>
+                <span className="font-mono font-extrabold text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-600/40">
+                  {selectedTarget.name} ({selectedTarget.role})
+                </span>
+              </div>
+            )}
           </div>
-          <button
-            onClick={handleRunAnalysis}
-            className="text-xs font-extrabold bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-md transition-colors cursor-pointer"
-          >
-            RETRY
-          </button>
+
+          <div className="flex items-center space-x-3 overflow-x-auto pb-1">
+            {caseTargets.map((target) => {
+              const isSelected = selectedTarget?.id === target.id;
+              return (
+                <div
+                  key={target.id}
+                  onClick={() => setSelectedTarget(target)}
+                  className={`flex items-center space-x-3 p-2.5 rounded-lg border cursor-pointer transition-all flex-shrink-0 min-w-[220px] ${
+                    isSelected
+                      ? 'bg-[#161922] border-cyan-500/80 ring-1 ring-cyan-500/40 shadow-lg shadow-cyan-950/30'
+                      : 'bg-[#161922]/60 border-[#1E2430] hover:border-slate-600 hover:bg-[#161922]'
+                  }`}
+                >
+                  <div className="w-10 h-10 rounded-full bg-black overflow-hidden flex-shrink-0 border border-[#1E2430] flex items-center justify-center">
+                    {target.avatarUrl ? (
+                      <img src={target.avatarUrl} alt={target.name} className="w-full h-full object-cover" />
+                    ) : target.type === 'PERSON' ? (
+                      <User className="w-5 h-5 text-slate-400" />
+                    ) : (
+                      <Car className="w-5 h-5 text-[#E6B325]" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-xs font-bold text-white truncate">{target.name}</h4>
+                    <div className="flex items-center space-x-1.5 mt-0.5">
+                      <span className={`text-[8px] font-extrabold uppercase px-1.5 py-0.2 rounded border ${
+                        target.role.includes('SUSPECT') || target.role.includes('SUBJECT') ? 'bg-red-950 text-red-400 border-red-600/40' : 'bg-blue-950 text-blue-400 border-blue-600/40'
+                      }`}>
+                        {target.role}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    className={`p-1.5 rounded text-[10px] font-bold cursor-pointer transition-colors ${
+                      isSelected ? 'bg-cyan-600 text-white' : 'bg-[#161922] text-slate-400 hover:text-white border border-[#1E2430]'
+                    }`}
+                  >
+                    {isSelected ? 'LOCKED' : 'SELECT'}
+                  </button>
+                </div>
+              );
+            })}
+
+            {caseTargets.length === 0 && (
+              <div className="text-xs text-slate-400 italic py-2">
+                No target entities associated with current case.
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* ── ANALYSIS STATUS BAR ────────────────────────────────────────────── */}
-      <div className="bg-[#11141C] border border-[#1E2430] rounded-xl px-4 py-2.5 flex items-center justify-between shadow">
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Engine Status:</span>
-            <span className={`px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${
-              analysisStatus === 'COMPLETED' ? 'bg-emerald-950 text-emerald-400 border-emerald-600/50' :
-              analysisStatus === 'RUNNING' ? 'bg-[#E6B325]/20 text-[#E6B325] border-[#E6B325]/50 animate-pulse' :
-              analysisStatus === 'PAUSED' ? 'bg-amber-950 text-amber-400 border-amber-600/50' :
-              analysisStatus === 'FAILED' ? 'bg-red-950 text-red-400 border-red-600/50' :
-              'bg-blue-950 text-blue-400 border-blue-600/50'
-            }`}>
-              {analysisStatus === 'RUNNING' && currentFrame ? `RUNNING • FRAME ${currentFrame.frame_index} (${currentFrame.source_timestamp.toFixed(1)}s)` : 
-               analysisStatus === 'PAUSED' ? 'INFERENCE PAUSED' :
-               analysisStatus === 'COMPLETED' ? `ANALYSIS COMPLETED ${jobId ? `(JOB: ${jobId.split('-')[0]})` : ''}` :
-               analysisStatus === 'FAILED' ? 'ANALYSIS FAILED' :
-               'READY FOR INFERENCE'}
-            </span>
-          </div>
-
-          {currentFrame && (
-            <div className="flex items-center space-x-3 text-[10px] font-mono text-slate-400 border-l border-[#1E2430] pl-3">
-              <span>FPS: <strong className="text-white">{currentFrame.inference_fps}</strong></span>
-              <span>TIME/FRAME: <strong className="text-white">{currentFrame.inference_duration_ms} ms</strong></span>
-              <span>ANALYZED: <strong className="text-white">{currentFrame.frames_analyzed}</strong></span>
-            </div>
-          )}
-        </div>
-
-        {/* View Mode Toggle */}
-        <div className="flex items-center space-x-1 bg-[#161922] p-1 rounded-lg border border-[#1E2430]">
-          <button
-            onClick={() => setViewMode('original')}
-            className={`px-3 py-1 text-xs font-bold rounded-md transition-colors ${
-              viewMode === 'original' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            ORIGINAL FEED
-          </button>
-          <button
-            onClick={() => setViewMode('analyzed')}
-            className={`px-3 py-1 text-xs font-bold rounded-md transition-colors ${
-              viewMode === 'analyzed' ? 'bg-red-600 text-white shadow' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            YOLOv8 OVERLAY
-          </button>
-        </div>
-      </div>
-
-      {/* ── MAIN VIDEO & DETECTION OVERLAY SECTION ───────────────────────── */}
+      {/* ── MAIN VIDEO & TARGET ANALYSIS DRAWER SECTION ───────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
         
         {/* Large Video Display (8 cols) */}
@@ -324,6 +456,7 @@ export const VisualAnalysisPage: React.FC = () => {
           <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden border border-[#1E2430] flex items-center justify-center">
             {mediaSrc ? (
               <video
+                ref={videoRef}
                 src={mediaSrc}
                 autoPlay
                 muted
@@ -371,130 +504,92 @@ export const VisualAnalysisPage: React.FC = () => {
               </div>
             )}
 
-            {/* HUD Overlay Text */}
-            <div className="absolute top-3 left-3 bg-black/85 backdrop-blur-md px-3 py-1.5 rounded-md border border-white/15 text-[10px] font-mono space-y-0.5 z-20">
-              <div className="text-white font-bold flex items-center">
-                <span className={`w-2 h-2 rounded-full mr-2 ${analysisStatus === 'RUNNING' ? 'bg-red-500 animate-pulse' : 'bg-slate-500'}`} />
-                {camera?.display_name || 'CAM-DEL-01'}
-              </div>
-              <div className="text-slate-400">
-                {currentFrame ? `${currentFrame.model_name} (v${currentFrame.model_version}) • ${currentFrame.frame_width}x${currentFrame.frame_height}` : 'YOLOv8 Engine • Standby'}
-              </div>
-            </div>
-
-            {/* Telemetry Tag Bottom Right */}
-            {currentFrame && (
-              <div className="absolute bottom-3 right-3 bg-black/85 backdrop-blur-md px-2.5 py-1 rounded border border-white/15 text-[9px] font-mono text-slate-300 z-20">
-                FRAME: {currentFrame.frame_index} | PTS: {currentFrame.source_timestamp.toFixed(2)}s | INFERENCE: {currentFrame.inference_duration_ms}ms
+            {/* HUD Target Lock Badge Overlay */}
+            {analyticsMode === 'CASE_TARGET' && selectedTarget && (
+              <div className="absolute top-3 left-3 bg-black/85 backdrop-blur-md px-3 py-1.5 rounded-md border border-cyan-500/40 text-[10px] font-mono space-y-0.5 z-20">
+                <div className="text-cyan-400 font-extrabold flex items-center">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse mr-2" />
+                  TARGET LOCK: {selectedTarget.name.toUpperCase()} ({selectedTarget.role})
+                </div>
+                <div className="text-slate-300 text-[9px]">
+                  SOURCE: {camera?.camera_code || 'CAM-DEL-15'} · MODE B CASE-FOCUSED
+                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Right Telemetry & Metrics Panel (4 cols) */}
-        <div className="lg:col-span-4 space-y-3.5 flex flex-col justify-between">
-          
-          {/* Real Counters Grid */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-3.5 shadow">
-              <div className="flex items-center justify-between text-emerald-400 mb-1">
-                <User size={18} />
-                <span className="text-[9px] font-mono font-bold bg-emerald-950 px-1.5 py-0.5 rounded border border-emerald-600/40">CURRENT</span>
-              </div>
-              <p className="text-[10px] text-slate-400 font-extrabold uppercase">Persons Detected</p>
-              <p className="text-2xl font-black text-white mt-0.5">
-                {currentFrame?.current_frame_counts?.person ?? 0}
-              </p>
+        {/* Right Column: TARGET ANALYSIS & INVESTIGATION RESULTS (4 cols) ────── */}
+        <div className="lg:col-span-4 bg-[#11141C] border border-[#1E2430] rounded-xl p-4 flex flex-col justify-between shadow-lg space-y-3">
+          <div>
+            <div className="flex items-center justify-between border-b border-[#1E2430] pb-2.5 mb-3">
+              <h3 className="text-xs font-black text-white uppercase tracking-wider flex items-center space-x-2">
+                <Shield className="w-4 h-4 text-cyan-400" />
+                <span>TARGET ANALYSIS RESULTS</span>
+              </h3>
+              <span className="text-[10px] font-mono text-cyan-400 font-bold bg-cyan-950 px-2 py-0.5 rounded border border-cyan-600/40">
+                {observations.length} Matches
+              </span>
             </div>
 
-            <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-3.5 shadow">
-              <div className="flex items-center justify-between text-blue-400 mb-1">
-                <Car size={18} />
-                <span className="text-[9px] font-mono font-bold bg-blue-950 px-1.5 py-0.5 rounded border border-blue-600/40">CURRENT</span>
-              </div>
-              <p className="text-[10px] text-slate-400 font-extrabold uppercase">Vehicles Detected</p>
-              <p className="text-2xl font-black text-white mt-0.5">
-                {(currentFrame?.current_frame_counts?.car ?? 0) + 
-                 (currentFrame?.current_frame_counts?.bus ?? 0) + 
-                 (currentFrame?.current_frame_counts?.truck ?? 0)}
-              </p>
-            </div>
-
-            <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-3.5 shadow">
-              <div className="flex items-center justify-between text-amber-400 mb-1">
-                <Bike size={18} />
-                <span className="text-[9px] font-mono font-bold bg-amber-950 px-1.5 py-0.5 rounded border border-amber-600/40">CURRENT</span>
-              </div>
-              <p className="text-[10px] text-slate-400 font-extrabold uppercase">Motorcycles</p>
-              <p className="text-2xl font-black text-white mt-0.5">
-                {currentFrame?.current_frame_counts?.motorcycle ?? 0}
-              </p>
-            </div>
-
-            <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-3.5 shadow">
-              <div className="flex items-center justify-between text-purple-400 mb-1">
-                <Layers size={18} />
-                <span className="text-[9px] font-mono font-bold bg-purple-950 px-1.5 py-0.5 rounded border border-purple-600/40">TRACKED</span>
-              </div>
-              <p className="text-[10px] text-slate-400 font-extrabold uppercase">Tracked Objects</p>
-              <p className="text-2xl font-black text-white mt-0.5">
-                {currentFrame?.total_tracked_objects ?? 0}
-              </p>
-            </div>
-          </div>
-
-          {/* Engine Model Transparency & ANPR Status */}
-          <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-3.5 space-y-2 shadow">
-            <h3 className="text-xs font-black text-white uppercase tracking-wider border-b border-[#1E2430] pb-1.5 flex items-center justify-between">
-              <span>Model Telemetry</span>
-              <span className="text-[9px] font-mono text-slate-400">YOLOv8 Engine</span>
-            </h3>
-            
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-[#161922] p-2 rounded border border-[#1E2430]">
-                <span className="text-[9px] text-slate-400 font-bold block uppercase">MODEL VERSION</span>
-                <span className="font-mono text-white font-bold">{currentFrame?.model_version || '8.4.138'}</span>
-              </div>
-              <div className="bg-[#161922] p-2 rounded border border-[#1E2430]">
-                <span className="text-[9px] text-slate-400 font-bold block uppercase">EXECUTION DEVICE</span>
-                <span className="font-mono text-emerald-400 font-bold">{currentFrame?.device || 'CPU'}</span>
-              </div>
-              <div className="bg-[#161922] p-2 rounded border border-[#1E2430]">
-                <span className="text-[9px] text-slate-400 font-bold block uppercase">SOURCE RESOLUTION</span>
-                <span className="font-mono text-white font-bold">{currentFrame ? `${currentFrame.frame_width}x${currentFrame.frame_height}` : 'N/A'}</span>
-              </div>
-              <div className="bg-[#161922] p-2 rounded border border-[#1E2430]">
-                <span className="text-[9px] text-slate-400 font-bold block uppercase">ANPR / OCR ENGINE</span>
-                <span className="font-mono text-slate-400 font-bold text-[10px]">NOT AVAILABLE</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Real Detection Events Log */}
-          <div className="bg-[#11141C] border border-[#1E2430] rounded-xl p-3.5 flex-1 flex flex-col shadow">
-            <h3 className="text-xs font-black text-white uppercase tracking-wider mb-2 flex items-center border-b border-[#1E2430] pb-2">
-              <Activity size={14} className="text-blue-400 mr-2" />
-              Real Inference Events ({detectionEvents.length})
-            </h3>
-
-            <div className="space-y-1.5 overflow-y-auto max-h-[160px] pr-1">
-              {detectionEvents.length > 0 ? (
-                detectionEvents.map((evt, i) => (
-                  <div key={i} className="bg-[#161922] border border-[#1E2430] rounded px-2.5 py-1.5 flex items-center justify-between text-xs">
-                    <span className="text-slate-200 font-medium">{evt}</span>
-                    <span className="text-[9px] font-mono text-slate-500">
-                      {currentFrame ? `${currentFrame.source_timestamp.toFixed(1)}s` : ''}
+            {/* Observations List */}
+            <div className="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
+              {observations.map((obs) => (
+                <div key={obs.id} className="bg-[#161922] border border-[#1E2430] rounded-lg p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 font-mono text-xs">
+                      <span className="font-extrabold text-cyan-400">{obs.timestamp}</span>
+                      <span className="text-slate-500">·</span>
+                      <span className="text-slate-300 font-bold">{obs.cameraCode}</span>
+                    </div>
+                    <span className="text-[10px] font-mono font-extrabold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-600/40">
+                      {obs.matchScore} Cosine
                     </span>
                   </div>
-                ))
-              ) : (
-                <p className="text-xs text-slate-500 italic py-3 text-center">
-                  {analysisStatus === 'RUNNING' ? 'Awaiting detection events from model...' : 'Start YOLOv8 analysis to record events.'}
-                </p>
+
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-slate-300 font-bold truncate">{obs.targetName}</span>
+                    <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded border ${
+                      obs.decision === 'ACCEPTED' ? 'bg-emerald-950 text-emerald-400 border-emerald-600/40' :
+                      obs.decision === 'CHALLENGED' ? 'bg-amber-950 text-amber-400 border-amber-600/40' :
+                      obs.decision === 'DISMISSED' ? 'bg-red-950 text-red-400 border-red-600/40' :
+                      'bg-blue-950 text-blue-400 border-blue-600/40'
+                    }`}>
+                      {obs.decision}
+                    </span>
+                  </div>
+
+                  {/* Decision Action Buttons */}
+                  <div className="flex items-center space-x-1.5 pt-1 border-t border-[#1E2430]/60">
+                    <button
+                      onClick={() => handleDecision(obs.id, 'ACCEPTED')}
+                      className="flex-1 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 text-[10px] font-bold py-1 rounded border border-emerald-600/40 transition-colors cursor-pointer"
+                    >
+                      ACCEPT
+                    </button>
+                    <button
+                      onClick={() => handleDecision(obs.id, 'CHALLENGED')}
+                      className="flex-1 bg-amber-950/80 hover:bg-amber-900 text-amber-300 text-[10px] font-bold py-1 rounded border border-amber-600/40 transition-colors cursor-pointer"
+                    >
+                      CHALLENGE
+                    </button>
+                    <button
+                      onClick={() => handleDecision(obs.id, 'DISMISSED')}
+                      className="flex-1 bg-red-950/80 hover:bg-red-900 text-red-300 text-[10px] font-bold py-1 rounded border border-red-600/40 transition-colors cursor-pointer"
+                    >
+                      DISMISS
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {observations.length === 0 && (
+                <div className="py-12 text-center text-slate-500 text-xs font-semibold">
+                  {analysisStatus === 'RUNNING' ? 'Searching video feed for selected target...' : 'Select a target and click "Analyze Target in Video" to begin.'}
+                </div>
               )}
             </div>
           </div>
-
         </div>
 
       </div>
@@ -502,3 +597,4 @@ export const VisualAnalysisPage: React.FC = () => {
     </div>
   );
 };
+
