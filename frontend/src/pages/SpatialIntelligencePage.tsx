@@ -836,21 +836,6 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
         </div>
       )}
 
-      {/* ─── FOOTER BAR (Matching Visual Lock) ────────────────────────────────── */}
-      <footer className="mt-6 pt-4 border-t border-[#1E2430] flex items-center justify-between text-[11px] font-mono text-slate-400">
-        <div>
-          <span className="font-extrabold text-white">CIVIX 2.0</span>
-          <span className="mx-2">·</span>
-          <span>Confidential - Delhi Police Use Only</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span>All Systems Operational</span>
-          <span>|</span>
-          <span>Version 2.0.0</span>
-        </div>
-      </footer>
-
     </div>
   );
 };
