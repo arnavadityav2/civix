@@ -297,9 +297,6 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
       {/* ─── STAGE 1: DELHI NCR SPATIAL COMMAND BANNER & HEADER ───────────────── */}
       {viewMode === 'GLOBAL_MAP' ? (
         <div className="relative rounded-lg overflow-hidden border border-[#1E2430] bg-[#0A0D14] shadow-2xl">
-      {/* ─── STAGE 1: DELHI NCR SPATIAL COMMAND BANNER & HEADER ───────────────── */}
-      {viewMode === 'GLOBAL_MAP' ? (
-        <div className="relative rounded-lg overflow-hidden border border-[#1E2430] bg-[#0A0D14] shadow-2xl">
           {/* Background Image Layer - Crisp, Vibrant & Visible */}
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-85 z-0"
