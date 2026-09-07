@@ -49,18 +49,26 @@ if command -v netfilter-persistent &> /dev/null; then
 fi
 echo "✅ Firewall rules configured."
 
-# 3. Pull latest changes from Git
+# 3. Pull latest changes from Git (MUST happen before Docker build)
 echo "📥 [3/5] Syncing latest Git repository main branch..."
-git pull origin main || echo "⚠️ Git pull skipped or working from local archive."
+git -C "$(pwd)" pull origin main || echo "⚠️ Git pull skipped or working from local archive."
 
 # 4. Launch Docker Compose Stack
 echo "🐳 [4/5] Building and launching CIVIX 2.0 Docker stack..."
+
+# Remove any stale postgres/postgis images so Docker always rebuilds
+# from the correct Dockerfile.postgres (ARM64-compatible)
 docker compose down --remove-orphans || true
+docker image rm civix-postgres 2>/dev/null || true
+docker image rm civix_civix-postgres 2>/dev/null || true
+# Remove any cached postgis/postgis image that pulled amd64 by mistake
+docker image rm postgis/postgis:16-3.4 2>/dev/null || true
+
 docker compose up --build -d
 
 # Wait for Postgres & Neo4j containers to pass health checks
 echo "⏳ Waiting for PostgreSQL and Neo4j databases to initialize..."
-sleep 25
+sleep 15
 
 # 5. Execute Automated Database Seeding & Access Setup Pipeline
 echo "🌱 [5/5] Executing Master Environment Seeding & Graph Sync Pipeline..."
