@@ -297,37 +297,40 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
       {/* ─── STAGE 1: DELHI NCR SPATIAL COMMAND BANNER & HEADER ───────────────── */}
       {viewMode === 'GLOBAL_MAP' ? (
         <div className="relative rounded-lg overflow-hidden border border-[#1E2430] bg-[#0A0D14] shadow-2xl">
-          {/* Background Image Layer */}
+      {/* ─── STAGE 1: DELHI NCR SPATIAL COMMAND BANNER & HEADER ───────────────── */}
+      {viewMode === 'GLOBAL_MAP' ? (
+        <div className="relative rounded-lg overflow-hidden border border-[#1E2430] bg-[#0A0D14] shadow-2xl">
+          {/* Background Image Layer - Crisp, Vibrant & Visible */}
           <div 
-            className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity z-0"
+            className="absolute inset-0 bg-cover bg-center opacity-85 z-0"
             style={{ backgroundImage: `url('/assets/spatial_command_banner.png')` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#090C12] via-[#090C12]/80 to-transparent z-0" />
+          <div className="absolute inset-0 bg-[#090C12]/30 backdrop-brightness-95 z-0" />
 
           {/* Banner Content */}
           <div className="relative z-10 p-6 flex flex-col justify-between space-y-4">
             <div className="flex justify-between items-start">
               <div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-[10px] font-mono font-extrabold text-cyan-400 uppercase tracking-widest bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-500/30">
+                  <span className="text-[10px] font-mono font-extrabold text-cyan-300 uppercase tracking-widest bg-cyan-950/90 px-2 py-0.5 rounded border border-cyan-500/40 drop-shadow-md">
                     SPATIAL INTELLIGENCE
                   </span>
                 </div>
-                <h1 className="text-3xl font-black text-white uppercase tracking-tight mt-1.5 font-sans">
+                <h1 className="text-3xl font-black text-white uppercase tracking-tight mt-1.5 font-sans drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                   DELHI NCR CRIME ANALYSIS
                 </h1>
-                <p className="text-slate-300 text-xs font-mono mt-0.5">
+                <p className="text-slate-200 text-xs font-mono mt-0.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
                   Visualising patterns. Connecting locations. Enabling faster investigations.
                 </p>
               </div>
 
               {/* Right Side Institutional Quote & Live Status */}
               <div className="hidden lg:flex flex-col items-end text-right">
-                <span className="text-xs font-serif font-semibold italic text-slate-300 tracking-wider">
+                <span className="text-xs font-serif font-semibold italic text-white tracking-wider drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
                   "A SAFER DELHI THROUGH INTELLIGENCE AND INSIGHT"
                 </span>
-                <div className="flex items-center space-x-2 mt-2 font-mono text-[10px] text-slate-400">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="flex items-center space-x-2 mt-2 font-mono text-[10px] text-slate-200 drop-shadow-md">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   <span>Live Data</span>
                   <span>|</span>
                   <span>Delhi NCR</span>
@@ -339,7 +342,7 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
 
             {/* 6 Top Stat Cards Row (Visual Lock Exact Match) */}
             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 pt-2">
-              <div className="bg-[#0D111A]/90 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3">
+              <div className="bg-[#0D111A]/95 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3 backdrop-blur-md shadow-lg">
                 <div className="p-2 rounded bg-blue-600/20 text-blue-400 border border-blue-500/30">
                   <Layers className="w-4 h-4" />
                 </div>
@@ -349,7 +352,7 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
                 </div>
               </div>
 
-              <div className="bg-[#0D111A]/90 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3">
+              <div className="bg-[#0D111A]/95 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3 backdrop-blur-md shadow-lg">
                 <div className="p-2 rounded bg-red-600/20 text-red-400 border border-red-500/30">
                   <Shield className="w-4 h-4" />
                 </div>
@@ -359,7 +362,7 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
                 </div>
               </div>
 
-              <div className="bg-[#0D111A]/90 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3">
+              <div className="bg-[#0D111A]/95 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3 backdrop-blur-md shadow-lg">
                 <div className="p-2 rounded bg-purple-600/20 text-purple-400 border border-purple-500/30">
                   <Briefcase className="w-4 h-4" />
                 </div>
@@ -369,7 +372,7 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
                 </div>
               </div>
 
-              <div className="bg-[#0D111A]/90 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3">
+              <div className="bg-[#0D111A]/95 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3 backdrop-blur-md shadow-lg">
                 <div className="p-2 rounded bg-cyan-600/20 text-cyan-400 border border-cyan-500/30">
                   <AlertCircle className="w-4 h-4" />
                 </div>
@@ -379,7 +382,7 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
                 </div>
               </div>
 
-              <div className="bg-[#0D111A]/90 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3">
+              <div className="bg-[#0D111A]/95 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3 backdrop-blur-md shadow-lg">
                 <div className="p-2 rounded bg-amber-600/20 text-amber-400 border border-amber-500/30">
                   <Flame className="w-4 h-4" />
                 </div>
@@ -389,7 +392,7 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
                 </div>
               </div>
 
-              <div className="bg-[#0D111A]/90 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3">
+              <div className="bg-[#0D111A]/95 border border-[#1E2430] rounded-md p-3 flex items-center space-x-3 backdrop-blur-md shadow-lg">
                 <div className="p-2 rounded bg-emerald-600/20 text-emerald-400 border border-emerald-500/30">
                   <Activity className="w-4 h-4" />
                 </div>
@@ -431,60 +434,6 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
         </div>
       )}
 
-      {/* ─── FILTER CONTROL BAR (Matching Visual Lock) ────────────────────────── */}
-      {viewMode === 'GLOBAL_MAP' && (
-        <div className="bg-[#0D111A] border border-[#1E2430] rounded-lg px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Crime Type Dropdown */}
-            <select
-              value={crimeTypeFilter}
-              onChange={(e) => setCrimeTypeFilter(e.target.value)}
-              className="bg-[#11141C] border border-[#1E2430] text-slate-200 text-xs font-semibold rounded px-3 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer font-sans"
-            >
-              <option value="ALL">All Crime Types</option>
-              <option value="CRIMINAL">Criminal</option>
-              <option value="FINANCIAL">Financial</option>
-              <option value="CYBER">Cyber</option>
-              <option value="NARCOTICS">Narcotics</option>
-              <option value="PROPERTY">Property</option>
-              <option value="INTELLIGENCE">Intelligence</option>
-            </select>
-
-            {/* Date Filter Dropdown */}
-            <select
-              value={timeFilter}
-              onChange={(e) => setTimeFilter(e.target.value)}
-              className="bg-[#11141C] border border-[#1E2430] text-slate-200 text-xs font-semibold rounded px-3 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer font-sans"
-            >
-              <option value="12M">Last 12 Months</option>
-              <option value="6M">Last 6 Months</option>
-              <option value="30D">Last 30 Days</option>
-              <option value="ALL">All Time</option>
-            </select>
-
-            {/* Status Dropdown */}
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-[#11141C] border border-[#1E2430] text-slate-200 text-xs font-semibold rounded px-3 py-1.5 focus:outline-none focus:border-blue-500 cursor-pointer font-sans"
-            >
-              <option value="ALL">All Status</option>
-              <option value="OPEN">Open</option>
-              <option value="UNDER_INVESTIGATION">Under Investigation</option>
-              <option value="CLOSED_SOLVED">Closed Solved</option>
-            </select>
-          </div>
-
-          <button
-            onClick={handleResetFilters}
-            className="flex items-center space-x-1 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer font-mono"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span>Reset</span>
-          </button>
-        </div>
-      )}
-
       {/* Error Banner */}
       {error && (
         <div className="bg-red-950/80 border border-red-600/50 text-red-300 p-3 rounded text-xs flex items-center justify-between">
@@ -498,12 +447,12 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
         </div>
       )}
 
-      {/* ─── MAIN WORKSPACE ROW (MAP + HERO CASES PANEL) ────────────────────── */}
+      {/* ─── MAIN WORKSPACE ROW (ENLARGED MAP + HERO CASES PANEL) ────────────────────── */}
       {viewMode === 'GLOBAL_MAP' ? (
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 items-stretch">
           
-          {/* LEFT COLUMN (8 COLS): DELHI NCR TACTICAL MAP */}
-          <div className="xl:col-span-8 bg-[#0D111A] border border-[#1E2430] rounded-lg p-2.5 flex flex-col h-[560px]">
+          {/* LEFT COLUMN (8 COLS): EXPANDED DELHI NCR TACTICAL MAP */}
+          <div className="xl:col-span-8 bg-[#0D111A] border border-[#1E2430] rounded-lg p-2.5 flex flex-col h-[650px]">
             <div className="flex-1 w-full h-full">
               {isLoading ? (
                 <div className="w-full h-full bg-[#090C12] rounded border border-[#1E2430] flex flex-col items-center justify-center text-slate-400 text-xs font-mono">
@@ -525,7 +474,7 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
           </div>
 
           {/* RIGHT COLUMN (4 COLS): HERO CASES PANEL (EXACTLY 12 CASES) */}
-          <div className="xl:col-span-4 bg-[#0D111A] border border-[#1E2430] rounded-lg p-3.5 flex flex-col justify-between h-[560px]">
+          <div className="xl:col-span-4 bg-[#0D111A] border border-[#1E2430] rounded-lg p-3.5 flex flex-col justify-between h-[650px]">
             <div>
               <div className="flex items-center justify-between border-b border-[#1E2430] pb-2.5 mb-3">
                 <h3 className="text-xs font-extrabold text-white uppercase tracking-wider font-mono flex items-center space-x-1.5">
