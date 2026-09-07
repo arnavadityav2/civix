@@ -3,6 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgis/postgis:16-3.4
+    platform: linux/amd64
     container_name: civix_postgres
     restart: always
     environment:
@@ -14,14 +15,15 @@ services:
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-civix_demo}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 5s
       timeout: 5s
-      retries: 20
-      start_period: 20s
+      retries: 25
+      start_period: 15s
 
   neo4j:
     image: neo4j:5.15-community
+    platform: linux/amd64
     container_name: civix_neo4j
     restart: always
     environment:
