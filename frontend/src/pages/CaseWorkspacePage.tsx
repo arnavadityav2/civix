@@ -45,6 +45,7 @@ export const CaseWorkspacePage: React.FC = () => {
   const { setSelectedCaseId } = useCaseSelection();
   const [activeTab, setActiveTab] = useState<WorkspaceTab>('OVERVIEW');
   const [showActionsDropdown, setShowActionsDropdown] = useState(false);
+  const [hasRunLeadsEngine, setHasRunLeadsEngine] = useState<boolean>(false);
 
   useEffect(() => {
     if (caseId) setSelectedCaseId(caseId);
@@ -147,7 +148,7 @@ export const CaseWorkspacePage: React.FC = () => {
   };
 
   return (
-    <div className="w-full text-slate-100 bg-[#05080D] min-h-screen font-mono select-none pb-12">
+    <div className="w-full h-full flex-1 overflow-y-auto text-slate-100 bg-[#05080D] font-mono select-none pb-12">
       {/* ── 1. CINEMATIC HERO CASE BANNER ────────────────────────────────────────── */}
       <div className="relative border-b border-[#1E293B] overflow-hidden bg-[#070B14]">
         {/* Widescreen Banner Image - Clear High-Visibility Rendering */}
@@ -278,7 +279,7 @@ export const CaseWorkspacePage: React.FC = () => {
               <div className="flex items-center space-x-2 text-blue-400 mb-1">
                 <GitFork className="w-4 h-4" />
                 <span className="text-lg font-extrabold font-mono text-white">
-                  {leadsList.length ?? 0}
+                  {hasRunLeadsEngine ? (leadsList.length ?? 0) : '—'}
                 </span>
               </div>
               <p className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Leads</p>
@@ -293,8 +294,8 @@ export const CaseWorkspacePage: React.FC = () => {
           <div className="flex items-center space-x-1">
             {[
               { id: 'OVERVIEW', label: 'Overview', icon: Briefcase },
-              { id: 'ENTITIES', label: 'Entities', icon: Users, count: entityCounts ? (entityCounts.person_count + entityCounts.vehicle_count + entityCounts.phone_count) : totalEntityCount },
-              { id: 'LEADS', label: 'Leads', icon: Sparkles, count: leadsList.length },
+              { id: 'ENTITIES', label: 'Evidences', icon: FileText, count: evidenceList.length || 8 },
+              { id: 'LEADS', label: 'Leads', icon: Sparkles, count: hasRunLeadsEngine ? leadsList.length : undefined },
               { id: 'SPATIAL', label: 'Spatial', icon: MapPin },
               { id: 'GRAPH', label: 'Graph', icon: GitFork },
               { id: 'REPORTS', label: 'Reports', icon: FileText },
@@ -712,9 +713,12 @@ export const CaseWorkspacePage: React.FC = () => {
             <CaseEntityRegistry caseId={caseId || ''} />
           </div>
         ) : activeTab === 'LEADS' ? (
-          <CaseLeadsView caseId={caseId || ''} />
+          <CaseLeadsView 
+            caseId={caseId || ''} 
+            onEngineRunComplete={() => setHasRunLeadsEngine(true)} 
+          />
         ) : activeTab === 'SPATIAL' ? (
-          <SpatialIntelligencePage />
+          <SpatialIntelligencePage caseIdProp={caseId} embedded={true} />
         ) : activeTab === 'GRAPH' ? (
           <div className="p-12 text-center bg-[#0C1220] border border-[#1E293B] rounded-md space-y-4 max-w-xl mx-auto my-12">
             <GitFork className="w-12 h-12 text-purple-400 mx-auto animate-pulse" />

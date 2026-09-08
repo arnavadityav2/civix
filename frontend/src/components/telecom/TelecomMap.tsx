@@ -104,14 +104,16 @@ const MapCameraController: React.FC<{
 
   useEffect(() => {
     if (selectedTowerId) {
-      const selected = towers.find((t) => t.location_id === selectedTowerId || t.tower_id === selectedTowerId);
-      if (selected && selected.latitude && selected.longitude) {
-        map.flyTo([selected.latitude, selected.longitude], 14, { duration: 1.2 });
+      const selected = towers.find((t) => (t as any).location_id === selectedTowerId || t.tower_id === selectedTowerId);
+      const lat = selected ? ((selected as any).latitude ?? selected.centroid_lat) : null;
+      const lon = selected ? ((selected as any).longitude ?? selected.centroid_lon) : null;
+      if (selected && typeof lat === 'number' && typeof lon === 'number') {
+        map.flyTo([lat, lon], 14, { duration: 1.2 });
       }
     } else if (towers.length > 0) {
       const points: [number, number][] = towers
-        .filter((t) => t.latitude && t.longitude)
-        .map((t) => [t.latitude, t.longitude]);
+        .map((t) => [((t as any).latitude ?? t.centroid_lat), ((t as any).longitude ?? t.centroid_lon)] as [number, number])
+        .filter(([lat, lon]) => typeof lat === 'number' && typeof lon === 'number');
 
       if (points.length > 0) {
         const bounds = L.latLngBounds(points);
@@ -127,24 +129,28 @@ export const TelecomMap: React.FC<TelecomMapProps> = ({
   towers,
   events,
   selectedTowerId,
-  selectedEventId,
+  selectedEventId: _selectedEventId,
   onSelectTower,
 }) => {
   // Dwarka Sector 23 Center Coordinates
   const defaultCenter: [number, number] = [28.5621, 77.0627];
 
-  // Limit rendering to active 167 towers with valid numerical coordinates for optimal performance
+  // Limit rendering to active towers with valid numerical coordinates
   const displayedTowers = useMemo(() => {
     return towers
-      .filter((t) => typeof t.latitude === 'number' && typeof t.longitude === 'number' && !isNaN(t.latitude) && !isNaN(t.longitude))
+      .filter((t) => {
+        const lat = (t as any).latitude ?? t.centroid_lat;
+        const lon = (t as any).longitude ?? t.centroid_lon;
+        return typeof lat === 'number' && typeof lon === 'number' && !isNaN(lat) && !isNaN(lon);
+      })
       .slice(0, 167);
   }, [towers]);
 
   // Compute Polyline Path for events linked to selected case
   const polylineCoords = useMemo(() => {
     return events
-      .filter((e) => e.latitude && e.longitude)
-      .map((e) => [e.latitude, e.longitude] as [number, number]);
+      .map((e) => [e.location_lat, e.location_lon] as [number, number])
+      .filter(([lat, lon]) => typeof lat === 'number' && typeof lon === 'number');
   }, [events]);
 
   return (
@@ -177,9 +183,16 @@ export const TelecomMap: React.FC<TelecomMapProps> = ({
 
         {/* CELL TOWER MARKERS */}
         {displayedTowers.map((tower) => {
-          const tid = tower.location_id || tower.tower_id;
+          const tid = (tower as any).location_id || tower.tower_id;
+          const lat = (tower as any).latitude ?? tower.centroid_lat;
+          const lon = (tower as any).longitude ?? tower.centroid_lon;
+          const name = (tower as any).location_name ?? tower.name ?? tower.tower_id;
+          const operator = (tower as any).operator ?? 'Airtel Delhi';
+          const cellId = (tower as any).cell_id ?? '40041 / 8812';
+          const count = tower.call_count ?? (tower as any).event_count ?? tower.hit_count ?? 12;
+
           const isSelected = tid === selectedTowerId;
-          const isTargetRoute = tower.call_count ? tower.call_count > 0 : false;
+          const isTargetRoute = count > 0;
 
           const markerIcon = isSelected
             ? SELECTED_ICON
@@ -190,54 +203,54 @@ export const TelecomMap: React.FC<TelecomMapProps> = ({
           return (
             <Marker
               key={tid}
-              position={[tower.latitude, tower.longitude]}
+              position={[lat, lon]}
               icon={markerIcon}
               eventHandlers={{
                 click: () => onSelectTower(tid),
               }}
             >
               {/* CELL TOWER DETAILS & IMAGE HOVER POPUP */}
-              <Popup className="civix-tower-popup shadow-2xl z-[2000]" autoPan={true}>
-                <div className="w-64 bg-[#0B0F19] text-white p-3 rounded-md border border-[#1E293B] shadow-2xl font-sans">
+              <Popup className="civix-tower-popup shadow-2xl z-[2000]" autoPan={true} maxWidth={240}>
+                <div className="w-56 bg-[#090D16] text-white p-2 rounded border border-[#1E293B] shadow-2xl font-sans text-xs">
                   {/* Tower Photo Header */}
-                  <div className="relative w-full h-28 rounded overflow-hidden border border-[#1E293B] mb-2 bg-[#090D16]">
+                  <div className="relative w-full h-20 rounded overflow-hidden border border-[#1E293B] mb-1.5 bg-[#070A11]">
                     <img
-                      src="/cell_tower_demo.png"
+                      src="/assets/indian_telecom_tower.png"
                       alt="Cell Tower Structure"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-1.5 right-1.5 px-2 py-0.5 rounded bg-red-600/90 text-[9px] font-bold text-white uppercase tracking-wider shadow">
-                      {tower.operator || 'TELECOM TOWER'}
+                    <div className="absolute top-1 right-1 px-1.5 py-0.5 rounded bg-red-600/90 text-[8px] font-bold text-white uppercase tracking-wider shadow font-mono">
+                      {operator}
                     </div>
                   </div>
 
                   {/* Tower Details */}
-                  <div className="space-y-1 text-xs">
-                    <div className="flex items-center space-x-1.5 text-blue-400">
-                      <Radio className="w-3.5 h-3.5" />
-                      <h4 className="font-bold text-white truncate text-xs">
-                        {tower.location_name || tower.tower_id}
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-1 text-cyan-400">
+                      <Radio className="w-3 h-3 flex-shrink-0" />
+                      <h4 className="font-bold text-white truncate text-[11px]">
+                        {name}
                       </h4>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px] text-slate-300 pt-1">
+                    <div className="grid grid-cols-2 gap-x-1.5 gap-y-0.5 text-[9px] text-slate-300 pt-0.5 border-t border-[#1A2333]">
                       <div>
-                        <span className="text-slate-500 block uppercase font-mono">Tower ID</span>
-                        <span className="font-mono text-slate-200 font-semibold">{tid.substring(0, 12)}</span>
+                        <span className="text-slate-500 uppercase font-mono text-[8px]">Tower ID</span>
+                        <span className="font-mono text-slate-200 font-bold block truncate">{tid}</span>
                       </div>
                       <div>
-                        <span className="text-slate-500 block uppercase font-mono">LAC / CID</span>
-                        <span className="font-mono text-slate-200 font-semibold">{tower.cell_id || '40041 / 8812'}</span>
+                        <span className="text-slate-500 uppercase font-mono text-[8px]">LAC / CID</span>
+                        <span className="font-mono text-slate-200 font-bold block">{cellId}</span>
                       </div>
                       <div>
-                        <span className="text-slate-500 block uppercase font-mono">Coordinates</span>
-                        <span className="font-mono text-slate-300">
-                          {typeof tower.latitude === 'number' ? tower.latitude.toFixed(4) : '28.5621'}, {typeof tower.longitude === 'number' ? tower.longitude.toFixed(4) : '77.0627'}
+                        <span className="text-slate-500 uppercase font-mono text-[8px]">Coordinates</span>
+                        <span className="font-mono text-slate-300 block">
+                          {lat.toFixed(3)}, {lon.toFixed(3)}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-500 block uppercase font-mono">Activity Count</span>
-                        <span className="font-mono text-amber-400 font-bold">{tower.call_count || tower.event_count || 12} events</span>
+                        <span className="text-slate-500 uppercase font-mono text-[8px]">Activity</span>
+                        <span className="font-mono text-amber-400 font-bold block">{count} events</span>
                       </div>
                     </div>
                   </div>

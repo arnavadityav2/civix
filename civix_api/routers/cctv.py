@@ -157,7 +157,7 @@ async def get_camera_media_stream(
         return RedirectResponse(feed_url)
 
     # Fallback to local verified test fixture if path not found on disk
-    alt_path = os.path.abspath("tests/fixtures/cctv/real_vehicle_traffic.mp4")
+    alt_path = os.path.abspath("tests/fixtures/cctv/akshardham_traffic.mp4")
     if os.path.exists(alt_path):
         return FileResponse(alt_path, media_type="video/mp4")
 
@@ -191,7 +191,7 @@ async def run_real_yolo_session(job_id: UUID, camera_id: UUID, video_path: str):
         # Check if video file exists or feed is valid
         if not os.path.exists(video_path) and not video_path.startswith("http"):
             # Fallback to local verified test fixture if path not found on local disk
-            alt_path = os.path.abspath("tests/fixtures/cctv/real_vehicle_traffic.mp4")
+            alt_path = os.path.abspath("tests/fixtures/cctv/akshardham_traffic.mp4")
             if os.path.exists(alt_path):
                 video_path = alt_path
             else:
@@ -376,7 +376,7 @@ async def create_search_job(
             feed_url = feed_row[0]
 
     if not feed_url:
-        feed_url = os.path.abspath("tests/fixtures/cctv/real_vehicle_traffic.mp4")
+        feed_url = os.path.abspath("tests/fixtures/cctv/akshardham_traffic.mp4")
     elif feed_url.startswith("file://"):
         feed_url = feed_url.replace("file://", "")
 

@@ -1,1043 +1,1357 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
-  Fingerprint, Upload, Search, CheckCircle2, AlertTriangle,
-  XCircle, Activity, Camera, Link as LinkIcon, Database, Shield,
-  ChevronRight, User, Briefcase, FileText, Clock, MapPin,
-  LayoutGrid, Crosshair, Zap, Info, RefreshCw, Eye, ExternalLink,
-  Sliders, Layers, Navigation, Film, Check, ArrowRight, ChevronDown
+  Fingerprint,
+  Users,
+  Camera,
+  Layers,
+  Search,
+  Filter,
+  ArrowRight,
+  CheckCircle2,
+  AlertCircle,
+  Eye,
+  Shield,
+  Zap,
+  Sparkles,
+  MapPin,
+  FileText,
+  RefreshCw,
+  ChevronDown,
+  Building2,
+  Crosshair,
+  Plus,
+  Calendar,
+  Info,
+  Upload,
+  X,
+  Network
 } from 'lucide-react';
-import { biometricApi } from '../api/biometric';
-import type {
-  BiometricSearchResponse,
-  BiometricContextResponse,
-  BiometricReference,
-  CaseBiometricManifest,
-  CasePersonBiometricStatus,
-  CCTVTraceResponse,
-  PersonSummary,
-  CCTVObservation
-} from '../api/biometric';
+import { biometricApi, BiometricSearchResponse, BiometricReference, BiometricContextResponse, CCTVTraceResponse, PersonSummary } from '../api/biometric';
 import { casesApi } from '../api/cases';
+import type { CaseListItem } from '../types/api';
 
-// ─── TYPES ─────────────────────────────────────────────────────────────────
+// ─── STAGE CONFIG & TYPES ──────────────────────────────────────────────────
 
 type AnalysisStage = 
+  | 'INITIALIZING'
   | 'FACE_DETECTED'
-  | 'QUALITY_CHECK'
+  | 'FACIAL_LANDMARKS'
   | 'FEATURE_EXTRACTION'
   | 'EMBEDDING_GENERATION'
   | 'INDEX_SEARCH'
-  | 'MATCH_IDENTIFIED'
-  | 'FETCHING_CCTV';
-
-type SourceMode = 'CASE' | 'UPLOAD' | 'CCTV';
-type HeaderMode = 'CASE_REGISTRY' | 'EXTERNAL_IDENTITY' | 'CCTV_NETWORK';
-type CctvFilterMode = 'ALL' | 'KEY_MOVEMENT' | 'MAP_VIEW';
-
-// ─── ANALYSIS STAGES CONFIG ─────────────────────────────────────────────────
+  | 'MATCH_VERIFIED';
 
 const ANALYSIS_STAGES: { id: AnalysisStage; label: string; sublabel: string; durationMs: number }[] = [
-  { id: 'FACE_DETECTED',        label: 'Face detected',        sublabel: '1 face found (0.98)', durationMs: 350  },
-  { id: 'QUALITY_CHECK',        label: 'Quality check',        sublabel: 'Pass (0.82)',         durationMs: 350  },
-  { id: 'FEATURE_EXTRACTION',   label: 'Extracting features',   sublabel: '128-D embedding',     durationMs: 400  },
-  { id: 'EMBEDDING_GENERATION', label: '128-D embedding',      sublabel: 'L2 vector generated', durationMs: 350  },
-  { id: 'INDEX_SEARCH',         label: 'Searching index',      sublabel: '120 references',     durationMs: 500  },
-  { id: 'MATCH_IDENTIFIED',     label: 'Match identified',     sublabel: 'Proximity verified',  durationMs: 350  },
-  { id: 'FETCHING_CCTV',        label: 'Fetching CCTV evidence',sublabel: 'Camera trace lookup', durationMs: 350  },
+  { id: 'INITIALIZING',         label: 'Initializing YuNet detector', sublabel: 'Loading CNN model weights',     durationMs: 250 },
+  { id: 'FACE_DETECTED',        label: 'Face target localized',       sublabel: 'Bounding box acquired',         durationMs: 300 },
+  { id: 'FACIAL_LANDMARKS',     label: 'Generating 3D mesh grid',    sublabel: '68 facial landmark points',    durationMs: 350 },
+  { id: 'FEATURE_EXTRACTION',   label: 'Extracting biometric features',sublabel: 'Ocular & contour distance',   durationMs: 300 },
+  { id: 'EMBEDDING_GENERATION', label: 'Generating SFace 128-D vector',sublabel: 'L2 norm normalization',        durationMs: 350 },
+  { id: 'INDEX_SEARCH',         label: 'Searching CIVIX Index',       sublabel: 'Comparing reference profiles', durationMs: 400 },
+  { id: 'MATCH_VERIFIED',       label: 'Biometric identity verified', sublabel: 'Cosine proximity match locked', durationMs: 250 },
 ];
 
-// ─── STATUS & ROLE CONFIG ────────────────────────────────────────────────────
+export interface ProcessedPerson {
+  entity_id: string;
+  display_name: string;
+  role: string;
+  role_type: string;
+  status: string;
+  status_color: string;
+  case_number: string;
+  id_code: string;
+  references: number;
+  avatar: string;
+  enrolled: boolean;
+  added_to_case?: boolean;
+  is_false_match?: boolean;
+  notes?: string[];
+  gender?: string | null;
+  date_of_birth?: string | null;
+  nationality?: string | null;
+}
 
-const STATUS_CONFIG: Record<string, { color: string; bg: string; border: string }> = {
-  MATCH_FOUND:                   { color: 'text-emerald-400', bg: 'bg-emerald-950/25', border: 'border-emerald-800/40' },
-  AMBIGUOUS_MATCH:               { color: 'text-amber-400',   bg: 'bg-amber-950/25',   border: 'border-amber-800/40' },
-  NO_CIVIX_MATCH:                { color: 'text-orange-400',  bg: 'bg-orange-950/25',  border: 'border-orange-800/40' },
-  NO_FACE_DETECTED:              { color: 'text-rose-400',    bg: 'bg-rose-950/25',    border: 'border-rose-800/40' },
-  MULTIPLE_FACES_DETECTED:       { color: 'text-rose-400',    bg: 'bg-rose-950/25',    border: 'border-rose-800/40' },
-  BIOMETRIC_QUALITY_INSUFFICIENT:{ color: 'text-rose-400',    bg: 'bg-rose-950/25',    border: 'border-rose-800/40' },
-  ERROR:                         { color: 'text-rose-400',    bg: 'bg-rose-950/30',    border: 'border-rose-800/60' },
-};
-
-const BAND_CONFIG: Record<string, { color: string; bg: string; border: string }> = {
-  HIGH:      { color: 'text-emerald-400', bg: 'bg-emerald-950/40', border: 'border-emerald-800/50' },
-  MEDIUM:    { color: 'text-amber-400',   bg: 'bg-amber-950/40',   border: 'border-amber-800/50' },
-  LOW:       { color: 'text-orange-400',  bg: 'bg-orange-950/40',  border: 'border-orange-800/50' },
-  UNCERTAIN: { color: 'text-rose-400',    bg: 'bg-rose-950/40',    border: 'border-rose-800/50' },
-};
-
-const ROLE_BADGES: Record<string, string> = {
-  SUSPECT: 'bg-rose-950/50 text-rose-300 border border-rose-800/50',
-  ACCUSED: 'bg-rose-950/60 text-rose-200 border border-rose-700/60',
-  PERSON_OF_INTEREST: 'bg-amber-950/50 text-amber-300 border border-amber-800/50',
-  VICTIM: 'bg-sky-950/50 text-sky-300 border border-sky-800/50',
-  WITNESS: 'bg-slate-800/50 text-slate-300 border border-slate-700/50',
-  COMPLAINANT: 'bg-blue-950/40 text-blue-300 border border-blue-800/50',
-};
-
-// ─── DEMO CCTV CAPTURES FOR DWARKA GOLDEN CASE ─────────────────────────────
-
-const GOLDEN_CCTV_OBSERVATIONS: (CCTVObservation & { thumbnail: string })[] = [
-  {
-    observation_id: 'obs-dwarka-01',
-    case_id: '1346a86d-267a-a635-9d62-e34c76ecd24f',
-    camera_code: 'CAM-04',
-    camera_name: 'Dwarka Sec 23 Traffic Intersection',
-    city: 'Delhi',
-    region: 'Dwarka Sector 23',
-    timestamp: '2026-03-14T21:43:12Z',
-    signal_class: 'EXACT_PLATE_MATCH',
-    investigator_notes: 'Target vehicle cash van intercept point',
-    thumbnail: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    observation_id: 'obs-dwarka-02',
-    case_id: '1346a86d-267a-a635-9d62-e34c76ecd24f',
-    camera_code: 'CAM-07',
-    camera_name: 'Sector 8 Metro Corridor',
-    city: 'Delhi',
-    region: 'Dwarka Sector 8',
-    timestamp: '2026-03-14T22:03:41Z',
-    signal_class: 'FACIAL_IDENT_HIGH',
-    investigator_notes: 'Subject observed exiting white getaway SUV',
-    thumbnail: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    observation_id: 'obs-dwarka-03',
-    case_id: '1346a86d-267a-a635-9d62-e34c76ecd24f',
-    camera_code: 'CAM-12',
-    camera_name: 'Najafgarh Road Checkpoint 4',
-    city: 'Delhi',
-    region: 'Najafgarh Road',
-    timestamp: '2026-03-14T22:17:26Z',
-    signal_class: 'ANPR_ALARM',
-    investigator_notes: 'High-speed transit toward Ring Road',
-    thumbnail: 'https://images.unsplash.com/photo-1508873696983-2df515122519?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    observation_id: 'obs-dwarka-04',
-    case_id: '1346a86d-267a-a635-9d62-e34c76ecd24f',
-    camera_code: 'CAM-18',
-    camera_name: 'Ring Road Flyover Feed B',
-    city: 'Delhi',
-    region: 'Ring Road',
-    timestamp: '2026-03-14T23:01:05Z',
-    signal_class: 'FACIAL_IDENT_MEDIUM',
-    investigator_notes: 'Passenger seat posture match',
-    thumbnail: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    observation_id: 'obs-dwarka-05',
-    case_id: '1346a86d-267a-a635-9d62-e34c76ecd24f',
-    camera_code: 'CAM-23',
-    camera_name: 'NH-48 Toll Plaza Bay 3',
-    city: 'Delhi',
-    region: 'NH-48 Corridor',
-    timestamp: '2026-03-15T08:32:51Z',
-    signal_class: 'TOLL_ANPR_MATCH',
-    investigator_notes: 'Interstate border cross attempt',
-    thumbnail: 'https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=600&auto=format&fit=crop&q=80',
-  },
-  {
-    observation_id: 'obs-dwarka-06',
-    case_id: '1346a86d-267a-a635-9d62-e34c76ecd24f',
-    camera_code: 'CAM-31',
-    camera_name: 'IGI Airport T3 Approach',
-    city: 'Delhi',
-    region: 'IGI T3 Road',
-    timestamp: '2026-03-15T19:55:11Z',
-    signal_class: 'CCTV_VERIFIED',
-    investigator_notes: 'Secondary surveillance frame lock',
-    thumbnail: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&auto=format&fit=crop&q=80',
-  },
-];
-
-// ─── HELPER COMPONENTS ───────────────────────────────────────────────────────
-
-const SectionHeader: React.FC<{
-  title: string;
-  subtitle?: string;
-  action?: React.ReactNode;
-}> = ({ title, subtitle, action }) => (
-  <div className="px-4 py-3 border-b border-[#1b2234] bg-[#0c1017] flex items-center justify-between">
-    <div>
-      <h2 className="text-xs font-semibold text-slate-100 tracking-wide">{title}</h2>
-      {subtitle && <p className="text-[10px] text-slate-400 mt-0.5">{subtitle}</p>}
-    </div>
-    {action && <div>{action}</div>}
-  </div>
-);
-
-const EmptyState: React.FC<{ icon: React.FC<any>; title: string; subtitle?: string; className?: string }> = 
-  ({ icon: Icon, title, subtitle, className = '' }) => (
-  <div className={`flex flex-col items-center justify-center text-center p-6 ${className}`}>
-    <div className="w-9 h-9 rounded bg-[#141a26] border border-[#1b2234] flex items-center justify-center mb-2.5">
-      <Icon className="w-4 h-4 text-slate-500" />
-    </div>
-    <h4 className="text-xs font-medium text-slate-400">{title}</h4>
-    {subtitle && <p className="text-[10px] text-slate-500 mt-1 max-w-[240px] leading-relaxed">{subtitle}</p>}
-  </div>
-);
-
-// ─── MAIN WORKSTATION COMPONENT ──────────────────────────────────────────────
-
-const BiometricIntelligencePage: React.FC = () => {
+export const BiometricIntelligencePage: React.FC = () => {
   const navigate = useNavigate();
 
-  // Header and Source Navigation
-  const [headerMode, setHeaderMode] = useState<HeaderMode>('CASE_REGISTRY');
-  const [sourceMode, setSourceMode] = useState<SourceMode>('CASE');
-  const [cctvFilterMode, setCctvFilterMode] = useState<CctvFilterMode>('ALL');
+  // Navigation & Sub-Tab States
+  const [analysisTab, setAnalysisTab] = useState<'LIVE' | 'ENROLLED' | 'CROSS'>('LIVE');
+  const [inspectorTab, setInspectorTab] = useState<'DETAILS' | 'FINDINGS' | 'LINKS' | 'NOTES'>('DETAILS');
 
-  // Input & search state
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
-  const [currentStage, setCurrentStage] = useState<AnalysisStage | null>(null);
-  const [completedStages, setCompletedStages] = useState<Set<AnalysisStage>>(new Set());
+  // Case Selection & Dynamic Data
+  const [caseList, setCaseList] = useState<CaseListItem[]>([]);
+  const [selectedCaseId, setSelectedCaseId] = useState<string>('CIV-2012-001');
+  const [casePeople, setCasePeople] = useState<ProcessedPerson[]>([]);
+  const [loadingPeople, setLoadingPeople] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Search Results & Context
-  const [searchResult, setSearchResult] = useState<BiometricSearchResponse | null>(null);
-  const [context, setContext] = useState<BiometricContextResponse | null>(null);
-  const [references, setReferences] = useState<BiometricReference[]>([]);
+  // Active Target & Dynamic Biometric Results State
+  const [selectedPerson, setSelectedPerson] = useState<ProcessedPerson | null>(null);
+  const [targetFaceUrl, setTargetFaceUrl] = useState<string>('/assets/avatars/09d7a50a-82dd-4acf-1c8c-ed1d70f5b332.png');
+  const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [activeStageIndex, setActiveStageIndex] = useState<number>(0);
+  const [hasScanned, setHasScanned] = useState<boolean>(false);
+  const [liveCosineScore, setLiveCosineScore] = useState<number>(0.0000);
+  const [actionToastMessage, setActionToastMessage] = useState<string | null>(null);
+
+  // Canonical API Context Responses
+  const [biometricSearchResult, setBiometricSearchResult] = useState<BiometricSearchResponse | null>(null);
+  const [canonicalContext, setCanonicalContext] = useState<BiometricContextResponse | null>(null);
   const [cctvTrace, setCctvTrace] = useState<CCTVTraceResponse | null>(null);
   const [personSummary, setPersonSummary] = useState<PersonSummary | null>(null);
+  const [referenceImages, setReferenceImages] = useState<BiometricReference[]>([]);
 
-  // Case Registry Mode State
-  const [caseList, setCaseList] = useState<any[]>([]);
-  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
-  const [caseManifest, setCaseManifest] = useState<CaseBiometricManifest | null>(null);
-  const [loadingManifest, setLoadingManifest] = useState(false);
-  const [selectedPerson, setSelectedPerson] = useState<CasePersonBiometricStatus | null>(null);
+  // Notes & Modals state
+  const [newNoteText, setNewNoteText] = useState<string>('');
+  const [isCctvModalOpen, setIsCctvModalOpen] = useState<boolean>(false);
+  const [isRefModalOpen, setIsRefModalOpen] = useState<boolean>(false);
+  const [activeModalCctv, setActiveModalCctv] = useState<any>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const noteInputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Load case list on mount
+  // ── 1. LOAD CASES LIST ON MOUNT ─────────────────────────────────────────
   useEffect(() => {
     casesApi.listCases()
       .then(list => {
-        setCaseList(list);
-        const golden = list.find((c: any) => c.case_number === 'CIV-2012-001');
-        if (golden) {
-          setSelectedCaseId(golden.case_id);
-        } else if (list.length > 0) {
-          setSelectedCaseId(list[0].case_id);
-        }
+        if (list && list.length > 0) setCaseList(list);
       })
-      .catch(() => {});
+      .catch(err => console.error('Failed to load cases:', err));
   }, []);
 
-  // Load Case Biometric Manifest when selectedCaseId changes
-  useEffect(() => {
-    if (!selectedCaseId) return;
-    setLoadingManifest(true);
-    setCaseManifest(null);
-    setSelectedPerson(null);
-    biometricApi.getCaseBiometricManifest(selectedCaseId)
-      .then(manifest => {
-        setCaseManifest(manifest);
-        const enrolled = manifest.persons.find(p => p.biometric_enrolled);
-        if (enrolled) {
-          setSelectedPerson(enrolled);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoadingManifest(false));
-  }, [selectedCaseId]);
+  // ── 2. LOAD CASE PEOPLE WHEN SELECTED CASE CHANGES ───────────────────────
+  const loadCasePeople = useCallback(async (caseId: string) => {
+    setLoadingPeople(true);
+    try {
+      const response = await casesApi.getCaseEntities(caseId, { entity_type: 'PERSON', limit: 100 });
+      const items = response.items || [];
 
-  // Handle File Input Change
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      // Query availability & reference count for each person in parallel
+      const processed: ProcessedPerson[] = await Promise.all(
+        items.map(async (item) => {
+          let refCount = 0;
+          let isEnrolled = false;
+          try {
+            const avail = await biometricApi.checkAvailability(item.entity_id);
+            refCount = avail.reference_count;
+            isEnrolled = avail.enrolled;
+          } catch (e) {
+            // Ignore individual availability error
+          }
+
+          const roleUpper = (item.role || '').toUpperCase();
+          let statusColor = 'bg-cyan-500';
+          if (roleUpper.includes('SUSPECT') || roleUpper.includes('ACCUSED') || roleUpper.includes('POI')) {
+            statusColor = 'bg-emerald-500';
+          } else if (roleUpper.includes('VICTIM') || roleUpper.includes('COMPLAINANT')) {
+            statusColor = 'bg-blue-500';
+          } else if (roleUpper.includes('WITNESS') || roleUpper.includes('INFORMANT')) {
+            statusColor = 'bg-amber-500';
+          }
+
+          // Form default reference image URL if avatar_url is missing
+          const defaultAvatar = item.avatar_url || '/assets/avatars/09d7a50a-82dd-4acf-1c8c-ed1d70f5b332.png';
+
+          return {
+            entity_id: item.entity_id,
+            display_name: item.display_name,
+            role: item.role || 'Person of Interest',
+            role_type: roleUpper,
+            status: isEnrolled ? 'ENROLLED' : 'UNENROLLED',
+            status_color: statusColor,
+            case_number: caseId,
+            id_code: item.entity_id.toUpperCase(),
+            references: refCount,
+            avatar: defaultAvatar,
+            enrolled: isEnrolled,
+            gender: item.gender,
+            date_of_birth: item.date_of_birth,
+            nationality: item.nationality,
+          };
+        })
+      );
+
+      setCasePeople(processed);
+
+      // Select first enrolled or first person by default
+      if (processed.length > 0) {
+        const defaultPerson = processed.find(p => p.enrolled) || processed[0];
+        executeBiometricWorkflow(defaultPerson);
+      } else {
+        setSelectedPerson(null);
+        setBiometricSearchResult(null);
+        setCanonicalContext(null);
+        setCctvTrace(null);
+        setPersonSummary(null);
+        setReferenceImages([]);
+      }
+    } catch (err) {
+      console.error('Failed to load case people:', err);
+    } finally {
+      setLoadingPeople(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCasePeople(selectedCaseId);
+  }, [selectedCaseId, loadCasePeople]);
+
+  // ── 3. EXECUTE BIOMETRIC WORKFLOW ────────────────────────────────────────
+  const executeBiometricWorkflow = async (person: ProcessedPerson, customFile?: File) => {
+    setSelectedPerson(person);
+    setIsScanning(true);
+    setHasScanned(false);
+    setActiveStageIndex(0);
+    setLiveCosineScore(0.0000);
+
+    // RESET WORKSPACE STATE TO PREVENT STALE DATA
+    setBiometricSearchResult(null);
+    setCanonicalContext(null);
+    setCctvTrace(null);
+    setPersonSummary(null);
+    setReferenceImages([]);
+
+    try {
+      let imageToSearch: File | null = customFile || null;
+      let faceDisplayUrl = person.avatar;
+
+      // 1. Fetch enrolled reference images
+      const refsRes = await biometricApi.getReferences(person.entity_id).catch(() => ({ references: [] }));
+      const refs = refsRes.references || [];
+      setReferenceImages(refs);
+
+      if (refs.length > 0 && refs[0].image_path) {
+        faceDisplayUrl = biometricApi.buildReferenceImageUrl(refs[0].image_path);
+      }
+      setTargetFaceUrl(faceDisplayUrl);
+
+      // If no custom file provided, attempt to fetch the reference image as blob for search API
+      if (!imageToSearch && faceDisplayUrl && person.enrolled) {
+        try {
+          const resp = await fetch(faceDisplayUrl);
+          if (resp.ok) {
+            const blob = await resp.blob();
+            imageToSearch = new File([blob], `${person.entity_id}_ref.jpg`, { type: blob.type || 'image/jpeg' });
+          }
+        } catch (e) {
+          console.warn('Could not construct blob for biometric search:', e);
+        }
+      }
+
+      // Animate pipeline stages
+      const stageTimer = (async () => {
+        for (let i = 0; i < ANALYSIS_STAGES.length - 1; i++) {
+          setActiveStageIndex(i);
+          await new Promise(res => setTimeout(res, ANALYSIS_STAGES[i].durationMs));
+        }
+      })();
+
+      // 2. Query backend APIs in parallel
+      const searchPromise = imageToSearch ? biometricApi.search(imageToSearch) : Promise.resolve(null);
+      const contextPromise = biometricApi.getContext(person.entity_id).catch(() => null);
+      const cctvPromise = biometricApi.getCctvTrace(person.entity_id).catch(() => null);
+      const summaryPromise = biometricApi.getPersonSummary(person.entity_id).catch(() => null);
+
+      const [searchRes, contextRes, cctvRes, summaryRes] = await Promise.all([
+        searchPromise,
+        contextPromise,
+        cctvPromise,
+        summaryPromise,
+        stageTimer
+      ]);
+
+      setActiveStageIndex(ANALYSIS_STAGES.length - 1);
+
+      if (searchRes) {
+        setBiometricSearchResult(searchRes);
+        setLiveCosineScore(searchRes.match_score || 0.0);
+      } else {
+        // Fallback default search result structure if direct file search unavailable
+        const score = person.enrolled ? 0.7842 : 0.0;
+        setBiometricSearchResult({
+          status: person.enrolled ? 'MATCH_FOUND' : 'NO_REFERENCE',
+          detected_faces: person.enrolled ? 1 : 0,
+          match_score: score,
+          confidence_band: person.enrolled ? 'HIGH' : 'UNCERTAIN',
+          person_id: person.entity_id,
+          person_name: person.display_name,
+          classification: person.role_type,
+          model_version: 'YuNet + SFace (v1.3)',
+        });
+        setLiveCosineScore(score);
+      }
+
+      if (contextRes) setCanonicalContext(contextRes);
+      if (cctvRes) setCctvTrace(cctvRes);
+      if (summaryRes) setPersonSummary(summaryRes);
+
+    } catch (err) {
+      console.error('Biometric analysis error:', err);
+      showToast('Biometric analysis error. Check server status.');
+    } finally {
+      setIsScanning(false);
+      setHasScanned(true);
+    }
+  };
+
+  // Filter people list based on search query
+  const filteredPeople = casePeople.filter(p => 
+    p.display_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (p.id_code && p.id_code.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  // Handle Person Selection from Left Panel
+  const handleSelectPerson = (person: ProcessedPerson) => {
+    if (selectedPerson?.entity_id === person.entity_id && hasScanned) return;
+    executeBiometricWorkflow(person);
+  };
+
+  // Upload External Target
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const file = e.target.files[0];
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreviewUrl(reader.result as string);
-      reader.readAsDataURL(file);
+      const url = URL.createObjectURL(file);
+      const extPerson: ProcessedPerson = {
+        entity_id: 'ext-' + Date.now(),
+        display_name: file.name.replace(/\.[^/.]+$/, ''),
+        role: 'External Target',
+        role_type: 'TARGET',
+        status: 'EXTERNAL',
+        status_color: 'bg-cyan-500',
+        case_number: selectedCaseId,
+        id_code: 'EXT-' + Math.floor(1000 + Math.random() * 9000),
+        references: 1,
+        avatar: url,
+        enrolled: true,
+        notes: ['External face target imported by investigator.']
+      };
 
-      // Reset previous search states
-      setSearchResult(null);
-      setContext(null);
-      setReferences([]);
-      setCctvTrace(null);
-      setPersonSummary(null);
-      setCurrentStage(null);
-      setCompletedStages(new Set());
+      setCasePeople(prev => [extPerson, ...prev]);
+      executeBiometricWorkflow(extPerson, file);
+      showToast(`Uploaded target image: ${extPerson.display_name}`);
     }
-  }, []);
+  };
 
-  // Animated Pipeline Progression
-  const runStageAnimation = useCallback(async () => {
-    const completed = new Set<AnalysisStage>();
-    for (const stage of ANALYSIS_STAGES) {
-      setCurrentStage(stage.id);
-      await new Promise(r => setTimeout(r, stage.durationMs));
-      completed.add(stage.id);
-      setCompletedStages(new Set(completed));
-    }
-    setCurrentStage(null);
-  }, []);
+  // Toast Notification Helper
+  const showToast = (msg: string) => {
+    setActionToastMessage(msg);
+    setTimeout(() => setActionToastMessage(null), 3000);
+  };
 
-  // Execute Biometric Search via API
-  const handleSearch = useCallback(async (file?: File) => {
-    const targetFile = file || selectedFile;
-    if (!targetFile) return;
+  // Action Handlers
+  const handleToggleAddCase = () => {
+    if (!selectedPerson) return;
+    const updatedStatus = !selectedPerson.added_to_case;
+    setSelectedPerson(prev => prev ? ({ ...prev, added_to_case: updatedStatus }) : null);
+    setCasePeople(prev => prev.map(p => p.entity_id === selectedPerson.entity_id ? { ...p, added_to_case: updatedStatus } : p));
+    showToast(updatedStatus ? `${selectedPerson.display_name} added to Case Dossier` : `${selectedPerson.display_name} removed from Case Dossier`);
+  };
 
-    setIsSearching(true);
-    setSearchResult(null);
-    setContext(null);
-    setReferences([]);
-    setCctvTrace(null);
-    setPersonSummary(null);
-    setCompletedStages(new Set());
+  const handleToggleFalseMatch = () => {
+    if (!selectedPerson) return;
+    const updatedStatus = !selectedPerson.is_false_match;
+    setSelectedPerson(prev => prev ? ({ ...prev, is_false_match: updatedStatus }) : null);
+    setCasePeople(prev => prev.map(p => p.entity_id === selectedPerson.entity_id ? { ...p, is_false_match: updatedStatus } : p));
+    showToast(updatedStatus ? `Flagged ${selectedPerson.display_name} as False Match` : `Unflagged ${selectedPerson.display_name}`);
+  };
 
-    try {
-      const [result] = await Promise.all([
-        biometricApi.search(targetFile),
-        runStageAnimation(),
-      ]);
+  const handleCreateLead = () => {
+    if (!selectedPerson) return;
+    showToast(`Investigative Lead generated for ${selectedPerson.display_name} (ID: ${selectedPerson.id_code})`);
+  };
 
-      setSearchResult(result);
+  const handleAddNote = () => {
+    setInspectorTab('NOTES');
+    setTimeout(() => noteInputRef.current?.focus(), 100);
+  };
 
-      if (result.person_id) {
-        const [contextData, refsData, cctvData, summaryData] = await Promise.allSettled([
-          biometricApi.getContext(result.person_id),
-          biometricApi.getReferences(result.person_id),
-          biometricApi.getCctvTrace(result.person_id),
-          biometricApi.getPersonSummary(result.person_id),
-        ]);
+  const handleSaveNoteSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newNoteText.trim() || !selectedPerson) return;
+    const note = newNoteText.trim();
+    const updatedNotes = [...(selectedPerson.notes || []), note];
+    setSelectedPerson(prev => prev ? ({ ...prev, notes: updatedNotes }) : null);
+    setCasePeople(prev => prev.map(p => p.entity_id === selectedPerson.entity_id ? { ...p, notes: updatedNotes } : p));
+    setNewNoteText('');
+    showToast('Investigator note recorded under dossier.');
+  };
 
-        if (contextData.status === 'fulfilled') setContext(contextData.value);
-        if (refsData.status === 'fulfilled') setReferences(refsData.value.references || []);
-        if (cctvData.status === 'fulfilled') setCctvTrace(cctvData.value);
-        if (summaryData.status === 'fulfilled') setPersonSummary(summaryData.value);
-      }
-    } catch {
-      setSearchResult({
-        status: 'ERROR',
-        detected_faces: 0,
-        error_message: 'Biometric search failed. Please verify API server status.',
-      });
-    } finally {
-      setIsSearching(false);
-    }
-  }, [selectedFile, runStageAnimation]);
-
-  // Execute Case Person Analysis Workflow for Enrolled Person
-  const handleCasePersonAnalyze = useCallback(async (person: CasePersonBiometricStatus) => {
-    setSelectedPerson(person);
-    setIsSearching(true);
-    setSearchResult(null);
-    setContext(null);
-    setReferences([]);
-    setCctvTrace(null);
-    setPersonSummary(null);
-    setCompletedStages(new Set());
-
-    try {
-      const refsData = await biometricApi.getReferences(person.entity_id);
-      if (refsData.references && refsData.references.length > 0) {
-        const refUrl = biometricApi.buildReferenceImageUrl(refsData.references[0].image_path);
-        setImagePreviewUrl(refUrl);
-      } else {
-        setImagePreviewUrl('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&auto=format&fit=crop&q=80');
-      }
-
-      await runStageAnimation();
-
-      const [contextData, cctvData, summaryData] = await Promise.allSettled([
-        biometricApi.getContext(person.entity_id),
-        biometricApi.getCctvTrace(person.entity_id),
-        biometricApi.getPersonSummary(person.entity_id),
-      ]);
-
-      if (contextData.status === 'fulfilled') setContext(contextData.value);
-      if (refsData.references) setReferences(refsData.references);
-      if (cctvData.status === 'fulfilled') setCctvTrace(cctvData.value);
-      if (summaryData.status === 'fulfilled') setPersonSummary(summaryData.value);
-
-      setSearchResult({
-        status: 'MATCH_FOUND',
-        detected_faces: 1,
-        person_id: person.entity_id,
-        person_name: person.display_name,
-        match_score: 0.7842,
-        confidence_band: 'HIGH',
-        index_source: 'CIVIX_BIOMETRIC_INDEX',
-        connector_status: 'CASE_REGISTRY_MATCH',
-        classification: 'INVESTIGATIVE_SUBJECT',
-        primary_role: person.role || 'SUSPECT',
-      });
-    } catch {
-      setSearchResult({ status: 'ERROR', detected_faces: 0, error_message: 'Analysis failed.' });
-    } finally {
-      setIsSearching(false);
-    }
-  }, [runStageAnimation]);
-
-  // Handle Selecting Any Person in Case Navigator (Enrolled or Unenrolled)
-  const handleCasePersonSelect = useCallback(async (person: CasePersonBiometricStatus) => {
-    setSelectedPerson(person);
-    if (person.biometric_enrolled) {
-      handleCasePersonAnalyze(person);
-    } else {
-      // Unenrolled person selected -> Clear target image & search result, load context & summary
-      setImagePreviewUrl(null);
-      setSearchResult(null);
-      setContext(null);
-      setReferences([]);
-      setCctvTrace(null);
-      setPersonSummary(null);
-
-      try {
-        const [contextData, summaryData] = await Promise.allSettled([
-          biometricApi.getContext(person.entity_id),
-          biometricApi.getPersonSummary(person.entity_id),
-        ]);
-
-        if (contextData.status === 'fulfilled') setContext(contextData.value);
-        if (summaryData.status === 'fulfilled') setPersonSummary(summaryData.value);
-
-        setSearchResult({
-          status: 'BIOMETRIC_QUALITY_INSUFFICIENT',
-          detected_faces: 0,
-          error_message: `No enrolled reference facial image exists in the CIVIX Biometric Index for ${person.display_name}.`,
-        });
-      } catch {
-        // Ignore
-      }
-    }
-  }, [handleCasePersonAnalyze]);
-
-  const statusCfg = searchResult ? (STATUS_CONFIG[searchResult.status] || STATUS_CONFIG.ERROR) : null;
-  const bandCfg = searchResult?.confidence_band ? BAND_CONFIG[searchResult.confidence_band] : null;
-
-  const isGoldenCase = selectedCaseId === '1346a86d-267a-a635-9d62-e34c76ecd24f' || (caseManifest?.case_number === 'CIV-2012-001');
-  const activeCctvObservations = (cctvTrace && cctvTrace.observations.length > 0)
-    ? cctvTrace.observations
-    : (isGoldenCase && searchResult?.status === 'MATCH_FOUND')
-    ? GOLDEN_CCTV_OBSERVATIONS
-    : [];
+  // Match Band Color Mapping
+  const matchBand = biometricSearchResult?.confidence_band || (selectedPerson?.enrolled ? 'HIGH' : 'UNCERTAIN');
+  const matchScoreDisplay = biometricSearchResult?.match_score !== undefined
+    ? biometricSearchResult.match_score.toFixed(4)
+    : (selectedPerson?.enrolled ? '0.7842' : '0.0000');
 
   return (
-    <div className="h-full bg-[#080a0e] text-slate-300 flex flex-col overflow-hidden font-sans">
-
-      {/* ── OPERATIONAL HEADER & NAVIGATION ─────────────────────────────────── */}
-      <div className="flex-shrink-0 border-b border-[#1b2234] bg-[#0c1017] px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <div>
-            <h1 className="text-sm font-semibold text-white tracking-wide flex items-center gap-2">
-              <Fingerprint className="w-4 h-4 text-blue-400" />
-              Biometric &amp; Facial Intelligence Workstation
-            </h1>
-            <p className="text-[11px] text-slate-400 mt-0.5">
-              Identity resolution · Cross-investigative search · CCTV trace
-            </p>
+    <div className="w-full min-h-screen bg-[#05080E] text-slate-100 font-sans select-none flex flex-col pb-8">
+      
+      {/* ── 1. HEADER BAR ───────────────────────────────────────────────────────── */}
+      <div className="bg-[#090D16] border-b border-[#161F30] px-4 lg:px-6 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-md">
+        
+        {/* Left: Title & Subtitle */}
+        <div className="flex items-center space-x-3">
+          <div className="w-9 h-9 rounded-md bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.25)]">
+            <Fingerprint className="w-5 h-5" />
           </div>
-
-          {/* Operational Mode Navigation */}
-          <div className="flex items-center gap-1 bg-[#121824] border border-[#1b2234] p-1 rounded">
-            {([
-              { id: 'CASE_REGISTRY',     label: 'Case Registry Analysis' },
-              { id: 'EXTERNAL_IDENTITY', label: 'External Identity Search' },
-              { id: 'CCTV_NETWORK',      label: 'CCTV Network Search' },
-            ] as const).map(({ id, label }) => (
-              <button
-                key={id}
-                onClick={() => {
-                  setHeaderMode(id);
-                  if (id === 'CASE_REGISTRY') setSourceMode('CASE');
-                  else if (id === 'EXTERNAL_IDENTITY') setSourceMode('UPLOAD');
-                  else setSourceMode('CCTV');
-                }}
-                className={`px-3 py-1.5 text-xs font-medium rounded transition-all ${
-                  headerMode === id
-                    ? 'bg-[#1b2438] text-white border border-[#2b3854]'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+          <div>
+            <h1 className="text-lg lg:text-xl font-black tracking-tight text-white uppercase font-sans flex items-center space-x-2">
+              <span>BIOMETRIC & FACIAL INTELLIGENCE</span>
+            </h1>
+            <p className="text-xs text-slate-400 font-sans">
+              Face recognition, identity resolution and cross-case correlation
+            </p>
           </div>
         </div>
 
-        {/* System Telemetry Pill */}
-        <div className="flex items-center gap-3 text-xs font-mono text-slate-400 bg-[#121824] border border-[#1b2234] px-3 py-1.5 rounded">
-          <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Index Operational
+        {/* Right: Active Case Dropdown & Badges */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center bg-[#0F172A] border border-[#1E293B] rounded px-3 py-1.5 text-xs font-mono">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 mr-2 animate-pulse" />
+            <span className="text-slate-400 mr-1.5 uppercase font-bold text-[10px]">ACTIVE CASE:</span>
+            <select
+              value={selectedCaseId}
+              onChange={e => setSelectedCaseId(e.target.value)}
+              className="bg-transparent text-cyan-300 font-bold outline-none cursor-pointer text-xs"
+            >
+              <option value="CIV-2012-001" className="bg-[#0F172A] text-slate-100">
+                CIV-2012-001 – Dwarka Sector 23 Cash Van Robbery
+              </option>
+              {caseList.map(c => (
+                <option key={c.case_id} value={c.case_id} className="bg-[#0F172A] text-slate-100">
+                  {c.case_number} – {c.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="hidden sm:flex items-center bg-[#0F172A] border border-[#1E293B] rounded px-3 py-1.5 text-xs font-mono text-slate-300 space-x-2">
+            <Building2 className="w-3.5 h-3.5 text-slate-400" />
+            <span>Dwarka PS, Delhi</span>
+            <span className="text-slate-600">|</span>
+            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+            <span>14 Mar 2012</span>
+          </div>
+
+          <span className="bg-red-950/90 text-red-400 border border-red-700/60 font-mono text-[10px] font-bold px-2.5 py-1 rounded tracking-wider uppercase shadow-sm">
+            CRITICAL
           </span>
-          <span className="text-slate-600">|</span>
-          <span>SFace-128D</span>
-          <span className="text-slate-600">|</span>
-          <span>120 References</span>
         </div>
       </div>
 
-      {/* ── THREE-REGION WORKSTATION LAYOUT ───────────────────────────────── */}
-      <div className="flex-1 overflow-hidden grid grid-cols-12 divide-x divide-[#1b2234]">
+      {/* Live Toast Notification Popup */}
+      {actionToastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-cyan-950 border border-cyan-400 text-cyan-200 px-4 py-3 rounded-md shadow-2xl font-mono text-xs flex items-center space-x-2 animate-bounce">
+          <CheckCircle2 className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+          <span>{actionToastMessage}</span>
+        </div>
+      )}
 
-        {/* ── REGION 1: LEFT PANE — SOURCE SELECTION (3 Cols) ──────────────── */}
-        <div className="col-span-3 flex flex-col bg-[#090c12] overflow-hidden">
-          <SectionHeader
-            title="Source Selection"
-            subtitle="Target acquisition input"
-          />
-
-          <div className="p-4 flex-1 overflow-y-auto space-y-4">
-
-            {/* Segmented Source Mode Selector */}
-            <div className="grid grid-cols-3 gap-1 p-1 bg-[#121824] border border-[#1b2234] rounded">
-              {([
-                { id: 'CASE',   label: 'From Case',    icon: Briefcase },
-                { id: 'UPLOAD', label: 'Upload Image', icon: Upload },
-                { id: 'CCTV',   label: 'CCTV Frame',   icon: Camera },
-              ] as const).map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => setSourceMode(id)}
-                  className={`flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium transition-all rounded ${
-                    sourceMode === id
-                      ? 'bg-[#1b2438] text-blue-400 border border-[#2b3854]'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {label}
-                </button>
-              ))}
+      {/* ── 2. MAIN 3-COLUMN WORKSPACE GRID ─────────────────────────────────────── */}
+      <div className="px-4 lg:px-6 pt-4 grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 items-start">
+        
+        {/* ── COLUMN 1: TARGET & PEOPLE (Left 3 cols, ~25% width) ───────────────── */}
+        <div className="lg:col-span-3 space-y-4 flex flex-col">
+          
+          <div className="bg-[#090D16] border border-[#161F30] rounded-md p-3.5 space-y-3 shadow-lg">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-[#161F30] pb-2">
+              <h2 className="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center space-x-1.5">
+                <Users className="w-3.5 h-3.5 text-cyan-400" />
+                <span>TARGET & PEOPLE</span>
+              </h2>
+              
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                accept="image/*"
+                className="hidden"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="text-[10px] font-mono text-cyan-400 hover:underline flex items-center space-x-1 cursor-pointer"
+                title="Upload external face target"
+              >
+                <Upload className="w-3 h-3" />
+                <span className="hidden sm:inline">Upload Target</span>
+              </button>
             </div>
 
-            {/* FROM CASE MODE */}
-            {sourceMode === 'CASE' && (
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <label className="text-[11px] font-medium text-slate-400">Select Case</label>
-                  <select
-                    value={selectedCaseId || ''}
-                    onChange={e => setSelectedCaseId(e.target.value)}
-                    className="w-full bg-[#121824] border border-[#1b2234] text-slate-200 text-xs font-medium rounded p-2 focus:border-blue-500 focus:outline-none"
+            {/* Search Input Box */}
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2.5" />
+              <input
+                type="text"
+                placeholder="Search person, name or ID..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full bg-[#05080E] border border-[#1E293B] rounded pl-8 pr-7 py-1.5 text-xs text-slate-200 placeholder-slate-500 outline-none focus:border-cyan-500 font-mono transition-colors"
+              />
+              <Filter className="w-3.5 h-3.5 text-slate-500 absolute right-2.5 top-2.5 cursor-pointer hover:text-slate-300" />
+            </div>
+
+            {/* Target Card Highlight (Dynamically reflects selected person) */}
+            {selectedPerson ? (
+              <div className="bg-[#0E1626] border border-cyan-500/40 rounded-md p-3 space-y-2.5 shadow-md">
+                <div className="flex items-start gap-3">
+                  <div className="relative w-14 h-14 rounded bg-slate-900 border border-cyan-400/60 overflow-hidden flex-shrink-0">
+                    <img
+                      src={targetFaceUrl}
+                      alt={selectedPerson.display_name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/assets/avatars/09d7a50a-82dd-4acf-1c8c-ed1d70f5b332.png';
+                      }}
+                    />
+                    <div className="absolute top-0 right-0 bg-cyan-500 text-black font-mono text-[8px] font-black px-1 uppercase">
+                      TARGET
+                    </div>
+                  </div>
+
+                  <div className="flex-1 min-w-0 font-mono text-xs space-y-0.5">
+                    <h3 className="font-extrabold text-white text-sm truncate" title={selectedPerson.display_name}>
+                      {selectedPerson.display_name}
+                    </h3>
+                    <div className="text-amber-400 font-bold text-[10px] uppercase truncate">
+                      {selectedPerson.role}
+                    </div>
+                    <div className="text-[10px] text-slate-400 flex items-center space-x-1">
+                      <span>Case:</span>
+                      <span className="text-slate-200 font-semibold">{selectedPerson.case_number}</span>
+                    </div>
+                    <div className="text-[10px] text-slate-400 flex items-center space-x-1">
+                      <span>ID:</span>
+                      <span className="text-cyan-400 font-bold">{selectedPerson.id_code}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-1 flex items-center justify-between border-t border-slate-800/80 text-[10px] font-mono">
+                  <span className={`${selectedPerson.enrolled ? 'text-emerald-400' : 'text-slate-400'} font-bold flex items-center space-x-1`}>
+                    <CheckCircle2 className={`w-3 h-3 ${selectedPerson.enrolled ? 'text-emerald-400' : 'text-slate-500'}`} />
+                    <span>{selectedPerson.enrolled ? `Enrolled • ${selectedPerson.references} references` : 'No Reference Enrolled'}</span>
+                  </span>
+
+                  <button
+                    onClick={() => navigate(`/entities/${selectedPerson.entity_id}`)}
+                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-2.5 py-1 rounded flex items-center space-x-1 transition-colors cursor-pointer"
                   >
-                    {caseList.map(c => (
-                      <option key={c.case_id} value={c.case_id}>
-                        {c.case_number} — {c.title}
-                      </option>
-                    ))}
-                  </select>
+                    <span>View Dossier</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
                 </div>
-
-                <div className="space-y-1">
-                  <span className="text-[11px] font-medium text-slate-400">Persons in Case</span>
-                  <div className="border border-[#1b2234] bg-[#0d121c] rounded divide-y divide-[#1b2234] max-h-[320px] overflow-y-auto">
-                    {loadingManifest ? (
-                      <div className="p-4 text-center text-xs text-slate-500">Loading persons…</div>
-                    ) : caseManifest?.persons ? (
-                      caseManifest.persons.map(person => (
-                        <div
-                          key={person.entity_id}
-                          onClick={() => handleCasePersonSelect(person)}
-                          className={`p-3 transition-all cursor-pointer flex items-center justify-between ${
-                            selectedPerson?.entity_id === person.entity_id
-                              ? 'bg-[#1b2438] border-l-2 border-l-blue-500'
-                              : 'hover:bg-[#121824]'
-                          }`}
-                        >
-                          <div>
-                            <div className="text-xs font-medium text-slate-200">{person.display_name}</div>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${ROLE_BADGES[person.role] || 'bg-slate-800 text-slate-300'}`}>
-                                {person.role}
-                              </span>
-                              {person.biometric_enrolled && (
-                                <span className="text-[10px] text-emerald-400 font-medium">● Available</span>
-                              )}
-                            </div>
-                          </div>
-
-                          <div>
-                            {person.biometric_enrolled ? (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleCasePersonAnalyze(person);
-                                }}
-                                disabled={isSearching}
-                                className="px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded transition-all"
-                              >
-                                Analyze
-                              </button>
-                            ) : (
-                              <span className="text-[11px] text-slate-500 hover:text-slate-300">No reference</span>
-                            )}
-                          </div>
-                        </div>
-                      ))
-                    ) : null}
-                  </div>
-                </div>
+              </div>
+            ) : (
+              <div className="p-4 text-center text-xs font-mono text-slate-500 border border-dashed border-slate-800 rounded">
+                No target selected
               </div>
             )}
 
-            {/* UPLOAD IMAGE MODE */}
-            {sourceMode === 'UPLOAD' && (
-              <div className="space-y-4">
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`border border-dashed rounded p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center ${
-                    imagePreviewUrl ? 'border-blue-500/50 bg-blue-950/10' : 'border-[#1b2234] hover:border-slate-600 bg-[#0d121c]'
-                  }`}
-                  style={{ minHeight: 160 }}
-                >
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    className="hidden"
-                    accept="image/jpeg,image/png,image/webp"
-                    onChange={handleFileChange}
-                  />
-                  {imagePreviewUrl ? (
-                    <div className="w-full flex flex-col items-center">
-                      <img src={imagePreviewUrl} alt="Target" className="max-h-36 rounded object-contain border border-[#1b2234]" />
-                      <p className="text-[11px] text-slate-400 mt-2 truncate w-full">{selectedFile?.name || 'reference_target.jpg'}</p>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center gap-1.5">
-                      <Upload className="w-6 h-6 text-slate-500" />
-                      <p className="text-xs text-slate-300 font-medium">Select face image to upload</p>
-                      <p className="text-[10px] text-slate-500">JPEG, PNG or WEBP</p>
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  onClick={() => handleSearch()}
-                  disabled={!selectedFile && !imagePreviewUrl || isSearching}
-                  className={`w-full py-2.5 text-xs font-medium rounded transition-all ${
-                    !selectedFile && !imagePreviewUrl || isSearching
-                      ? 'bg-[#141a26] text-slate-600 cursor-not-allowed border border-[#1b2234]'
-                      : 'bg-blue-600 hover:bg-blue-500 text-white'
-                  }`}
-                >
-                  {isSearching ? 'Analyzing Pipeline…' : 'Run Facial Analysis'}
-                </button>
-              </div>
-            )}
-
-            {/* CCTV FRAME MODE */}
-            {sourceMode === 'CCTV' && (
-              <div className="p-4 bg-[#0d121c] border border-[#1b2234] rounded text-center space-y-3">
-                <Camera className="w-6 h-6 text-blue-400 mx-auto" />
-                <div>
-                  <h4 className="text-xs font-medium text-slate-200">CCTV Frame Capture</h4>
-                  <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
-                    Extract target face directly from an indexed Delhi Police camera feed.
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    const person = caseManifest?.persons.find(p => p.biometric_enrolled);
-                    if (person) handleCasePersonAnalyze(person);
-                  }}
-                  className="w-full py-2 bg-[#1b2438] hover:bg-[#25324c] border border-[#2b3854] text-blue-400 text-xs font-medium rounded"
-                >
-                  Acquire Frame from CAM-04 (Dwarka)
-                </button>
-              </div>
-            )}
-
-            {/* Analysis Configuration */}
-            <div className="border border-[#1b2234] bg-[#0d121c] rounded p-3 space-y-2">
-              <div className="text-[11px] font-medium text-slate-400 border-b border-[#1b2234] pb-1">
-                Analysis Configuration
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-[11px]">
-                <div><span className="text-slate-500">Detector</span><div className="text-slate-300 font-medium">YuNet (2023mar)</div></div>
-                <div><span className="text-slate-500">Embedder</span><div className="text-slate-300 font-medium">SFace (2021dec)</div></div>
-                <div><span className="text-slate-500">Metric</span><div className="text-blue-400 font-medium">Cosine Proximity</div></div>
-                <div><span className="text-slate-500">Threshold</span><div className="text-slate-300 font-medium">0.30</div></div>
-              </div>
+            {/* PEOPLE INVOLVED LIST HEADER */}
+            <div className="flex items-center justify-between pt-1">
+              <span className="text-[11px] font-bold text-slate-300 font-mono uppercase tracking-wider">
+                PEOPLE INVOLVED ({filteredPeople.length})
+              </span>
+              {loadingPeople && <span className="text-[10px] font-mono text-cyan-400 animate-pulse">Loading DB…</span>}
             </div>
 
-          </div>
-        </div>
-
-        {/* ── REGION 2: CENTER REGION — FACIAL ANALYSIS & IDENTITY (6 Cols) ──── */}
-        <div className="col-span-6 flex flex-col bg-[#080a0e] overflow-y-auto divide-y divide-[#1b2234]">
-
-          {/* FACIAL ANALYSIS HERO CANVAS */}
-          <div className="flex flex-col">
-            <SectionHeader
-              title="Facial Analysis"
-              subtitle="Target image & live scan visualization"
-              action={
-                isSearching && (
-                  <span className="text-xs text-blue-400 font-medium flex items-center gap-1.5">
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Analyzing…
-                  </span>
-                )
-              }
-            />
-
-            <div className="p-4 bg-[#0a0d14] flex flex-col gap-3">
-              {/* Image Canvas */}
-              <div className="relative bg-[#05070a] border border-[#1b2234] rounded overflow-hidden min-h-[280px] max-h-[340px] flex items-center justify-center">
-                {imagePreviewUrl ? (
-                  <img
-                    src={imagePreviewUrl}
-                    alt="Facial target"
-                    className="w-full h-full object-contain max-h-[340px]"
-                  />
-                ) : selectedPerson && !selectedPerson.biometric_enrolled ? (
-                  <EmptyState
-                    icon={User}
-                    title="Facial analysis unavailable — No reference image"
-                    subtitle={`No enrolled facial reference photo exists in the CIVIX Index for ${selectedPerson.display_name}. Switch to 'Upload Image' mode to upload a face image, or select a person with an enrolled reference.`}
-                  />
-                ) : (
-                  <EmptyState
-                    icon={Crosshair}
-                    title="No target image acquired"
-                    subtitle="Select a person from a case or upload an image to begin analysis"
-                  />
-                )}
-
-                {/* Subtle Scan Line Overlay */}
-                {isSearching && (
+            {/* Scrollable People List */}
+            <div className="space-y-1.5 max-h-[460px] overflow-y-auto pr-1 custom-scrollbar">
+              {filteredPeople.map((person) => {
+                const isSelected = selectedPerson?.entity_id === person.entity_id;
+                return (
                   <div
-                    className="absolute left-0 right-0 h-[2px] bg-blue-400/80 shadow-[0_0_12px_#60a5fa]"
-                    style={{ animation: 'scanLine 1.8s ease-in-out infinite', top: 0 }}
-                  />
-                )}
-              </div>
-
-              {/* Pipeline Progress Strip */}
-              {isSearching && (
-                <div className="flex items-center justify-between text-[11px] bg-[#0d121c] border border-[#1b2234] px-3 py-2 rounded">
-                  <span className="text-blue-400 font-medium">Pipeline active:</span>
-                  <span className="text-slate-300">
-                    {ANALYSIS_STAGES.find(s => s.id === currentStage)?.label || 'Processing…'}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* IDENTIFIED PERSON RECORD */}
-          <div className="flex flex-col">
-            <SectionHeader
-              title="Identity Record"
-              subtitle="Matched entity details & proximity metric"
-            />
-
-            <div className="p-4 bg-[#090c12]">
-              {!searchResult && !isSearching && (
-                <EmptyState
-                  icon={User}
-                  title="Awaiting analysis"
-                  subtitle="Run facial analysis to identify subject and resolve case context"
-                  className="py-8"
-                />
-              )}
-
-              {searchResult && !isSearching && (
-                <div className="grid grid-cols-12 gap-4 items-stretch">
-
-                  {/* Left Column: Person Bio Details */}
-                  <div className="col-span-7 bg-[#0d121c] border border-[#1b2234] rounded p-4 space-y-3">
-                    <div className="flex items-start gap-3">
-                      <div className="w-14 h-14 rounded border border-[#1b2234] bg-[#05070a] overflow-hidden flex-shrink-0">
-                        {imagePreviewUrl ? (
-                          <img src={imagePreviewUrl} alt="Target" className="w-full h-full object-cover" />
-                        ) : (
-                          <User className="w-7 h-7 text-slate-600 m-auto" />
-                        )}
-                      </div>
-
-                      <div>
-                        <h3 className="text-sm font-semibold text-white">
-                          {searchResult.person_name || personSummary?.display_name || 'Suresh Valmiki'}
-                        </h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${ROLE_BADGES[searchResult.primary_role || 'SUSPECT'] || 'bg-rose-950 text-rose-300'}`}>
-                            {searchResult.primary_role || 'SUSPECT'}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 text-xs border-t border-[#1b2234] pt-2.5 text-slate-300">
-                      <div><span className="text-slate-500">Person ID:</span> <span className="font-mono text-slate-200">{searchResult.person_id ? `CIV-P-${searchResult.person_id.slice(0, 6)}` : 'CIV-P-0042'}</span></div>
-                      <div><span className="text-slate-500">Gender:</span> {personSummary?.gender || 'Male'}</div>
-                      <div><span className="text-slate-500">DOB:</span> {personSummary?.date_of_birth?.slice(0, 10) || '14 Aug 1988'}</div>
-                      <div><span className="text-slate-500">Nationality:</span> {personSummary?.nationality || 'Indian'}</div>
-                    </div>
-
-                    {searchResult.person_id && (
-                      <Link
-                        to={`/entities/${searchResult.person_id}`}
-                        className="inline-flex items-center gap-1 text-xs text-blue-400 hover:underline pt-1"
-                      >
-                        View Entity Dossier <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    )}
-                  </div>
-
-                  {/* Right Column: Proximity Metric Box */}
-                  <div className="col-span-5 bg-[#0d121c] border border-[#1b2234] rounded p-4 text-center flex flex-col justify-center gap-2">
-                    <span className="text-[11px] text-slate-400 font-medium">COSINE PROXIMITY</span>
-                    <div className="text-3xl font-mono font-bold text-emerald-400">
-                      {searchResult.match_score ? searchResult.match_score.toFixed(4) : '0.7842'}
-                    </div>
-
-                    {bandCfg && (
-                      <div className={`inline-block px-2.5 py-1 rounded text-xs font-semibold ${bandCfg.bg} ${bandCfg.color} border ${bandCfg.border}`}>
-                        HIGH MATCH BAND
-                      </div>
-                    )}
-
-                    <div className="text-[10px] text-slate-500 border-t border-[#1b2234] pt-2">
-                      1 face detected · 120 references searched
-                    </div>
-                  </div>
-
-                </div>
-              )}
-
-              {/* UNKNOWN FACE / SYNTHETIC EXTERNAL IDENTITY FALLBACK */}
-              {searchResult?.status === 'NO_CIVIX_MATCH' && searchResult.synthetic_identity && (
-                <div className="mt-3 bg-[#0d121c] border border-amber-800/40 rounded p-3 text-xs space-y-2">
-                  <div className="flex items-center justify-between border-b border-[#1b2234] pb-1.5">
-                    <span className="font-medium text-amber-400">SYNTHETIC EXTERNAL IDENTITY SOURCE</span>
-                    <span className="text-[10px] text-amber-300 bg-amber-950 px-1.5 py-0.5 rounded border border-amber-800">DEMO ONLY</span>
-                  </div>
-                  <p className="text-slate-400 text-[11px]">No enrolled CIVIX identity exceeded match threshold.</p>
-                  <div className="font-semibold text-slate-200">{searchResult.synthetic_identity.name}</div>
-                  <div className="grid grid-cols-3 gap-2 text-slate-400">
-                    <div><span className="text-slate-500">Age:</span> {searchResult.synthetic_identity.age}</div>
-                    <div><span className="text-slate-500">City:</span> {searchResult.synthetic_identity.city}</div>
-                    <div><span className="text-slate-500">Occ:</span> {searchResult.synthetic_identity.occupation}</div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* MOVEMENT TIMELINE STRIP */}
-          <div className="flex flex-col">
-            <SectionHeader
-              title="Movement Timeline"
-              subtitle="Chronological camera observations"
-              action={
-                <button
-                  onClick={() => navigate('/spatial')}
-                  className="text-xs text-blue-400 hover:underline flex items-center gap-1"
-                >
-                  <MapPin className="w-3.5 h-3.5" /> View Movement on Map
-                </button>
-              }
-            />
-
-            <div className="p-4 bg-[#0a0d14]">
-              {activeCctvObservations.length > 0 ? (
-                <div className="relative flex items-center justify-between">
-                  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#1b2234] z-0" />
-
-                  {activeCctvObservations.slice(0, 5).map((obs, idx) => (
-                    <div key={obs.observation_id || idx} className="relative z-10 flex flex-col items-center bg-[#0d121c] border border-[#1b2234] p-2 rounded text-center min-w-[90px]">
-                      <span className="text-xs font-mono font-semibold text-blue-400">
-                        {obs.timestamp ? obs.timestamp.slice(11, 16) : `2${idx}:0${idx*3}`}
-                      </span>
-                      <span className="text-[11px] text-slate-300 font-medium mt-0.5">
-                        {obs.region || obs.camera_name || 'Dwarka Sec 23'}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-500">
-                        {obs.camera_code || `CAM-0${idx+4}`}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <EmptyState
-                  icon={Clock}
-                  title="No movement timeline"
-                  subtitle="Timeline populates when camera observations exist for subject"
-                  className="py-3"
-                />
-              )}
-            </div>
-          </div>
-
-        </div>
-
-        {/* ── REGION 3: RIGHT PANE — CCTV OBSERVATIONS & CONTEXT (3 Cols) ─────── */}
-        <div className="col-span-3 flex flex-col bg-[#090c12] overflow-y-auto divide-y divide-[#1b2234]">
-
-          {/* CCTV OBSERVATIONS EVIDENCE GALLERY */}
-          <div className="flex flex-col">
-            <SectionHeader
-              title="CCTV Observations"
-              subtitle={`${activeCctvObservations.length} captures identified`}
-            />
-
-            <div className="p-3 bg-[#0d121c] border-b border-[#1b2234] flex items-center gap-1">
-              {([
-                { id: 'ALL',          label: 'All Captures' },
-                { id: 'KEY_MOVEMENT', label: 'Key Movement' },
-                { id: 'MAP_VIEW',     label: 'Map View' },
-              ] as const).map(f => (
-                <button
-                  key={f.id}
-                  onClick={() => setCctvFilterMode(f.id)}
-                  className={`px-2 py-1 text-[11px] font-medium rounded transition-all ${
-                    cctvFilterMode === f.id
-                      ? 'bg-[#1b2438] text-blue-400 border border-[#2b3854]'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="p-3 bg-[#090c12]">
-              {activeCctvObservations.length > 0 ? (
-                <div className="grid grid-cols-2 gap-2 max-h-[340px] overflow-y-auto pr-1">
-                  {activeCctvObservations.map(obs => (
-                    <div
-                      key={obs.observation_id}
-                      className="bg-[#0d121c] border border-[#1b2234] rounded overflow-hidden hover:border-blue-500/50 transition-all"
-                    >
-                      <div className="aspect-video bg-[#05070a] overflow-hidden">
+                    key={person.entity_id}
+                    onClick={() => handleSelectPerson(person)}
+                    className={`p-2 rounded border transition-all cursor-pointer flex items-center justify-between group ${
+                      isSelected
+                        ? 'bg-[#0E1A2E] border-cyan-400 shadow-md ring-1 ring-cyan-500/40'
+                        : 'bg-[#05080E] border-[#1E293B] hover:border-slate-700 hover:bg-[#080D18]'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2.5 min-w-0">
+                      <div className="relative w-8 h-8 rounded bg-slate-800 border border-slate-700 overflow-hidden flex-shrink-0">
                         <img
-                          src={'thumbnail' in obs ? (obs as any).thumbnail : 'https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop&q=80'}
-                          alt={obs.camera_name}
+                          src={person.avatar}
+                          alt={person.display_name}
                           className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/assets/avatars/09d7a50a-82dd-4acf-1c8c-ed1d70f5b332.png';
+                          }}
                         />
                       </div>
-                      <div className="p-2 space-y-0.5 text-xs">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-blue-400 font-semibold">{obs.camera_code || 'CAM-04'}</span>
-                          <span className="text-[10px] text-slate-400">{obs.timestamp ? obs.timestamp.slice(11, 16) : '21:43'}</span>
+                      <div className="min-w-0 font-mono text-xs">
+                        <div className="font-extrabold text-white truncate text-[11px] group-hover:text-cyan-300 transition-colors">
+                          {person.display_name}
                         </div>
-                        <div className="text-[11px] text-slate-300 truncate">{obs.region || obs.camera_name || 'Dwarka Sec 23'}</div>
+                        <div className="text-[9px] text-slate-400 truncate flex items-center space-x-1">
+                          <span className={`w-1.5 h-1.5 rounded-full ${person.status_color}`} />
+                          <span>{person.role}</span>
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <EmptyState
-                  icon={Camera}
-                  title="No CCTV observations"
-                  subtitle="No camera captures associated with target"
-                  className="py-8"
-                />
-              )}
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        executeBiometricWorkflow(person);
+                      }}
+                      className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded uppercase cursor-pointer transition-colors ${
+                        isSelected
+                          ? 'bg-cyan-500 text-black hover:bg-cyan-400'
+                          : 'bg-[#161F30] text-slate-300 hover:bg-slate-800'
+                      }`}
+                    >
+                      Analyze
+                    </button>
+                  </div>
+                );
+              })}
             </div>
+
           </div>
 
-          {/* INVESTIGATIVE CONTEXT */}
-          <div className="flex flex-col">
-            <SectionHeader
-              title="Investigative Context"
-              subtitle="Linked cases & evidence summary"
-              action={
-                context?.cases?.[0] && (
-                  <Link
-                    to={`/cases/${context.cases[0].case_id}`}
-                    className="text-xs text-blue-400 hover:underline flex items-center gap-1"
-                  >
-                    Workspace <ExternalLink className="w-3 h-3" />
-                  </Link>
-                )
-              }
-            />
+        </div>
 
-            <div className="p-4 bg-[#090c12] space-y-3">
-              {/* Compact Summary Bar */}
-              <div className="text-xs font-medium text-slate-400 bg-[#0d121c] border border-[#1b2234] p-2.5 rounded text-center">
-                {context?.cases?.length || (isGoldenCase ? 2 : 0)} linked cases · {context?.evidence?.length || (isGoldenCase ? 14 : 0)} evidence links · {context?.events?.length || (isGoldenCase ? 8 : 0)} events
+        {/* ── COLUMN 2: BIOMETRIC ANALYSIS (Middle 6 cols, ~50% width) ───────────── */}
+        <div className="lg:col-span-6 space-y-4">
+          
+          <div className="bg-[#090D16] border border-[#161F30] rounded-md p-4 space-y-3.5 shadow-lg">
+            
+            {/* Header with Sub-tabs */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#161F30] pb-2.5 gap-2">
+              <div className="flex items-center space-x-2">
+                <Crosshair className="w-4 h-4 text-cyan-400" />
+                <h2 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                  BIOMETRIC ANALYSIS
+                </h2>
               </div>
 
-              {/* Navigable Associated Cases */}
-              <div className="space-y-2">
-                <span className="text-[11px] font-medium text-slate-400">Associated Cases</span>
+              {/* Interactive Sub-tabs Pills */}
+              <div className="flex items-center space-x-1 bg-[#05080E] p-0.5 rounded border border-[#1E293B] text-[10px] font-mono">
+                {[
+                  { id: 'LIVE', label: 'Live Analysis' },
+                  { id: 'ENROLLED', label: 'Enrolled Match' },
+                  { id: 'CROSS', label: 'Cross-Case Search' },
+                ].map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setAnalysisTab(t.id as any)}
+                    className={`px-2.5 py-1 rounded font-bold transition-all cursor-pointer ${
+                      analysisTab === t.id
+                        ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                {context?.cases && context.cases.length > 0 ? (
-                  context.cases.map(c => (
-                    <Link
-                      key={c.case_id}
-                      to={`/cases/${c.case_id}`}
-                      className="block bg-[#0d121c] border border-[#1b2234] hover:border-blue-500/50 rounded p-2.5 transition-all"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="text-xs font-mono font-semibold text-blue-400">{c.case_number}</div>
-                          <div className="text-xs font-medium text-slate-200 mt-0.5">{c.title}</div>
+            {/* Dynamic Status Alert Banner */}
+            <div className={`rounded p-2.5 font-mono text-xs flex items-center justify-between shadow-inner ${
+              selectedPerson?.is_false_match
+                ? 'bg-rose-950/80 border border-rose-500/50 text-rose-300'
+                : hasScanned
+                ? 'bg-emerald-950/70 border border-emerald-500/50 text-emerald-300'
+                : 'bg-amber-950/70 border border-amber-500/50 text-amber-300'
+            }`}>
+              <div className="flex items-center space-x-2 font-bold">
+                {selectedPerson?.is_false_match ? (
+                  <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                ) : hasScanned ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                ) : (
+                  <Sparkles className="w-4 h-4 text-amber-400 animate-spin flex-shrink-0" />
+                )}
+                <span>
+                  {selectedPerson?.is_false_match
+                    ? 'FALSE MATCH FLAGGED BY INVESTIGATOR'
+                    : isScanning
+                    ? `PIPELINE SCANNING: ${ANALYSIS_STAGES[activeStageIndex].label}`
+                    : selectedPerson
+                    ? `MATCH VERIFIED FOR ${selectedPerson.display_name.toUpperCase()}`
+                    : 'SELECT TARGET TO BEGIN'}
+                </span>
+              </div>
+
+              <span className={`text-[9px] px-2 py-0.5 rounded font-bold border uppercase ${
+                selectedPerson?.is_false_match
+                  ? 'bg-rose-900 border-rose-600 text-white'
+                  : 'bg-emerald-900 border-emerald-600 text-emerald-200'
+              }`}>
+                {selectedPerson?.is_false_match ? 'FLAGGED' : 'LOCKED'}
+              </span>
+            </div>
+
+            {/* ── TAB CONTENT 1: LIVE ANALYSIS ─────────────────────────────────── */}
+            {analysisTab === 'LIVE' && (
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-3 bg-[#030508] border border-[#161F30] rounded-md p-3 items-stretch">
+                
+                {/* Main Face Viewport with 3D Cyber Mesh SVG Overlay */}
+                <div className="md:col-span-7 relative h-72 lg:h-80 rounded bg-slate-950 overflow-hidden border border-[#1E293B] flex items-center justify-center group">
+                  
+                  <img
+                    src={targetFaceUrl}
+                    alt={selectedPerson?.display_name || 'Target'}
+                    className={`w-full h-full object-cover transition-all duration-500 ${
+                      isScanning ? 'filter brightness-125 contrast-125 scale-105 animate-pulse' : ''
+                    }`}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/assets/avatars/09d7a50a-82dd-4acf-1c8c-ed1d70f5b332.png';
+                    }}
+                  />
+
+                  {/* Face Viewport Image without SVG overlay */}
+                  {isScanning && (
+                    <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#00F0FF] z-20 animate-scanLine" />
+                  )}
+
+                  <div className="absolute top-2 left-2 bg-emerald-950/90 border border-emerald-500/70 px-2 py-0.5 rounded text-emerald-300 font-mono text-[10px] font-bold z-20 flex items-center space-x-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    <span>Face Detected</span>
+                  </div>
+
+                  {isScanning && (
+                    <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#00F0FF] z-20 animate-scanLine" />
+                  )}
+
+                  <div className="absolute bottom-2 left-2 right-2 bg-black/80 backdrop-blur border border-slate-800 p-1.5 rounded z-20 font-mono text-[10px] text-slate-300 flex justify-between">
+                    <span>{selectedPerson ? `${selectedPerson.entity_id}.jpg` : 'TARGET.jpg'}</span>
+                    <span className="text-cyan-400 font-bold">YuNet SFace</span>
+                  </div>
+                </div>
+
+                {/* Metrics Side Panel */}
+                <div className="md:col-span-5 font-mono space-y-2.5 flex flex-col justify-between p-1">
+                  
+                  {/* Cosine Proximity Score Box */}
+                  <div className="bg-[#090D16] border border-[#161F30] p-3 rounded space-y-1">
+                    <div className="text-[10px] text-slate-400 uppercase">Cosine Proximity</div>
+                    <div className="text-2xl lg:text-3xl font-black text-white font-mono tracking-tight">
+                      {isScanning ? liveCosineScore.toFixed(4) : matchScoreDisplay}
+                    </div>
+                    <div className="pt-1 flex items-center justify-between">
+                      <span className="text-[10px] text-slate-400">Match Band:</span>
+                      <span className={`font-black text-[9px] px-2 py-0.5 rounded uppercase ${
+                        matchBand === 'HIGH' ? 'bg-emerald-500 text-black' :
+                        matchBand === 'MEDIUM' ? 'bg-amber-500 text-black' : 'bg-rose-500 text-white'
+                      }`}>
+                        {matchBand}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Properties Table */}
+                  <div className="space-y-1 text-[11px] text-slate-300 bg-[#070A10] p-2.5 rounded border border-[#161F30]">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Face Quality:</span>
+                      <span className="font-bold text-emerald-400">0.92 (Good)</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Model:</span>
+                      <span className="font-bold text-white">YuNet + SFace (v1.3)</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">References:</span>
+                      <span className="font-bold text-cyan-400">{referenceImages.length} images</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Source:</span>
+                      <span className="font-bold text-slate-200">CIVIX Index</span>
+                    </div>
+                  </div>
+
+                  {/* Trigger Re-scan Button */}
+                  <button
+                    onClick={() => selectedPerson && executeBiometricWorkflow(selectedPerson)}
+                    disabled={isScanning || !selectedPerson}
+                    className="w-full bg-[#10B981] hover:bg-emerald-400 text-black font-black text-xs py-2 px-3 rounded uppercase tracking-wider flex items-center justify-center space-x-1.5 transition-colors cursor-pointer shadow-md disabled:opacity-50"
+                  >
+                    <Zap size={14} className="fill-current" />
+                    <span>{isScanning ? 'RUNNING SCAN…' : 'TRIGGER RE-ANALYSIS'}</span>
+                  </button>
+
+                </div>
+
+              </div>
+            )}
+
+            {/* ── TAB CONTENT 2: ENROLLED MATCH (Vector Details) ─────────────── */}
+            {analysisTab === 'ENROLLED' && (
+              <div className="bg-[#030508] border border-[#161F30] rounded-md p-4 space-y-3 font-mono text-xs">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-bold text-cyan-400">128-D VECTOR EMBEDDING ANALYSIS</span>
+                  <span className="text-[10px] text-slate-400">INDEX: CIVIX_CV_OPENCV</span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                  <div className="bg-slate-900/80 p-2 rounded border border-slate-800">
+                    <div className="text-slate-400 text-[10px]">Vector Norm (L2)</div>
+                    <div className="text-sm font-bold text-emerald-400">1.0000</div>
+                  </div>
+                  <div className="bg-slate-900/80 p-2 rounded border border-slate-800">
+                    <div className="text-slate-400 text-[10px]">Cosine Proximity</div>
+                    <div className="text-sm font-bold text-cyan-400">{matchScoreDisplay}</div>
+                  </div>
+                  <div className="bg-slate-900/80 p-2 rounded border border-slate-800">
+                    <div className="text-slate-400 text-[10px]">Landmark Nodes</div>
+                    <div className="text-sm font-bold text-white">68 Points</div>
+                  </div>
+                  <div className="bg-slate-900/80 p-2 rounded border border-slate-800">
+                    <div className="text-slate-400 text-[10px]">Match Band</div>
+                    <div className="text-sm font-bold text-amber-400">{matchBand}</div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-950 p-3 rounded border border-slate-800 text-[10px] space-y-1">
+                  <div className="text-slate-400 font-bold mb-1">Vector Dimensions Sample (First 16 float weights):</div>
+                  <div className="text-cyan-300 font-mono select-all break-all leading-relaxed">
+                    [+0.0784, -0.1421, +0.9821, +0.3341, -0.0012, +0.4412, -0.1982, +0.6512, -0.0341, +0.1190, +0.8712, -0.2201, +0.5519, -0.0891, +0.3312, +0.7712]
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── TAB CONTENT 3: CROSS-CASE SEARCH ─────────────────────────────── */}
+            {analysisTab === 'CROSS' && (
+              <div className="bg-[#030508] border border-[#161F30] rounded-md p-4 space-y-3 font-mono text-xs">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-bold text-cyan-400">CROSS-CASE CORRELATION ENGINE</span>
+                  <span className="text-[10px] text-slate-400">
+                    {canonicalContext?.cases?.length || 0} Linked Cases Found
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  {canonicalContext?.cases?.map((c) => (
+                    <div key={c.case_id} className="bg-slate-900/90 border border-slate-800 p-2.5 rounded flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="font-bold text-white text-xs flex items-center space-x-2">
+                          <span className="text-cyan-400">{c.case_number}</span>
+                          <span>•</span>
+                          <span>{c.title}</span>
                         </div>
-                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${ROLE_BADGES[c.role] || 'bg-rose-950 text-rose-300'}`}>
+                        <div className="text-[10px] text-slate-400">
+                          Role: <span className="text-amber-400 font-bold">{c.role}</span> | Status: {c.status}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => navigate(`/cases`)}
+                        className="bg-blue-600/80 hover:bg-blue-500 text-white px-2 py-1 rounded text-[10px] font-bold cursor-pointer"
+                      >
+                        Inspect Case
+                      </button>
+                    </div>
+                  )) || (
+                    <div className="text-slate-500 text-center py-4">No cross-case linkages detected</div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* BOTTOM PANELS: CCTV TRACE & REFERENCE MATRIX */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+              
+              {/* CCTV TRACE */}
+              <div className="bg-[#05080E] border border-[#1E293B] rounded p-2.5 space-y-2">
+                <div className="flex items-center justify-between border-b border-[#161F30] pb-1.5">
+                  <span className="text-[11px] font-bold text-white font-mono">
+                    CCTV TRACE ({cctvTrace?.observation_count || 0})
+                  </span>
+                  <button
+                    onClick={() => setIsCctvModalOpen(true)}
+                    className="text-[9px] text-cyan-400 font-mono cursor-pointer hover:underline"
+                  >
+                    View All
+                  </button>
+                </div>
+
+                {cctvTrace && cctvTrace.observations.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {cctvTrace.observations.slice(0, 6).map((c) => (
+                      <div
+                        key={c.observation_id}
+                        onClick={() => {
+                          setActiveModalCctv(c);
+                          setIsCctvModalOpen(true);
+                        }}
+                        className="bg-slate-900 border border-slate-800 hover:border-cyan-500 rounded overflow-hidden cursor-pointer group transition-all"
+                      >
+                        <div className="h-12 bg-black relative flex items-center justify-center">
+                          <Camera className="w-6 h-6 text-slate-600 group-hover:text-cyan-400" />
+                          <span className="absolute top-0.5 left-0.5 bg-black/80 px-1 text-[8px] font-mono text-cyan-300 rounded">
+                            {c.camera_code || 'CAM'}
+                          </span>
+                        </div>
+                        <div className="p-1 font-mono text-[8px] text-slate-400 truncate">
+                          {c.timestamp ? c.timestamp.split('T')[0] : 'Recorded'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-[10px] font-mono text-slate-500 border border-dashed border-slate-800/80 rounded">
+                    NO LINKED CCTV EVIDENCE
+                  </div>
+                )}
+              </div>
+
+              {/* REFERENCE MATRIX */}
+              <div className="bg-[#05080E] border border-[#1E293B] rounded p-2.5 space-y-2">
+                <div className="flex items-center justify-between border-b border-[#161F30] pb-1.5">
+                  <span className="text-[11px] font-bold text-white font-mono">
+                    REFERENCE MATRIX ({referenceImages.length})
+                  </span>
+                  <button
+                    onClick={() => setIsRefModalOpen(true)}
+                    className="text-[9px] text-cyan-400 font-mono cursor-pointer hover:underline"
+                  >
+                    View All
+                  </button>
+                </div>
+
+                {referenceImages.length > 0 ? (
+                  <div className="grid grid-cols-5 gap-1.5">
+                    {referenceImages.slice(0, 5).map((r, i) => (
+                      <div key={r.ref_id || i} className="bg-slate-900 border border-slate-800 rounded p-1 text-center font-mono">
+                        <div className="w-full aspect-square rounded overflow-hidden mb-1 bg-slate-950">
+                          <img
+                            src={biometricApi.buildReferenceImageUrl(r.image_path)}
+                            alt={`Ref ${i + 1}`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = targetFaceUrl;
+                            }}
+                          />
+                        </div>
+                        <div className="text-[8px] text-slate-300 font-bold truncate">REF #{i + 1}</div>
+                        <div className="text-[8px] text-emerald-400 font-black">
+                          {r.detection_confidence ? r.detection_confidence.toFixed(2) : '1.00'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-[10px] font-mono text-slate-500 border border-dashed border-slate-800/80 rounded">
+                    NO ENROLLED REFERENCES
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* ── COLUMN 3: INTELLIGENCE INSPECTOR (Right 3 cols, ~25% width) ───────── */}
+        <div className="lg:col-span-3 space-y-4">
+          
+          <div className="bg-[#090D16] border border-[#161F30] rounded-md p-3.5 space-y-3.5 shadow-lg">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-[#161F30] pb-2">
+              <h2 className="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center space-x-1.5">
+                <Info className="w-3.5 h-3.5 text-cyan-400" />
+                <span>INTELLIGENCE INSPECTOR</span>
+              </h2>
+            </div>
+
+            {/* Inspector Sub-tabs */}
+            <div className="grid grid-cols-4 gap-1 text-[10px] font-mono border-b border-[#161F30] pb-2">
+              {[
+                { id: 'DETAILS', label: 'Details' },
+                { id: 'FINDINGS', label: 'Findings' },
+                { id: 'LINKS', label: 'Links' },
+                { id: 'NOTES', label: 'Notes' },
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setInspectorTab(t.id as any)}
+                  className={`py-1 rounded text-center font-bold cursor-pointer transition-colors ${
+                    inspectorTab === t.id
+                      ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* ── INSPECTOR TAB 1: DETAILS ─────────────────────────────────────── */}
+            {inspectorTab === 'DETAILS' && (
+              <div className="space-y-3">
+                {/* Match Assessment Box */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold text-slate-400 font-mono uppercase tracking-wider">
+                    MATCH ASSESSMENT
+                  </span>
+                  
+                  <div className={`border rounded p-2.5 font-mono text-xs flex items-center justify-between ${
+                    selectedPerson?.is_false_match
+                      ? 'bg-rose-950/80 border-rose-500/50 text-rose-300'
+                      : 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300'
+                  }`}>
+                    <div className="flex items-center space-x-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      <span className="font-bold text-[11px]">
+                        {selectedPerson?.is_false_match ? 'Flagged False Match' : 'Match found in enrolled DB'}
+                      </span>
+                    </div>
+                    <span className="bg-emerald-500 text-black font-black text-[8px] px-1.5 py-0.5 rounded">
+                      {matchBand}
+                    </span>
+                  </div>
+
+                  <div className="bg-[#05080E] border border-[#161F30] rounded p-2.5 space-y-1 text-xs font-mono">
+                    <div className="flex justify-between border-b border-slate-800/60 pb-1">
+                      <span className="text-slate-400">Cosine proximity</span>
+                      <span className="text-emerald-400 font-bold">{matchScoreDisplay}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-slate-800/60 pb-1">
+                      <span className="text-slate-400">Match band</span>
+                      <span className="text-emerald-400 font-bold">{matchBand}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-slate-800/60 pb-1">
+                      <span className="text-slate-400">Person Name</span>
+                      <span className="text-slate-200 truncate">{personSummary?.display_name || selectedPerson?.display_name || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-slate-800/60 pb-1">
+                      <span className="text-slate-400">Gender / DOB</span>
+                      <span className="text-slate-200">{personSummary?.gender || selectedPerson?.gender || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-slate-800/60 pb-1">
+                      <span className="text-slate-400">Reference images</span>
+                      <span className="text-slate-200">{referenceImages.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Index provider</span>
+                      <span className="text-slate-200">OpenCV SFace</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Related Cases Section */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-slate-400 font-mono uppercase tracking-wider">
+                      LINKED CASES ({canonicalContext?.cases?.length || 0})
+                    </span>
+                    <button
+                      onClick={() => navigate('/graph')}
+                      className="text-[9px] font-mono text-cyan-400 hover:underline flex items-center"
+                    >
+                      <span>View in Graph</span>
+                      <ArrowRight className="w-2.5 h-2.5 ml-0.5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-1 font-mono text-xs">
+                    {canonicalContext?.cases?.map((c) => (
+                      <div key={c.case_id} className="bg-[#05080E] border border-[#161F30] p-2 rounded flex items-center justify-between">
+                        <div>
+                          <div className="font-extrabold text-cyan-400 text-[11px]">{c.case_number}</div>
+                          <div className="text-[10px] text-slate-300 truncate max-w-[170px]">{c.title}</div>
+                        </div>
+                        <span className="text-[8px] font-bold px-1.5 py-0.5 rounded border bg-slate-800 text-slate-300 border-slate-700">
                           {c.role}
                         </span>
                       </div>
-                    </Link>
-                  ))
-                ) : isGoldenCase ? (
-                  <div className="space-y-2">
-                    <Link
-                      to="/cases/1346a86d-267a-a635-9d62-e34c76ecd24f"
-                      className="block bg-[#0d121c] border border-[#1b2234] hover:border-blue-500/50 rounded p-2.5 transition-all"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="text-xs font-mono font-semibold text-blue-400">CIV-2012-001</div>
-                          <div className="text-xs font-medium text-slate-200 mt-0.5">Dwarka Sector 23 Cash Van Robbery</div>
-                          <div className="text-[10px] text-slate-500 mt-1">14 Mar 2026 · Dwarka, New Delhi</div>
-                        </div>
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-950/60 text-rose-300 border border-rose-800/50">
-                          Suspect
-                        </span>
-                      </div>
-                    </Link>
-
-                    <Link
-                      to="/cases/1346a86d-267a-a635-9d62-e34c76ecd24f"
-                      className="block bg-[#0d121c] border border-[#1b2234] hover:border-blue-500/50 rounded p-2.5 transition-all"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <div className="text-xs font-mono font-semibold text-blue-400">CIV-2026-009</div>
-                          <div className="text-xs font-medium text-slate-200 mt-0.5">NH-48 Vehicle Theft</div>
-                          <div className="text-[10px] text-slate-500 mt-1">22 Jan 2026 · Gurugram Corridor</div>
-                        </div>
-                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800/50">
-                          Person of Interest
-                        </span>
-                      </div>
-                    </Link>
+                    )) || (
+                      <div className="text-slate-500 text-xs py-2">No linked cases found</div>
+                    )}
                   </div>
-                ) : (
-                  <EmptyState
-                    icon={Briefcase}
-                    title="No associated cases"
-                    subtitle="No linked case records found for subject"
-                    className="py-4"
+                </div>
+              </div>
+            )}
+
+            {/* ── INSPECTOR TAB 2: FINDINGS ────────────────────────────────────── */}
+            {inspectorTab === 'FINDINGS' && (
+              <div className="space-y-2 font-mono text-xs">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  BIOMETRIC SIGNALS
+                </span>
+                
+                <div className="bg-slate-950 p-2.5 rounded border border-slate-800 space-y-2">
+                  <div className="flex items-center space-x-2 text-emerald-400 font-bold text-[11px]">
+                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                    <span>L2 Vector Proximity Locked</span>
+                  </div>
+                  <p className="text-[10px] text-slate-300 leading-relaxed">
+                    YuNet CNN aligned facial landmarks. SFace embedding vector matched against CIVIX index with cosine proximity score of {matchScoreDisplay}.
+                  </p>
+                </div>
+
+                <div className="bg-slate-950 p-2.5 rounded border border-slate-800 space-y-1.5">
+                  <div className="text-[10px] text-slate-400 uppercase font-bold">Alignment Confidence</div>
+                  <div className="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
+                    <div className="bg-cyan-400 h-full" style={{ width: `${Math.min(100, Math.max(0, (biometricSearchResult?.match_score || 0.7842) * 100))}%` }} />
+                  </div>
+                  <div className="flex justify-between text-[9px] text-slate-400">
+                    <span>Proximity Score</span>
+                    <span className="text-cyan-300 font-bold">{matchScoreDisplay}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── INSPECTOR TAB 3: LINKS ───────────────────────────────────────── */}
+            {inspectorTab === 'LINKS' && (
+              <div className="space-y-2 font-mono text-xs">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  CANONICAL GRAPH CONNECTIONS
+                </span>
+
+                <div className="bg-slate-950 p-2.5 rounded border border-slate-800 space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-bold">
+                    <span className="text-cyan-400 flex items-center space-x-1">
+                      <Network className="w-3.5 h-3.5" />
+                      <span>Evidence Instances</span>
+                    </span>
+                    <span className="text-[9px] text-slate-400">{canonicalContext?.evidence?.length || 0} Items</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] font-bold pt-1 border-t border-slate-900">
+                    <span className="text-amber-400 flex items-center space-x-1">
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>CCTV Sightings</span>
+                    </span>
+                    <span className="text-[9px] text-slate-400">{cctvTrace?.observation_count || 0} Feeds</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] font-bold pt-1 border-t border-slate-900">
+                    <span className="text-emerald-400 flex items-center space-x-1">
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Investigative Leads</span>
+                    </span>
+                    <span className="text-[9px] text-slate-400">{canonicalContext?.leads?.length || 0} Leads</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => navigate('/graph')}
+                  className="w-full bg-blue-600/80 hover:bg-blue-500 text-white font-bold py-1.5 px-3 rounded text-[10px] uppercase cursor-pointer"
+                >
+                  Open In Graph Explorer
+                </button>
+              </div>
+            )}
+
+            {/* ── INSPECTOR TAB 4: NOTES ───────────────────────────────────────── */}
+            {inspectorTab === 'NOTES' && (
+              <div className="space-y-2.5 font-mono text-xs">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  INVESTIGATOR DOSSIER NOTES ({selectedPerson?.notes?.length || 0})
+                </span>
+
+                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                  {selectedPerson?.notes?.map((n, i) => (
+                    <div key={i} className="bg-slate-950 p-2 rounded border border-slate-800 text-[10px] text-slate-300 leading-relaxed">
+                      <div className="text-[8px] text-cyan-400 font-bold mb-0.5">NOTE #{i + 1}</div>
+                      {n}
+                    </div>
+                  ))}
+                </div>
+
+                <form onSubmit={handleSaveNoteSubmit} className="space-y-1.5 pt-1 border-t border-slate-800">
+                  <textarea
+                    ref={noteInputRef}
+                    value={newNoteText}
+                    onChange={e => setNewNoteText(e.target.value)}
+                    placeholder="Add investigator note..."
+                    rows={2}
+                    className="w-full bg-[#05080E] border border-slate-800 rounded p-2 text-[11px] text-slate-200 placeholder-slate-500 outline-none focus:border-cyan-500 font-mono resize-none"
                   />
-                )}
+                  <button
+                    type="submit"
+                    className="w-full bg-cyan-600 hover:bg-cyan-500 text-black font-bold py-1 px-2 rounded text-[10px] uppercase cursor-pointer"
+                  >
+                    Save Note to Profile
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* SECTION 4: INVESTIGATOR ACTIONS */}
+            <div className="space-y-2 pt-2 border-t border-[#161F30]">
+              <span className="text-[10px] font-bold text-slate-400 font-mono uppercase tracking-wider block">
+                INVESTIGATOR ACTIONS
+              </span>
+
+              <div className="space-y-1.5 font-mono text-xs">
+                <button
+                  onClick={handleToggleAddCase}
+                  className={`w-full font-bold py-2 px-3 rounded flex items-center justify-center space-x-1.5 transition-colors cursor-pointer ${
+                    selectedPerson?.added_to_case
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                      : 'bg-blue-600 hover:bg-blue-500 text-white'
+                  }`}
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{selectedPerson?.added_to_case ? 'In Case Dossier ✓' : 'Add to Case'}</span>
+                </button>
+
+                <div className="grid grid-cols-2 gap-1.5">
+                  <button
+                    onClick={handleCreateLead}
+                    className="bg-[#05080E] border border-cyan-500/40 hover:bg-cyan-950/40 text-cyan-300 font-bold py-1.5 px-2 rounded text-[10px] transition-colors cursor-pointer"
+                  >
+                    Create Lead
+                  </button>
+
+                  <button
+                    onClick={() => selectedPerson && executeBiometricWorkflow(selectedPerson)}
+                    disabled={isScanning || !selectedPerson}
+                    className="bg-[#05080E] border border-slate-700 hover:bg-slate-800 text-slate-300 font-bold py-1.5 px-2 rounded text-[10px] transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    Request Re-scan
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-1.5">
+                  <button
+                    onClick={handleToggleFalseMatch}
+                    className={`border font-bold py-1.5 px-2 rounded text-[10px] transition-colors cursor-pointer ${
+                      selectedPerson?.is_false_match
+                        ? 'bg-rose-600 text-white border-rose-500'
+                        : 'bg-[#05080E] border-red-700/60 hover:bg-red-950/40 text-red-400'
+                    }`}
+                  >
+                    {selectedPerson?.is_false_match ? 'Unflag Match' : 'Mark False Match'}
+                  </button>
+
+                  <button
+                    onClick={handleAddNote}
+                    className="bg-[#05080E] border border-slate-700 hover:bg-slate-800 text-slate-300 font-bold py-1.5 px-2 rounded text-[10px] transition-colors cursor-pointer"
+                  >
+                    Add Note
+                  </button>
+                </div>
               </div>
             </div>
+
           </div>
 
         </div>
 
       </div>
 
-      {/* Subtle Scan Line Animation */}
+      {/* ── MODAL 1: CCTV TRACE OBSERVER MODAL ────────────────────────────────────── */}
+      {isCctvModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#090D16] border border-[#161F30] rounded-lg max-w-3xl w-full p-4 space-y-3 font-mono">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <div className="flex items-center space-x-2 text-cyan-400 font-bold text-sm">
+                <Camera className="w-4 h-4" />
+                <span>CCTV CAMERA OBSERVATIONS GRID ({cctvTrace?.observation_count || 0})</span>
+              </div>
+              <button onClick={() => setIsCctvModalOpen(false)} className="text-slate-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {activeModalCctv ? (
+              <div className="space-y-3">
+                <div className="relative aspect-video bg-black rounded overflow-hidden border border-slate-800 flex items-center justify-center">
+                  <video src="/assets/akshardham_traffic.mp4" controls autoPlay muted className="w-full h-full object-cover" />
+                  <div className="absolute top-2 left-2 bg-black/80 px-2 py-1 rounded text-xs text-cyan-300 font-bold border border-slate-700">
+                    {activeModalCctv.camera_code || 'CAM'} – {activeModalCctv.city || 'Delhi'}
+                  </div>
+                </div>
+
+                <div className="bg-slate-950 p-2.5 rounded border border-slate-800 text-xs text-slate-300 space-y-1">
+                  <div><span className="text-slate-400">Camera Code:</span> <span className="text-cyan-400 font-bold">{activeModalCctv.camera_code}</span></div>
+                  <div><span className="text-slate-400">Notes:</span> {activeModalCctv.investigator_notes || 'No observation note'}</div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-8 text-center text-slate-500">
+                {cctvTrace?.observation_count ? 'Select an observation from below' : 'No CCTV observations recorded for this target/case in database.'}
+              </div>
+            )}
+
+            {/* Observation Selector Grid */}
+            {cctvTrace && cctvTrace.observations.length > 0 && (
+              <div className="grid grid-cols-6 gap-2 pt-2 border-t border-slate-800">
+                {cctvTrace.observations.map((c) => (
+                  <div
+                    key={c.observation_id}
+                    onClick={() => setActiveModalCctv(c)}
+                    className={`bg-slate-950 border rounded p-1 cursor-pointer ${
+                      activeModalCctv?.observation_id === c.observation_id ? 'border-cyan-400 ring-1 ring-cyan-400' : 'border-slate-800'
+                    }`}
+                  >
+                    <div className="h-10 bg-slate-900 rounded flex items-center justify-center">
+                      <Camera className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <div className="text-[8px] text-slate-300 text-center truncate mt-0.5">{c.camera_code}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── MODAL 2: REFERENCE ANGLES MATRIX MODAL ──────────────────────────────── */}
+      {isRefModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#090D16] border border-[#161F30] rounded-lg max-w-2xl w-full p-4 space-y-3 font-mono">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <div className="flex items-center space-x-2 text-cyan-400 font-bold text-sm">
+                <Layers className="w-4 h-4" />
+                <span>REFERENCE MATRIX — {selectedPerson?.display_name.toUpperCase()}</span>
+              </div>
+              <button onClick={() => setIsRefModalOpen(false)} className="text-slate-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {referenceImages.length > 0 ? (
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                {referenceImages.map((r, i) => (
+                  <div key={r.ref_id || i} className="bg-slate-950 border border-slate-800 rounded p-2 text-center">
+                    <img
+                      src={biometricApi.buildReferenceImageUrl(r.image_path)}
+                      alt={`Ref ${i + 1}`}
+                      className="w-full aspect-square object-cover rounded mb-1 bg-slate-900"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = targetFaceUrl;
+                      }}
+                    />
+                    <div className="text-xs font-bold text-white">REF #{i + 1}</div>
+                    <div className="text-xs text-emerald-400 font-extrabold">
+                      {r.detection_confidence ? r.detection_confidence.toFixed(2) : '1.00'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-slate-500">
+                No enrolled reference images found in biometric index for this person ID.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Dynamic Keyframe Animation */}
       <style>{`
         @keyframes scanLine {
           0%   { top: 0%; opacity: 0.9; }
-          50%  { top: 100%; opacity: 0.9; }
+          50%  { top: 96%; opacity: 0.9; }
           100% { top: 0%; opacity: 0.9; }
         }
+        .animate-scanLine {
+          animation: scanLine 2s ease-in-out infinite;
+        }
       `}</style>
+
     </div>
   );
 };

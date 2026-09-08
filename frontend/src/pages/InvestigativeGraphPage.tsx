@@ -65,6 +65,10 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
   const [isProposalDrawerOpen, setIsProposalDrawerOpen] = useState<boolean>(false);
   const [proposalTargetNode, setProposalTargetNode] = useState<GraphNode | null>(null);
 
+  // Focus Mode States
+  const [focusNodeId, setFocusNodeId] = useState<string | null>(null);
+  const [focusHopDepth, setFocusHopDepth] = useState<number>(1);
+
   // Zero-Layout-Reflow Filtering States (PhoneNumber hidden by default to keep real domain entities clean)
   const [hiddenEntityTypes, setHiddenEntityTypes] = useState<Set<string>>(new Set(['PhoneNumber']));
   const [hiddenRelTypes, setHiddenRelTypes] = useState<Set<string>>(new Set());
@@ -91,6 +95,18 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
     staleTime: 300_000,
   });
 
+  // Derive Focus Node Object & Display Name
+  const focusNodeObj = useMemo(() => {
+    if (!focusNodeId || !graphData?.nodes) return null;
+    return graphData.nodes.find((n) => n.id === focusNodeId) || null;
+  }, [focusNodeId, graphData]);
+
+  const focusNodeName = useMemo(() => {
+    if (!focusNodeObj) return 'SELECTED ENTITY';
+    const p = focusNodeObj.properties || {};
+    return p.display_name || p.name || p.legal_name || p.msisdn || p.registration_number || focusNodeObj.id;
+  }, [focusNodeObj]);
+
   // Dynamic Intelligence Counts
   const counts = useMemo(() => {
     const nodes = graphData?.nodes || [];
@@ -112,7 +128,15 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
   // Mode Change Handler
   const handleModeChange = useCallback((newMode: WorkspaceMode) => {
     setWorkspaceMode(newMode);
-    if (newMode === 'CONNECT_ENTITY') {
+    if (newMode === 'FOCUS') {
+      if (selectedNode) {
+        setFocusNodeId(selectedNode.id);
+      } else if (graphData?.nodes && graphData.nodes.length > 0) {
+        const caseNode = graphData.nodes.find((n) => n.labels.includes('Case'));
+        setFocusNodeId(caseNode ? caseNode.id : graphData.nodes[0].id);
+      }
+      setFocusHopDepth(1);
+    } else if (newMode === 'CONNECT_ENTITY') {
       setIsProposalDrawerOpen(true);
     } else if (newMode === 'FIND_PATH') {
       setIsPathFiltered(false);
@@ -121,6 +145,7 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
         setPathSourceNode(selectedNode);
       }
     } else if (newMode === 'EXPLORE') {
+      setFocusNodeId(null);
       setPathSourceNode(null);
       setPathTargetNode(null);
       setPathNodes([]);
@@ -128,7 +153,7 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
       setIsPathFiltered(false);
       setExplorerTab('SEARCH');
     }
-  }, [selectedNode]);
+  }, [selectedNode, graphData]);
 
   // Handlers
   const handleReLayout = useCallback(() => {
@@ -262,6 +287,8 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
 
   const handleFocusNode = useCallback((nodeId: string) => {
     setWorkspaceMode('FOCUS');
+    setFocusNodeId(nodeId);
+    setFocusHopDepth(1);
     setFocusTrigger({ nodeId, timestamp: Date.now() });
   }, []);
 
@@ -286,7 +313,6 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
     setPathRelationships([]);
     setIsPathFiltered(false);
     setWorkspaceMode('EXPLORE');
-    setExplorerTab('SEARCH');
   }, []);
 
   const handleProposalSubmitted = useCallback((_resp: AssertionProposalResponse) => {
@@ -347,6 +373,13 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
               onModeChange={handleModeChange}
               hopDepth={depth}
               onHopDepthChange={setDepth}
+              focusNodeName={focusNodeName}
+              focusHopDepth={focusHopDepth}
+              onFocusHopDepthChange={setFocusHopDepth}
+              onExitFocus={() => {
+                setWorkspaceMode('EXPLORE');
+                setFocusNodeId(null);
+              }}
               onReLayout={handleReLayout}
               onReset={handleReset}
               isFullscreen={isFullscreen}
@@ -385,12 +418,20 @@ export const InvestigativeGraphPage: React.FC<InvestigativeGraphPageProps> = ({
               relationships={graphData?.relationships || []}
               selectedNodeId={selectedNode?.id || null}
               selectedEdgeId={selectedEdgeId}
-              onSelectNode={handleSelectNode}
+              onSelectNode={(node) => {
+                handleSelectNode(node);
+                if (workspaceMode === 'FOCUS' && node) {
+                  setFocusNodeId(node.id);
+                }
+              }}
               onSelectEdge={handleSelectEdge}
               reLayoutTrigger={reLayoutCounter}
               hiddenEntityTypes={hiddenEntityTypes}
               hiddenRelTypes={hiddenRelTypes}
               focusTrigger={focusTrigger}
+              isFocusMode={workspaceMode === 'FOCUS'}
+              focusNodeId={focusNodeId}
+              focusHopDepth={focusHopDepth}
               activePathSourceId={pathSourceNode?.id || null}
               activePathTargetId={pathTargetNode?.id || null}
               isPathFiltered={isPathFiltered}

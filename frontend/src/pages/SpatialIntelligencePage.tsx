@@ -294,8 +294,8 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
   return (
     <div className="space-y-4 bg-[#090C12] text-white min-h-screen pb-12 select-none">
       
-      {/* ─── STAGE 1: DELHI NCR SPATIAL COMMAND BANNER & HEADER ───────────────── */}
-      {viewMode === 'GLOBAL_MAP' ? (
+      {/* ─── STAGE 1: DELHI NCR SPATIAL COMMAND BANNER & HEADER (GLOBAL DASHBOARD ONLY) ───────────────── */}
+      {!embedded && viewMode === 'GLOBAL_MAP' && (
         <div className="relative rounded-lg overflow-hidden border border-[#1E2430] bg-[#0A0D14] shadow-2xl">
           {/* Background Image Layer - Crisp, Vibrant & Visible */}
           <div 
@@ -401,8 +401,10 @@ export const SpatialIntelligencePage: React.FC<SpatialIntelligencePageProps> = (
             </div>
           </div>
         </div>
-      ) : (
-        /* STAGE 2: CASE TRAJECTORY MAP HEADER */
+      )}
+
+      {/* STAGE 2: CASE TRAJECTORY MAP HEADER (GLOBAL DASHBOARD CASE MODE ONLY) */}
+      {!embedded && viewMode === 'CASE_EVENT_MAP' && (
         <div className="bg-[#0D111A] border border-[#1E2430] rounded-lg p-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <button

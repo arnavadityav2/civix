@@ -93,6 +93,17 @@ function deriveDisplayName(node: GraphNode | null): string {
   return cleaned.length > 24 ? `${cleaned.slice(0, 22)}…` : cleaned;
 }
 
+const SEARCH_CATEGORIES = [
+  { id: 'ALL', label: 'ALL' },
+  { id: 'Person', label: 'Person' },
+  { id: 'Case', label: 'Case' },
+  { id: 'Vehicle', label: 'Vehicle' },
+  { id: 'Evidence', label: 'Evidence' },
+  { id: 'Location', label: 'Location' },
+  { id: 'Organization', label: 'Org' },
+  { id: 'Device', label: 'Phone/Device' },
+];
+
 export const GraphExplorer: React.FC<GraphExplorerProps> = ({
   nodes,
   relationships,
@@ -117,6 +128,7 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
 }) => {
   const [internalTab, setInternalTab] = useState<ExplorerTab>('SEARCH');
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchCategoryFilter, setSearchCategoryFilter] = useState<string>('ALL');
 
   const activeTab = activeTabProp !== undefined ? activeTabProp : internalTab;
 
@@ -148,18 +160,31 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
     return counts;
   }, [relationships]);
 
-  // Search Filtering
+  // Search & Category Filtering
   const searchResults = useMemo(() => {
-    if (!searchQuery.trim()) return nodes;
+    let filtered = nodes;
+
+    if (searchCategoryFilter !== 'ALL') {
+      filtered = filtered.filter((node) => {
+        const type = getPrimaryLabel(node.labels);
+        if (searchCategoryFilter === 'Device') {
+          return type === 'Device' || type === 'PhoneNumber';
+        }
+        return type === searchCategoryFilter;
+      });
+    }
+
+    if (!searchQuery.trim()) return filtered;
+
     const query = searchQuery.toLowerCase().trim();
-    return nodes.filter((node) => {
+    return filtered.filter((node) => {
       const name = deriveDisplayName(node).toLowerCase();
       const id = node.id.toLowerCase();
       const type = getPrimaryLabel(node.labels).toLowerCase();
       const propsStr = JSON.stringify(node.properties || {}).toLowerCase();
       return name.includes(query) || id.includes(query) || type.includes(query) || propsStr.includes(query);
     });
-  }, [nodes, searchQuery]);
+  }, [nodes, searchQuery, searchCategoryFilter]);
 
   // Path Analysis calculations
   const sourceName = deriveDisplayName(pathSourceNode || null);
@@ -219,7 +244,8 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
       <div className="flex-1 overflow-y-auto p-3 space-y-4 font-mono">
         {/* TAB 1: SEARCH */}
         {activeTab === 'SEARCH' && (
-          <div className="space-y-3">
+          <div className="space-y-2.5">
+            {/* Search Input Box */}
             <div className="relative">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
               <input
@@ -231,50 +257,92 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
               />
             </div>
 
-            <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 px-1">
-              <span>MATCHES: {searchResults.length}</span>
-              {searchQuery && (
+            {/* Category Filter Chips Bar */}
+            <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[10px] font-mono scrollbar-none">
+              {SEARCH_CATEGORIES.map((cat) => {
+                const count = cat.id === 'ALL'
+                  ? nodes.length
+                  : cat.id === 'Device'
+                    ? (entityTypeCounts['Device'] || 0) + (entityTypeCounts['PhoneNumber'] || 0)
+                    : (entityTypeCounts[cat.id] || 0);
+
+                const isActive = searchCategoryFilter === cat.id;
+
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSearchCategoryFilter(cat.id)}
+                    className={`px-2 py-0.5 rounded-full border whitespace-nowrap font-bold transition-all flex items-center gap-1 shrink-0 ${
+                      isActive
+                        ? 'bg-cyan-500 border-cyan-400 text-slate-950 shadow-sm'
+                        : 'bg-[#131b2e] border-[#1e2d4a] text-slate-400 hover:border-slate-500 hover:text-slate-200'
+                    }`}
+                  >
+                    <span>{cat.label}</span>
+                    <span className={`text-[9px] px-1 rounded-full ${isActive ? 'bg-slate-950 text-cyan-300' : 'bg-[#0b0f19] text-slate-400'}`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 px-1 pt-1 border-t border-[#162035]">
+              <span>
+                MATCHES: <strong className="text-cyan-400">{searchResults.length}</strong> {searchCategoryFilter !== 'ALL' ? `in ${searchCategoryFilter.toUpperCase()}` : ''}
+              </span>
+              {(searchQuery || searchCategoryFilter !== 'ALL') && (
                 <button
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSearchCategoryFilter('ALL');
+                  }}
                   className="text-cyan-400 hover:underline"
                 >
-                  Clear search
+                  Reset search
                 </button>
               )}
             </div>
 
-            <div className="space-y-1 max-h-[calc(100vh-250px)] overflow-y-auto pr-1">
-              {searchResults.map((node) => {
-                const primaryType = getPrimaryLabel(node.labels);
-                const name = deriveDisplayName(node);
-                const Icon = TYPE_ICONS[primaryType] || User;
-                const isSelected = selectedNodeId === node.id;
+            {/* Entity Results List */}
+            <div className="space-y-1 max-h-[calc(100vh-290px)] overflow-y-auto pr-1">
+              {searchResults.length === 0 ? (
+                <div className="p-4 text-center text-xs text-slate-500 italic border border-dashed border-[#1e2d4a] rounded">
+                  No matching entities found
+                </div>
+              ) : (
+                searchResults.map((node) => {
+                  const primaryType = getPrimaryLabel(node.labels);
+                  const name = deriveDisplayName(node);
+                  const Icon = TYPE_ICONS[primaryType] || User;
+                  const isSelected = selectedNodeId === node.id;
 
-                return (
-                  <button
-                    key={node.id}
-                    onClick={() => onSelectNode(node)}
-                    className={`w-full flex items-center justify-between p-2 rounded text-left border transition-colors ${isSelected
-                        ? 'bg-cyan-950/80 border-cyan-500 text-white'
-                        : 'bg-[#131b2e]/60 border-[#1e2d4a] hover:bg-[#131b2e] hover:border-slate-600 text-slate-300'
-                      }`}
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="w-6 h-6 rounded bg-[#0b0f19] border border-[#1e2d4a] flex items-center justify-center shrink-0">
-                        <Icon className="w-3 h-3 text-cyan-400" />
+                  return (
+                    <button
+                      key={node.id}
+                      onClick={() => onSelectNode(node)}
+                      className={`w-full flex items-center justify-between p-2 rounded text-left border transition-colors ${isSelected
+                          ? 'bg-cyan-950/80 border-cyan-500 text-white'
+                          : 'bg-[#131b2e]/60 border-[#1e2d4a] hover:bg-[#131b2e] hover:border-slate-600 text-slate-300'
+                        }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-6 h-6 rounded bg-[#0b0f19] border border-[#1e2d4a] flex items-center justify-center shrink-0">
+                          <Icon className="w-3 h-3 text-cyan-400" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-slate-200 truncate leading-tight">
+                            {name}
+                          </p>
+                          <p className="text-[9px] font-mono text-slate-400 uppercase leading-none mt-0.5">
+                            {primaryType}
+                          </p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold text-slate-200 truncate leading-tight">
-                          {name}
-                        </p>
-                        <p className="text-[9px] font-mono text-slate-400 uppercase leading-none mt-0.5">
-                          {primaryType}
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
+                    </button>
+                  );
+                })
+              )}
             </div>
           </div>
         )}
@@ -491,9 +559,16 @@ export const GraphExplorer: React.FC<GraphExplorerProps> = ({
                   )}
                 </div>
 
-                {pathFound && onToggleShowPath && (
+                {pathFound && (
                   <button
-                    onClick={onToggleShowPath}
+                    onClick={() => {
+                      if (isPathFiltered) {
+                        if (onClearPath) onClearPath();
+                        else if (onToggleShowPath) onToggleShowPath();
+                      } else {
+                        if (onToggleShowPath) onToggleShowPath();
+                      }
+                    }}
                     className={`w-full py-2 px-3 rounded font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md ${isPathFiltered
                         ? 'bg-amber-500 text-slate-950 hover:bg-amber-400'
                         : 'bg-cyan-500 text-slate-950 hover:bg-cyan-400'

@@ -455,9 +455,6 @@ export const CasesPage: React.FC = () => {
                 <table className="w-full text-xs border-collapse layout-fixed">
                   <thead className="sticky top-0 bg-[#0C1220] border-b border-civix-border text-[9px] font-bold text-civix-text-muted uppercase tracking-widest font-mono z-10 shadow-sm">
                     <tr>
-                      <th className="w-7 px-2 py-2 text-center">
-                        <input type="checkbox" className="rounded-xs border-civix-border bg-civix-bg text-civix-blue focus:ring-0" />
-                      </th>
                       <th className="text-left px-2.5 py-2">CASE ID & TITLE</th>
                       <th className="text-left px-2 py-2 w-[85px]">TYPE</th>
                       <th className="text-left px-2 py-2 w-[80px]">STATUS</th>
@@ -482,11 +479,6 @@ export const CasesPage: React.FC = () => {
                               : 'hover:bg-civix-surface-3'
                           }`}
                         >
-                          {/* Checkbox */}
-                          <td className="w-7 px-2 py-2 text-center" onClick={(e) => e.stopPropagation()}>
-                            <input type="checkbox" className="rounded-xs border-civix-border bg-civix-bg text-civix-blue focus:ring-0" />
-                          </td>
-
                           {/* CASE ID & TITLE (Stacked cleanly) */}
                           <td className="px-2.5 py-2">
                             <div className="flex flex-col min-w-0">

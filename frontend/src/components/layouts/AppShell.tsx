@@ -8,18 +8,32 @@ interface AppShellProps {
 
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   const location = useLocation();
-  const isGraphPage = location.pathname.includes('/graph');
+  const path = location.pathname;
+
+  // Dedicated full-screen interactive workstation tools
+  const isWorkspacePage = (
+    path.includes('/graph') ||
+    path.includes('/cases/') ||
+    path.includes('/cctv') ||
+    path.includes('/spatial') ||
+    path.includes('/telecom') ||
+    path.includes('/biometric') ||
+    path.includes('/evidence')
+  );
+
+  // Pages with fixed non-scrollable canvas bounds (Cytoscape graph canvas, CCTV video grid)
+  const isFixedCanvasPage = path.includes('/graph');
 
   return (
     <div className="h-screen bg-[#07090E] text-white flex flex-col font-sans select-none overflow-hidden">
-      {/* 1. Institutional Top Header (Fixed at top of screen) */}
+      {/* 1. Institutional Top Header */}
       <AppHeader />
 
       {/* 2. Main Layout Body (Middle flex container) */}
       <div className="flex-1 flex min-h-0 overflow-hidden">
-        {/* Main Workspace Area (Full width) */}
-        {isGraphPage ? (
-          <main className="flex-1 flex flex-col min-h-0 overflow-hidden bg-[#0b0f19]">
+        {/* Main Workspace Area */}
+        {isWorkspacePage ? (
+          <main className={`flex-1 flex flex-col min-h-0 ${isFixedCanvasPage ? 'overflow-hidden' : 'overflow-y-auto'} bg-[#0b0f19]`}>
             {children}
           </main>
         ) : (
@@ -31,8 +45,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         )}
       </div>
 
-      {/* 3. LOWER INSTITUTIONAL IDENTITY FOOTER (hidden on graph workspace to maximize canvas height) */}
-      {!isGraphPage && (
+      {/* 3. LOWER INSTITUTIONAL IDENTITY FOOTER (hidden on workstation tools) */}
+      {!isWorkspacePage && (
         <footer className="relative flex-shrink-0 border-t border-[#1E2430] overflow-hidden bg-[#07090E] z-30">
           {/* Status Bar */}
           <div className="bg-[#05070A] px-5 py-1.5 flex items-center justify-between text-[11px] font-mono text-slate-400">

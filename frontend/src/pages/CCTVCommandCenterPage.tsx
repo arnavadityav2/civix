@@ -6,22 +6,15 @@ import { casesApi } from '../api/cases';
 import type { CaseListItem } from '../types/api';
 import { FeedViewer } from '../components/cctv/FeedViewer';
 import { 
-  RefreshCw, 
   Search, 
   Camera as CameraIcon, 
   MapPin, 
   Play, 
-  ExternalLink,
   ChevronRight,
-  FolderOpen,
   Camera as CaptureIcon,
   Flag,
   FilePlus,
   Download,
-  Users,
-  Car,
-  FileText,
-  Boxes,
   Maximize2,
   Volume2,
   RotateCcw,
@@ -29,25 +22,21 @@ import {
   CheckCircle2,
   AlertTriangle,
   XCircle,
-  Zap,
-  Clock
+  Zap
 } from 'lucide-react';
 
 export const CCTVCommandCenterPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [cameras, setCameras] = useState<Camera[]>([]);
-  const [cases, setCases] = useState<CaseListItem[]>([]);
+  const [_cases, setCases] = useState<CaseListItem[]>([]);
   const [selectedCaseId, setSelectedCaseId] = useState<string>('');
-  const [selectedCase, setSelectedCase] = useState<CaseListItem | null>(null);
-  
   const [selectedCameraId, setSelectedCameraId] = useState<string | null>(null);
   const [cameraDetail, setCameraDetail] = useState<CameraDetail | null>(null);
   
-  const [isSyncing, setIsSyncing] = useState(false);
+  const [_isSyncing, setIsSyncing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterMode, setFilterMode] = useState<'all' | 'live' | 'reachable' | 'offline'>('all');
-  const [activeTab, setActiveTab] = useState<'detections' | 'events' | 'map' | 'logs'>('detections');
   const [aiCorrelationStatus, setAiCorrelationStatus] = useState<'PENDING' | 'ACCEPTED' | 'CHALLENGED' | 'DISMISSED'>('PENDING');
 
   useEffect(() => {
@@ -55,14 +44,7 @@ export const CCTVCommandCenterPage: React.FC = () => {
     fetchCases();
   }, []);
 
-  useEffect(() => {
-    if (selectedCaseId) {
-      const match = cases.find(c => c.case_id === selectedCaseId);
-      setSelectedCase(match || null);
-    } else {
-      setSelectedCase(null);
-    }
-  }, [selectedCaseId, cases]);
+
 
   useEffect(() => {
     if (selectedCameraId) {
@@ -93,26 +75,24 @@ export const CCTVCommandCenterPage: React.FC = () => {
   const fetchCases = () => {
     casesApi.listCases()
       .then(data => {
-        setCases(data);
-        if (data.length > 0 && !selectedCaseId) {
-          setSelectedCaseId(data[0].case_id);
+        // FILTER TO ONLY 12 GOLDEN HERO CASES
+        const goldenCaseNumbers = [
+          'CIV-2012-001', 'CIV-2026-009', 'CIV-2026-117', 'CIV-2026-089',
+          'CIV-2026-076', 'CIV-2021-003', 'CIV-2021-027', 'CIV-2023-032',
+          'CIV-2023-044', 'CIV-2024-010', 'CIV-2024-038', 'CIV-2025-022'
+        ];
+        const goldenCases = data.filter(c => goldenCaseNumbers.includes(c.case_number) || c.case_number.startsWith('CIV-'));
+        const filtered = goldenCases.length > 0 ? goldenCases : data.slice(0, 12);
+        setCases(filtered);
+        if (filtered.length > 0 && !selectedCaseId) {
+          const dwarka = filtered.find(c => c.case_number === 'CIV-2012-001');
+          setSelectedCaseId(dwarka ? dwarka.case_id : filtered[0].case_id);
         }
       })
       .catch(err => console.error(err));
   };
 
-  const syncRegistry = () => {
-    setIsSyncing(true);
-    cctvApi.syncRegistry()
-      .then(() => {
-        fetchCameras();
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Failed to sync registry.');
-      })
-      .finally(() => setIsSyncing(false));
-  };
+
 
   const handleRunAnalysis = () => {
     if (!selectedCameraId) return;
@@ -326,13 +306,7 @@ export const CCTVCommandCenterPage: React.FC = () => {
                 <div className="text-slate-300 text-[8px]">CCTV NETWORK</div>
               </div>
 
-              {/* Bounding Boxes */}
-              <div className="absolute top-[42%] left-[37%] border-2 border-cyan-400 bg-cyan-500/10 px-2 py-1 rounded text-[9px] font-mono font-bold text-cyan-300 shadow-md">
-                VEHICLE_12
-              </div>
-              <div className="absolute top-[48%] left-[50%] border-2 border-emerald-400 bg-emerald-500/10 px-2 py-1 rounded text-[9px] font-mono font-bold text-emerald-300 shadow-md">
-                PERSON_04
-              </div>
+
 
               {/* Video Player Controls Bar */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-2.5 flex items-center justify-between text-xs text-white">

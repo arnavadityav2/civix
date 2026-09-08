@@ -59,9 +59,9 @@ export interface TelecomEventItem {
   // DEVICE_PING-specific (from event_participant role=SUBJECT)
   subject_msisdn: string | null;
 
-  // NOT AVAILABLE in current dataset (sim_in_device = 0, sim_number_assignment = 0)
-  imei: null;
-  imsi: null;
+  // Device / SIM Identifiers
+  imei: string | null;
+  imsi: string | null;
 
   // Location (from event_location → location)
   location_id: string | null;
